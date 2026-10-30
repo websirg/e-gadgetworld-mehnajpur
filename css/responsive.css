@@ -1,0 +1,236 @@
+/* ==========================================================================
+   E-GADGET WORLD — RESPONSIVE STYLES
+   Mehnajpur Branch, Azamgarh
+   ========================================================================== */
+
+/* Large Tablets & Small Laptops (<= 1024px) */
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-visual-card {
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  .catalog-layout {
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+  }
+
+  .product-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .detail-gallery-box {
+    position: static;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+}
+
+/* Tablets & Mobile (<= 768px) */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 60px; /* Space for mobile sticky bottom bar */
+  }
+
+  .top-bar {
+    display: none; /* Keep mobile header clean and uncluttered */
+  }
+
+  .site-header .nav-menu,
+  .site-header .header-actions {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* Mobile Nav Drawer */
+  .mobile-nav-drawer {
+    display: block;
+    position: fixed;
+    top: 76px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 76px);
+    background-color: #FFFFFF;
+    border-top: 1px solid var(--color-border);
+    padding: 24px 20px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+    z-index: var(--z-sticky);
+  }
+
+  .mobile-nav-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-soft);
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link.active {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+  }
+
+  .mobile-nav-sublinks {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .mobile-nav-sublink {
+    display: block;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    border-left: 2px solid var(--color-border);
+  }
+
+  .mobile-nav-sublink:hover {
+    color: var(--color-primary);
+    border-left-color: var(--color-primary);
+  }
+
+  .mobile-nav-contact-card {
+    background-color: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-top: 20px;
+  }
+
+  .mobile-bottom-bar {
+    display: block;
+  }
+
+  .floating-whatsapp {
+    bottom: 76px;
+    right: 16px;
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+  }
+
+  .floating-whatsapp span {
+    display: none; /* Icon-only on mobile to save screen space */
+  }
+
+  /* Catalog Layout Mobile Filter Drawer */
+  .catalog-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: var(--z-modal);
+    border-radius: 0;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+  }
+
+  .filter-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .mobile-filter-toggle-btn {
+    display: inline-flex !important;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .section {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .compare-dock-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Small Mobile Screens (<= 480px) */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-desc {
+    font-size: 0.9375rem;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-cta-group .btn {
+    width: 100%;
+  }
+
+  .laptop-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-price-box {
+    flex-direction: column;
+  }
+
+  .detail-price-big {
+    font-size: 1.875rem;
+  }
+
+  .specs-table th {
+    width: 45%;
+  }
+}

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ideaChassis" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="ideaScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="60%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0F172A" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <rect width="600" height="420" fill="#F8FAFC" rx="16"/>
+  <circle cx="300" cy="180" r="160" fill="#E2E8F0" opacity="0.4"/>
+
+  <g transform="translate(60, 45)" filter="url(#shadow)">
+    <rect x="75" y="15" width="330" height="215" rx="8" fill="url(#ideaChassis)" stroke="#64748B" stroke-width="1"/>
+    <circle cx="240" cy="22" r="2" fill="#94A3B8"/>
+    <rect x="85" y="28" width="310" height="192" rx="3" fill="url(#ideaScreen)"/>
+    <path d="M85 140 Q 200 80, 395 160 L 395 220 L 85 220 Z" fill="#3B82F6" opacity="0.35"/>
+    <text x="240" y="115" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">Lenovo IdeaPad</text>
+    <text x="240" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="500" fill="#93C5FD" text-anchor="middle">Student &amp; Office Series</text>
+    
+    <rect x="90" y="208" width="30" height="8" rx="2" fill="#E11D48"/>
+    <text x="93" y="214" font-family="system-ui, sans-serif" font-size="6" font-weight="800" fill="#FFFFFF">Lenovo</text>
+
+    <rect x="170" y="228" width="140" height="6" rx="2" fill="#0F172A"/>
+    <polygon points="35,268 445,268 410,230 70,230" fill="#475569" stroke="#64748B" stroke-width="1"/>
+    <polygon points="75,258 405,258 385,235 95,235" fill="#1E293B"/>
+    <line x1="85" y1="242" x2="395" y2="242" stroke="#475569" stroke-width="1"/>
+    <line x1="80" y1="250" x2="400" y2="250" stroke="#475569" stroke-width="1"/>
+    <polygon points="195,266 285,266 280,259 200,259" fill="#334155"/>
+    <polygon points="35,268 445,268 440,274 40,274" fill="#0F172A"/>
+  </g>
+
+  <g transform="translate(420, 25)">
+    <rect width="150" height="30" rx="15" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="75" y="19" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563EB" text-anchor="middle">Slim &amp; Portable</text>
+  </g>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <rect width="800" height="500" fill="#F8FAFC"/>
+  <rect y="390" width="800" height="110" fill="#E2E8F0"/>
+
+  <!-- Customer Desk -->
+  <rect x="100" y="240" width="600" height="150" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="90" y="230" width="620" height="18" rx="3" fill="#2563EB"/>
+
+  <!-- Desktop PC & Monitor on Desk -->
+  <rect x="180" y="100" width="160" height="110" rx="6" fill="#0F172A"/>
+  <rect x="190" y="110" width="140" height="90" fill="#0284C7"/>
+  <path d="M190 160 Q 260 130, 330 180 L 330 200 L 190 200 Z" fill="#38BDF8" opacity="0.6"/>
+  <text x="260" y="150" font-family="sans-serif" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">CSC Digital Portal</text>
+  <rect x="250" y="210" width="20" height="20" fill="#475569"/>
+  <rect x="230" y="228" width="60" height="4" rx="2" fill="#334155"/>
+
+  <!-- Printer & Scanner -->
+  <rect x="480" y="140" width="150" height="90" rx="4" fill="#334155"/>
+  <rect x="500" y="150" width="110" height="20" rx="2" fill="#E2E8F0"/>
+  <rect x="510" y="160" width="90" height="12" rx="1" fill="#FFFFFF"/>
+  <text x="555" y="200" font-family="sans-serif" font-size="10" font-weight="700" fill="#94A3B8" text-anchor="middle">Laser Multi-Function</text>
+
+  <!-- Desk Signboard -->
+  <rect x="360" y="215" width="100" height="25" rx="3" fill="#0F172A"/>
+  <text x="410" y="232" font-family="sans-serif" font-size="9" font-weight="800" fill="#38BDF8" text-anchor="middle">CSC HELP DESK</text>
+
+  <!-- Banner -->
+  <g transform="translate(250, 15)">
+    <rect width="300" height="32" rx="6" fill="#2563EB"/>
+    <text x="150" y="21" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">CSC Digital &amp; Customer Desk</text>
+  </g>
+
+  <g transform="translate(15, 15)">
+    <rect width="360" height="28" rx="6" fill="#0F172A" opacity="0.85"/>
+    <text x="180" y="19" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#38BDF8" text-anchor="middle">
+      Actual Shop Photo Placeholder (Upload to assets/images/shop/)
+    </text>
+  </g>
+</svg>

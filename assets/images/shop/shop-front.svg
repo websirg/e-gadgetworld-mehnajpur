@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#EFF6FF"/>
+      <stop offset="100%" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="signGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky & Road Background -->
+  <rect width="800" height="500" fill="url(#skyGrad)"/>
+  <rect y="420" width="800" height="80" fill="#CBD5E1"/>
+  <line x1="0" y1="420" x2="800" y2="420" stroke="#94A3B8" stroke-width="4"/>
+
+  <!-- Building Facade -->
+  <rect x="80" y="60" width="640" height="360" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="3"/>
+  <rect x="60" y="45" width="680" height="25" fill="#334155"/>
+
+  <!-- Main Store Board / Signboard -->
+  <rect x="110" y="85" width="580" height="95" rx="8" fill="url(#signGrad)" stroke="#2563EB" stroke-width="3"/>
+  <text x="400" y="135" font-family="system-ui, sans-serif" font-size="34" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">
+    E-GADGET <tspan fill="#38BDF8">WORLD</tspan>
+  </text>
+  <text x="400" y="165" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#E2E8F0" text-anchor="middle" letter-spacing="2">
+    MEHNAJPUR BRANCH • NEAR MEHNAJPUR THANA, AZAMGARH
+  </text>
+
+  <!-- Commercial Glass Front & Doors -->
+  <!-- Left Glass Window (Laptops Display) -->
+  <rect x="120" y="200" width="230" height="200" fill="#E0F2FE" stroke="#0284C7" stroke-width="3" opacity="0.8"/>
+  <line x1="120" y1="290" x2="350" y2="290" stroke="#0284C7" stroke-width="2"/>
+  <rect x="140" y="270" width="40" height="20" rx="3" fill="#1E293B"/>
+  <rect x="210" y="270" width="40" height="20" rx="3" fill="#1E293B"/>
+  <rect x="280" y="270" width="40" height="20" rx="3" fill="#1E293B"/>
+  <text x="235" y="380" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#0369A1" text-anchor="middle">Refurbished Laptops</text>
+
+  <!-- Center Double Glass Entrance Door -->
+  <rect x="370" y="200" width="130" height="220" fill="#F0F9FF" stroke="#0F172A" stroke-width="4"/>
+  <line x1="435" y1="200" x2="435" y2="420" stroke="#0F172A" stroke-width="3"/>
+  <!-- Door Handles -->
+  <rect x="425" y="300" width="4" height="40" rx="2" fill="#2563EB"/>
+  <rect x="441" y="300" width="4" height="40" rx="2" fill="#2563EB"/>
+  <text x="435" y="235" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#2563EB" text-anchor="middle">WELCOME</text>
+
+  <!-- Right Glass Window (Service & CSC Services) -->
+  <rect x="520" y="200" width="180" height="200" fill="#EFF6FF" stroke="#2563EB" stroke-width="3" opacity="0.8"/>
+  <text x="610" y="270" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#1D4ED8" text-anchor="middle">Laptop Repair</text>
+  <text x="610" y="300" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#1D4ED8" text-anchor="middle">&amp; Accessories</text>
+  <text x="610" y="360" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#047857" text-anchor="middle">CSC Digital Desk</text>
+
+  <!-- Shop Photo Badge Overlay Note -->
+  <g transform="translate(15, 15)">
+    <rect width="360" height="28" rx="6" fill="#0F172A" opacity="0.85"/>
+    <text x="180" y="19" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#38BDF8" text-anchor="middle">
+      Actual Shop Photo Placeholder (Upload to assets/images/shop/)
+    </text>
+  </g>
+</svg>
