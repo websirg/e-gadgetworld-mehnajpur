@@ -1,7 +1,7 @@
 /* ==========================================================================
    E-GADGET WORLD — RESPONSIVE STYLES
    Mehnajpur Branch, Azamgarh
-   Mobile-First & Comprehensive Multi-Breakpoint Engine
+   Mobile-First & Multi-Breakpoint Engine
    Supports: 320px, 360px, 375px, 390px, 430px, 768px, 1024px, 1440px
    ========================================================================== */
 
@@ -11,12 +11,12 @@
 @media (min-width: 1200px) {
   .catalog-layout {
     grid-template-columns: 280px 1fr;
-    gap: 32px;
+    gap: 36px;
   }
 
   .laptops-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 28px;
   }
 }
 
@@ -24,6 +24,11 @@
    2. LAPTOPS & TABLETS LANDSCAPE (<= 1024px)
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
+  :root {
+    --fs-hero: 2.625rem;           /* 42px */
+    --fs-section: 1.875rem;        /* 30px */
+  }
+
   .container {
     padding-left: 20px;
     padding-right: 20px;
@@ -31,28 +36,28 @@
 
   .hero-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 44px;
   }
 
   .hero-visual {
-    max-width: 520px;
+    max-width: 560px;
     margin: 0 auto;
     width: 100%;
   }
 
   .catalog-layout {
-    grid-template-columns: 240px 1fr;
-    gap: 24px;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
   }
 
   .laptops-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
   }
 
   .product-detail-layout {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 40px;
   }
 
   .detail-gallery-box {
@@ -61,7 +66,7 @@
 
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 36px;
+    gap: 40px;
   }
 
   .about-grid,
@@ -69,7 +74,7 @@
   .contact-page-grid,
   .branch-spotlight-grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 36px;
   }
 }
 
@@ -77,17 +82,29 @@
    3. TABLETS PORTRAIT & MOBILE (<= 768px)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
+  :root {
+    /* Mobile Typography Scales (30-36px hero, 25-28px section, 17-19px card, 16px body/nav/btn, 22-25px price, 13-14px badge) */
+    --fs-hero: 2.125rem;           /* 34px */
+    --fs-section: 1.6875rem;       /* 27px */
+    --fs-card-title: 1.125rem;     /* 18px */
+    --fs-body: 1rem;               /* 16px */
+    --fs-nav: 1rem;                /* 16px */
+    --fs-btn: 1rem;                /* 16px */
+    --fs-price: 1.5rem;            /* 24px */
+    --fs-badge: 0.84375rem;        /* 13.5px */
+  }
+
   body {
-    padding-bottom: 64px; /* Space for mobile sticky bottom action bar */
+    padding-bottom: 70px; /* Space for mobile sticky bottom action bar */
   }
 
   /* Header Optimization */
   .top-bar {
-    display: none; /* Keep mobile header clean & uncluttered */
+    display: none; /* Keep mobile header clean & focused */
   }
 
   .site-header {
-    height: 68px;
+    height: 72px;
   }
 
   .site-header .nav-menu,
@@ -99,22 +116,22 @@
     display: flex;
   }
 
-  .header-logo-img {
-    height: 40px;
+  .brand-logo-img {
+    height: 42px;
   }
 
   /* Mobile Nav Drawer */
   .mobile-nav-drawer {
     display: block;
     position: fixed;
-    top: 68px;
+    top: 72px;
     left: 0;
     width: 100%;
     max-width: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - 72px);
     background-color: #FFFFFF;
     border-top: 1px solid var(--color-border);
-    padding: 20px 16px;
+    padding: 24px 20px;
     overflow-y: auto;
     transform: translateX(-100%);
     transition: transform var(--transition-normal);
@@ -128,16 +145,16 @@
   .mobile-nav-links {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 28px;
   }
 
   .mobile-nav-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 14px;
-    font-size: 0.9375rem;
+    padding: 14px 16px;
+    font-size: 1.0625rem;
     font-weight: 700;
     color: var(--text-primary);
     border-radius: var(--radius-sm);
@@ -151,19 +168,19 @@
   }
 
   .mobile-nav-sublinks {
-    padding-left: 12px;
+    padding-left: 14px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 8px;
+    margin-top: 8px;
   }
 
   .mobile-nav-sublink {
     display: block;
-    padding: 8px 12px;
-    font-size: 0.84375rem;
+    padding: 10px 14px;
+    font-size: 0.9375rem;
     color: var(--text-secondary);
-    border-left: 2px solid var(--color-border);
+    border-left: 3px solid var(--color-border);
   }
 
   .mobile-nav-sublink:hover {
@@ -175,8 +192,8 @@
     background-color: var(--color-bg-soft);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 16px;
-    margin-top: 16px;
+    padding: 20px;
+    margin-top: 20px;
   }
 
   /* Mobile Sticky Bottom Bar */
@@ -186,14 +203,14 @@
 
   /* Floating WhatsApp Icon */
   .floating-whatsapp {
-    bottom: 74px;
-    right: 14px;
-    padding: 10px 12px;
+    bottom: 82px;
+    right: 18px;
+    padding: 12px 14px;
     border-radius: var(--radius-full);
   }
 
   .floating-whatsapp span {
-    display: none; /* Save screen real-estate */
+    display: none;
   }
 
   /* Catalog Layout & Mobile Filter Drawer */
@@ -206,14 +223,14 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 320px;
+    width: 330px;
     max-width: 86vw;
     height: 100vh;
     background-color: #FFFFFF;
     z-index: var(--z-modal);
     border-radius: 0;
     overflow-y: auto;
-    padding: 20px;
+    padding: 24px;
     box-shadow: var(--shadow-xl);
     transform: translateX(-100%);
     transition: transform var(--transition-normal);
@@ -227,12 +244,12 @@
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-border);
     background: var(--color-bg-soft);
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     color: var(--text-primary);
     cursor: pointer;
   }
@@ -240,10 +257,10 @@
   .filter-sidebar-mobile-footer {
     display: block !important;
     position: sticky;
-    bottom: -20px;
+    bottom: -24px;
     background: #FFFFFF;
-    padding: 14px 0 20px 0;
-    margin-top: 20px;
+    padding: 16px 0 24px 0;
+    margin-top: 24px;
     border-top: 1px solid var(--color-border);
   }
 
@@ -251,32 +268,25 @@
     display: inline-flex !important;
   }
 
-  /* Hero Section Typography */
+  /* Hero Section Spacing */
   .hero-section {
-    padding: 44px 0 52px 0;
-  }
-
-  .hero-title {
-    font-size: 2.125rem;
+    padding: 48px 0 56px 0;
   }
 
   .hero-stats {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
 
   .section {
-    padding-top: 44px;
-    padding-bottom: 44px;
-  }
-
-  .section-title {
-    font-size: 1.75rem;
+    padding-top: 52px;
+    padding-bottom: 52px;
   }
 
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 36px;
   }
 
   .compare-dock-inner {
@@ -286,216 +296,96 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. MANDATORY 2-COLUMN MOBILE CARDS GRID (350px to 640px)
-   Covers standard & modern mobile viewports: 360px, 375px, 390px, 430px
+   4. COMFORTABLE 2-COLUMN TABLET / LARGE PHONES (580px - 768px)
+   Cards have enough width (270px+) to display full content comfortably
    -------------------------------------------------------------------------- */
-@media (max-width: 640px) and (min-width: 350px) {
+@media (min-width: 580px) and (max-width: 768px) {
   .laptops-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-  }
-
-  .laptop-card {
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-xs);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  .laptop-card-image-wrap {
-    height: 118px;
-    padding: 8px;
-  }
-
-  .laptop-card-img {
-    max-height: 88px;
-    width: auto;
-  }
-
-  .laptop-badge-top-left {
-    top: 6px;
-    left: 6px;
-    gap: 3px;
-  }
-
-  .laptop-badge-lp {
-    font-size: 0.625rem;
-    padding: 1px 5px;
-  }
-
-  .laptop-badge-custom {
-    font-size: 0.5625rem;
-    padding: 1px 4px;
-    max-width: 90px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .laptop-badge-top-right {
-    top: 6px;
-    right: 6px;
-  }
-
-  .laptop-badge-top-right .badge {
-    font-size: 0.59375rem;
-    padding: 2px 5px;
-  }
-
-  .laptop-card-body {
-    padding: 10px 8px;
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .laptop-card-brand {
-    font-size: 0.65625rem;
-    margin-bottom: 2px;
-  }
-
-  .laptop-card-title {
-    font-size: 0.78125rem;
-    font-weight: 700;
-    line-height: 1.25;
-    min-height: 2.5em;
-    max-height: 2.5em;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    margin-bottom: 6px;
-    letter-spacing: -0.01em;
-  }
-
-  .laptop-spec-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
-    margin-bottom: 6px;
-  }
-
-  .laptop-spec-chip {
-    font-size: 0.65625rem;
-    font-weight: 600;
-    padding: 1px 5px;
-    border-radius: var(--radius-xs);
-  }
-
-  .laptop-warranty-notice {
-    font-size: 0.65625rem;
-    gap: 3px;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .laptop-warranty-notice svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  .laptop-review-flag {
-    font-size: 0.59375rem;
-    padding: 2px 4px;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .laptop-card-price-row {
-    margin-top: auto;
-    padding-top: 6px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-
-  .laptop-price-value {
-    font-size: 1.03125rem;
-    font-weight: 900;
-  }
-
-  .laptop-price-note {
-    display: none; /* Hide to maintain clean price row */
-  }
-
-  .laptop-stock-qty {
-    font-size: 0.65625rem;
-    font-weight: 700;
-  }
-
-  .laptop-card-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-  }
-
-  .card-btn-details,
-  .card-btn-buy {
-    padding: 6px 3px !important;
-    font-size: 0.6875rem !important;
-    gap: 2px;
-    white-space: nowrap;
-  }
-
-  .card-btn-buy svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  .laptop-card-compare-checkbox {
-    display: none; /* Compact mobile cards suppress compare toggle to prevent height clipping */
+    gap: 20px !important;
   }
 }
 
 /* --------------------------------------------------------------------------
-   5. SMALL MOBILE PHONES (<= 480px)
+   5. MOBILE PHONES (350px to 579px)
+   Covers standard smartphones: 360px, 375px, 390px, 430px
+   Single-column spacious design: full-width cards, large readable fonts (18px title, 24px price, 16px buttons), zero cramping
    -------------------------------------------------------------------------- */
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 1.75rem;
-    line-height: 1.2;
+@media (max-width: 579px) {
+  .laptops-grid {
+    grid-template-columns: 1fr !important;
+    gap: 22px !important;
   }
 
-  .hero-desc {
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    margin-bottom: 24px;
+  .laptop-card {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .laptop-card-image-wrap {
+    height: 190px;
+    padding: 16px;
+  }
+
+  .laptop-card-img {
+    max-height: 150px;
+  }
+
+  .laptop-card-body {
+    padding: 22px 20px;
+  }
+
+  .laptop-card-title {
+    font-size: var(--fs-card-title);
+    min-height: auto;
+    margin-bottom: 12px;
+  }
+
+  .laptop-spec-chips {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .laptop-spec-chip {
+    padding: 4px 10px;
+    font-size: var(--fs-badge);
+  }
+
+  .laptop-card-price-row {
+    padding-top: 14px;
+    margin-bottom: 16px;
+  }
+
+  .laptop-price-value {
+    font-size: var(--fs-price);
+  }
+
+  .laptop-card-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .laptop-card-actions .btn {
+    min-height: 46px;
+    font-size: var(--fs-btn);
   }
 
   .hero-cta-group {
     flex-direction: column;
     width: 100%;
-    gap: 12px;
+    gap: 14px;
   }
 
   .hero-cta-group .btn {
     width: 100%;
-    min-height: 44px;
+    min-height: 48px;
   }
 
-  .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    padding-top: 20px;
-  }
-
-  .hero-stat-num {
-    font-size: 1.5rem;
-  }
-
-  /* Catalog Search & Sort Controls */
   .catalog-toolbar {
-    padding: 12px 14px;
+    padding: 16px 18px;
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 14px;
   }
 
   .catalog-search-wrap {
@@ -505,123 +395,101 @@
   .catalog-toolbar-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
   }
 
   .mobile-filter-toggle-btn {
     flex: 1;
-    min-height: 40px;
+    min-height: 46px;
   }
 
   .catalog-sort-select {
-    flex: 1.6;
-    min-height: 40px;
+    flex: 1.5;
+    min-height: 46px;
   }
 
-  /* Product Details Layout */
   .detail-price-box {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 14px;
   }
 
   .detail-price-big {
-    font-size: 1.875rem;
+    font-size: 2.125rem;
   }
 
-  .specs-table th {
-    width: 45%;
-    font-size: 0.8125rem;
-  }
-
-  .specs-table td {
-    font-size: 0.8125rem;
-  }
-
-  /* Gallery Grid on Mobile */
   .gallery-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 20px;
   }
 }
 
 /* --------------------------------------------------------------------------
    6. NARROW MOBILE DEVICES (<= 349px, e.g. 320px)
-   Mandatory 1-Column Grid for optimal legibility & comfortable touch targets
+   Full readability & comfortable touch targets
    -------------------------------------------------------------------------- */
 @media (max-width: 349px) {
+  :root {
+    --fs-hero: 1.875rem;           /* 30px */
+    --fs-section: 1.5625rem;       /* 25px */
+    --fs-card-title: 1.0625rem;    /* 17px */
+    --fs-price: 1.375rem;          /* 22px */
+    --fs-btn: 0.9375rem;           /* 15px */
+    --fs-badge: 0.8125rem;         /* 13px */
+  }
+
   .container {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 
   .hero-section {
-    padding: 36px 0 44px 0;
-  }
-
-  .hero-pill {
-    font-size: 0.71875rem;
-    padding: 4px 10px;
+    padding: 38px 0 46px 0;
   }
 
   .hero-title {
-    font-size: 1.5rem;
-    line-height: 1.22;
+    font-size: var(--fs-hero);
   }
 
-  /* Single Column on 320px */
   .laptops-grid {
     grid-template-columns: 1fr !important;
-    gap: 14px !important;
-  }
-
-  .laptop-card {
-    border-radius: var(--radius-md);
+    gap: 18px !important;
   }
 
   .laptop-card-image-wrap {
-    height: 155px;
+    height: 165px;
     padding: 12px;
   }
 
   .laptop-card-img {
-    max-height: 125px;
+    max-height: 130px;
   }
 
   .laptop-card-body {
-    padding: 14px 12px;
-  }
-
-  .laptop-card-title {
-    font-size: 0.9375rem;
-    min-height: auto;
-    max-height: none;
-    -webkit-line-clamp: 2;
+    padding: 16px 14px;
   }
 
   .laptop-card-actions {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
-  .card-btn-details,
-  .card-btn-buy {
-    min-height: 38px;
-    font-size: 0.78125rem !important;
+  .laptop-card-actions .btn {
+    min-height: 42px;
   }
 
   .filter-sidebar {
-    width: 285px;
+    width: 290px;
   }
 
   .mobile-bottom-bar-inner {
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    gap: 8px;
   }
 
   .mobile-bar-btn {
-    padding: 8px 6px;
-    font-size: 0.75rem;
+    padding: 9px 8px;
+    font-size: 0.875rem;
   }
 }

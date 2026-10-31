@@ -165,32 +165,39 @@ const BUSINESS_CONFIG = {
     logo: "assets/images/logo.svg",
     shopPhotos: [
       {
-        id: "shop-front",
-        title: "Mehnajpur Showroom Front",
+        id: "storefront-main",
+        title: "E-Gadget World Showroom Front",
         category: "Showroom",
-        caption: "E-Gadget World Mehnajpur Showroom entrance near Mehnajpur Thana",
-        url: "assets/images/shop/shop-front.svg"
+        caption: "Official E-Gadget World storefront and Indian Bank Customer Service Centre signboard near Mehnajpur Thana",
+        url: "assets/images/shop/storefront-main.jpg"
       },
       {
-        id: "laptop-display",
-        title: "Laptop Display Section",
+        id: "showroom-display",
+        title: "Commercial Laptop Display Counters",
         category: "Showroom",
-        caption: "Neatly organized Dell, HP, and Lenovo refurbished laptops on display",
-        url: "assets/images/shop/shop-display.svg"
+        caption: "L-shaped showroom counters and illuminated wall shelves featuring Dell, HP & Lenovo commercial laptops",
+        url: "assets/images/shop/showroom-display.jpg"
       },
       {
-        id: "service-bench",
-        title: "Diagnostic & Repair Bench",
+        id: "showroom-interior",
+        title: "Showroom Interior & Chandelier",
+        category: "Showroom",
+        caption: "Premium wooden ceiling with chandelier, LED lighting, and customer demo counter at Mehnajpur branch",
+        url: "assets/images/shop/showroom-interior.jpg"
+      },
+      {
+        id: "reception-desk",
+        title: "Customer Reception & Service Desk",
         category: "Service Center",
-        caption: "Specialized workstation for laptop motherboard diagnostic and repair",
-        url: "assets/images/shop/shop-service.svg"
+        caption: "Customer reception counter, digital diagnostic station, and wood-slat illuminated feature wall",
+        url: "assets/images/shop/reception-desk.jpg"
       },
       {
-        id: "csc-counter",
-        title: "CSC Digital Service Desk",
+        id: "storefront-entrance",
+        title: "Showroom Glass Facade & Entrance",
         category: "Digital Desk",
-        caption: "Dedicated desk for customer digital applications and assistance",
-        url: "assets/images/shop/shop-desk.svg"
+        caption: "Storefront entrance with glass facade, safety shutter, and customer information desk",
+        url: "assets/images/shop/storefront-entrance.jpg"
       }
     ]
   }

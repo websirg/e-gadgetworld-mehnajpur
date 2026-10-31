@@ -1,6 +1,7 @@
 /**
  * E-Gadget World — Laptop Comparison Service
  * Allows comparing up to 3 laptops side-by-side
+ * Strictly Public Enquiry-Based (Zero Public Stock Exposure)
  */
 
 const CompareService = {
@@ -157,9 +158,9 @@ const CompareService = {
               <th>Feature</th>
               ${laptops.map(l => `
                 <th>
-                  <div style="font-size: 0.75rem; color: var(--color-primary); font-weight: 700;">LP #${l.lpNumber}</div>
-                  <div style="font-size: 1rem; font-weight: 800; margin-bottom: 4px;">${l.brand} ${l.model}</div>
-                  <div style="font-size: 1.125rem; font-weight: 900; color: var(--text-primary);">${LaptopService.formatINR(l.price)}</div>
+                  <div style="font-size: 0.8125rem; color: var(--color-primary); font-weight: 700;">LP #${l.lpNumber}</div>
+                  <div style="font-size: 1.0625rem; font-weight: 800; margin-bottom: 4px;">${l.brand} ${l.model}</div>
+                  <div style="font-size: 1.25rem; font-weight: 900; color: var(--text-primary);">${LaptopService.formatINR(l.price)}</div>
                 </th>
               `).join('')}
             </tr>
@@ -183,28 +184,21 @@ const CompareService = {
             </tr>
             <tr>
               <td>Price</td>
-              ${laptops.map(l => `<td><strong>${LaptopService.formatINR(l.price)}</strong></td>`).join('')}
+              ${laptops.map(l => `<td><strong style="color: var(--color-primary);">${LaptopService.formatINR(l.price)}</strong></td>`).join('')}
             </tr>
             <tr>
               <td>Store Warranty</td>
               ${laptops.map(l => `<td>${LaptopService.getWarrantyLabel(l)}</td>`).join('')}
             </tr>
             <tr>
-              <td>Availability</td>
-              ${laptops.map(l => {
-                const s = LaptopService.getStockStatus(l.quantity);
-                return `<td><span class="badge ${s.badgeClass}">${s.label} (${l.quantity} left)</span></td>`;
-              }).join('')}
+              <td>Quality Status</td>
+              ${laptops.map(l => `<td><span class="badge" style="background-color: #ECFDF5; color: #047857; border: 1px solid #A7F3D0;">100% Verified</span></td>`).join('')}
             </tr>
             <tr>
               <td>Action</td>
               ${laptops.map(l => {
-                const s = LaptopService.getStockStatus(l.quantity);
-                const waUrl = LaptopService.generateWhatsAppBuyUrl(l);
-                if (s.canBuy) {
-                  return `<td><a href="${waUrl}" target="_blank" class="btn btn-whatsapp btn-sm">Buy on WhatsApp</a></td>`;
-                }
-                return `<td><button class="btn btn-disabled btn-sm" disabled>Out of Stock</button></td>`;
+                const waUrl = LaptopService.generateWhatsAppEnquiryUrl(l);
+                return `<td><a href="${waUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm">Enquire on WhatsApp</a></td>`;
               }).join('')}
             </tr>
           </tbody>
@@ -218,10 +212,9 @@ const CompareService = {
 
   closeModal() {
     const modal = document.getElementById('compareModal');
-    if (modal) {
-      modal.classList.remove('is-open');
-      document.body.style.overflow = '';
-    }
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
   }
 };
 

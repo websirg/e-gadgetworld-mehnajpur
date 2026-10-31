@@ -1,6 +1,7 @@
 /**
  * E-Gadget World — Product Details View Handler
  * Mehnajpur Branch, Azamgarh
+ * Strictly Public Enquiry-Based (Zero Public Stock Exposure)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,7 +26,7 @@ function initProductDetailsPage() {
 
   const laptop = LaptopService.getById(lpParam);
   if (!laptop) {
-    renderNotFound(container, `Laptop with LP #${lpParam} was not found in our current Mehnajpur inventory.`);
+    renderNotFound(container, `Laptop with LP #${lpParam} was not found in our Mehnajpur catalog.`);
     return;
   }
 
@@ -45,7 +46,7 @@ function renderNotFound(container, message) {
       </div>
       <h2 class="catalog-empty-title">Product Not Found</h2>
       <p class="catalog-empty-desc">${message}</p>
-      <a href="laptops.html" class="btn btn-primary">Browse All 24 Available Laptops</a>
+      <a href="laptops.html" class="btn btn-primary">Browse All 24 Commercial Laptops</a>
     </div>
   `;
 }
@@ -54,34 +55,14 @@ function renderProductDetails(container, laptop) {
   // Update document title for SEO
   document.title = `${laptop.brand} ${laptop.model} (LP #${laptop.lpNumber}) | E-Gadget World Mehnajpur`;
 
-  const stock = LaptopService.getStockStatus(laptop.quantity);
   const formattedPrice = LaptopService.formatINR(laptop.price);
   const warrantyLabel = LaptopService.getWarrantyLabel(laptop);
-  const waBuyUrl = LaptopService.generateWhatsAppBuyUrl(laptop);
+  const waEnquiryUrl = LaptopService.generateWhatsAppEnquiryUrl(laptop);
   const mainImg = (laptop.images && laptop.images.length > 0) ? laptop.images[0] : 'assets/images/laptops/dell-latitude.svg';
-
-  // Buy on WhatsApp CTA logic
-  let buyButtonHtml = '';
-  if (stock.canBuy) {
-    buyButtonHtml = `
-      <a href="${waBuyUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg btn-full" title="Buy via WhatsApp">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/>
-        </svg>
-        Buy on WhatsApp
-      </a>
-    `;
-  } else {
-    buyButtonHtml = `
-      <button class="btn btn-disabled btn-lg btn-full" disabled>
-        Currently Unavailable (Out of Stock)
-      </button>
-    `;
-  }
 
   container.innerHTML = `
     <!-- Breadcrumb -->
-    <nav class="breadcrumb" style="margin-bottom: 24px; font-size: 0.875rem; color: var(--text-muted);">
+    <nav class="breadcrumb" style="margin-bottom: 24px; font-size: 0.9375rem; color: var(--text-muted);">
       <a href="index.html">Home</a> &gt; 
       <a href="laptops.html">Laptops</a> &gt; 
       <span style="color: var(--text-primary); font-weight: 600;">${laptop.brand} ${laptop.model} (LP #${laptop.lpNumber})</span>
@@ -92,13 +73,13 @@ function renderProductDetails(container, laptop) {
       <div class="detail-gallery-box">
         <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
           <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
-          <span class="badge ${stock.badgeClass}">${stock.label}</span>
+          <span class="badge badge-brand">Commercial Grade</span>
         </div>
 
         <img src="${mainImg}" alt="${laptop.brand} ${laptop.model}" class="detail-main-img" id="detailMainImage">
         
-        <p style="margin-top: 20px; font-size: 0.8125rem; color: var(--text-muted);">
-          Refurbished &amp; Multi-Point Inspected Unit at Mehnajpur Branch
+        <p style="margin-top: 20px; font-size: 0.875rem; color: var(--text-muted); text-align: center;">
+          Refurbished &amp; Multi-Point Inspected Unit • Mehnajpur Showroom
         </p>
       </div>
 
@@ -107,12 +88,12 @@ function renderProductDetails(container, laptop) {
         <div class="detail-badge-row">
           <span class="badge badge-brand">${laptop.brand}</span>
           ${laptop.badge ? `<span class="laptop-badge-custom">${laptop.badge}</span>` : ''}
-          <span class="badge ${stock.badgeClass}">${stock.qtyLabel}</span>
+          <span class="badge" style="background-color: #ECFDF5; color: #047857; border: 1px solid #A7F3D0;">100% Verified</span>
         </div>
 
         <h1 class="detail-title">${laptop.brand} ${laptop.model}</h1>
         
-        <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
+        <p style="color: var(--text-secondary); font-size: 1.0625rem; line-height: 1.6; margin-bottom: 24px;">
           ${laptop.description}
         </p>
 
@@ -121,11 +102,11 @@ function renderProductDetails(container, laptop) {
           <div>
             <div style="font-size: 0.8125rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Actual Store Price</div>
             <div class="detail-price-big">${formattedPrice}</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Taxes Included • No Hidden Fees</div>
+            <div style="font-size: 0.8125rem; color: var(--text-muted);">Taxes Included • No Hidden Fees</div>
           </div>
           <div>
-            <div class="badge ${stock.badgeClass}" style="font-size: 0.875rem; padding: 6px 14px;">
-              ${stock.label} (${laptop.quantity} in stock)
+            <div class="badge badge-brand" style="font-size: 0.875rem; padding: 8px 16px;">
+              Ready for Showroom Demo
             </div>
           </div>
         </div>
@@ -139,21 +120,26 @@ function renderProductDetails(container, laptop) {
         </div>
 
         ${laptop.reviewFlag ? `
-          <div class="laptop-review-flag" style="margin-bottom: 24px; padding: 10px 14px; font-size: 0.84375rem;">
+          <div class="laptop-review-flag" style="margin-bottom: 24px; padding: 12px 16px; font-size: 0.875rem;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="flex-shrink: 0;">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
               <line x1="12" y1="9" x2="12" y2="13"></line>
               <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
             <div>
-              <strong>Physical Verification Flag:</strong> ${laptop.reviewFlag}.
+              <strong>Physical Verification Note:</strong> ${laptop.reviewFlag}.
             </div>
           </div>
         ` : ''}
 
         <!-- Actions -->
         <div class="detail-cta-box">
-          ${buyButtonHtml}
+          <a href="${waEnquiryUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg btn-full" title="Enquire on WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/>
+            </svg>
+            Enquire on WhatsApp
+          </a>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <a href="tel:+919984359860" class="btn btn-outline">
@@ -207,12 +193,12 @@ function renderProductDetails(container, laptop) {
                 <td>${laptop.storage}</td>
               </tr>
               <tr>
-                <th>Current Stock</th>
-                <td>${laptop.quantity} pieces available</td>
-              </tr>
-              <tr>
                 <th>Condition</th>
                 <td>${laptop.condition}</td>
+              </tr>
+              <tr>
+                <th>Warranty</th>
+                <td>${warrantyLabel}</td>
               </tr>
               <tr>
                 <th>Store Location</th>

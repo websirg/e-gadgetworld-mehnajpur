@@ -1,6 +1,7 @@
 /**
  * E-Gadget World — Catalog Filter, Search & Rendering Engine
  * Mehnajpur Branch, Azamgarh
+ * Strictly Public Enquiry-Based (Zero Public Stock Exposure)
  */
 
 class LaptopCatalog {
@@ -30,7 +31,6 @@ class LaptopCatalog {
       storageTypes: [],
       minPrice: null,
       maxPrice: null,
-      inStockOnly: false,
       sortBy: 'featured'
     };
 
@@ -69,15 +69,6 @@ class LaptopCatalog {
         this.applyFiltersAndRender();
       });
     });
-
-    // In Stock Only Toggle
-    const inStockToggle = document.getElementById('filterInStockOnly');
-    if (inStockToggle) {
-      inStockToggle.addEventListener('change', (e) => {
-        this.filters.inStockOnly = e.target.checked;
-        this.applyFiltersAndRender();
-      });
-    }
 
     // Price Inputs
     const minPriceInput = document.getElementById('filterMinPrice');
@@ -151,7 +142,6 @@ class LaptopCatalog {
       storageTypes: [],
       minPrice: null,
       maxPrice: null,
-      inStockOnly: false,
       sortBy: 'featured'
     };
 
@@ -159,9 +149,6 @@ class LaptopCatalog {
     if (this.sortSelect) this.sortSelect.value = 'featured';
     
     document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
-    
-    const inStockToggle = document.getElementById('filterInStockOnly');
-    if (inStockToggle) inStockToggle.checked = false;
 
     const minPriceInput = document.getElementById('filterMinPrice');
     const maxPriceInput = document.getElementById('filterMaxPrice');
@@ -185,19 +172,19 @@ class LaptopCatalog {
 
     if (brand) {
       this.filters.brands = [brand];
-      const targetCb = document.querySelector(`input[name="filterBrand"][value="${brand}"]`);
-      if (targetCb) targetCb.checked = true;
+      const cb = document.querySelector(`input[name="filterBrand"][value="${brand}"]`);
+      if (cb) cb.checked = true;
     }
 
     if (processor) {
       this.filters.processors = [processor];
-      const targetCb = document.querySelector(`input[name="filterProcessor"][value="${processor}"]`);
-      if (targetCb) targetCb.checked = true;
+      const cb = document.querySelector(`input[name="filterProcessor"][value="${processor}"]`);
+      if (cb) cb.checked = true;
     }
 
-    if (sort && this.sortSelect) {
+    if (sort) {
       this.filters.sortBy = sort;
-      this.sortSelect.value = sort;
+      if (this.sortSelect) this.sortSelect.value = sort;
     }
   }
 
@@ -205,9 +192,11 @@ class LaptopCatalog {
     const params = new URLSearchParams();
     if (this.filters.search) params.set('search', this.filters.search);
     if (this.filters.brands.length === 1) params.set('brand', this.filters.brands[0]);
+    if (this.filters.processors.length === 1) params.set('processor', this.filters.processors[0]);
     if (this.filters.sortBy && this.filters.sortBy !== 'featured') params.set('sort', this.filters.sortBy);
 
-    const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+    const queryString = params.toString();
+    const newUrl = window.location.pathname + (queryString ? `?${queryString}` : '');
     window.history.replaceState({}, '', newUrl);
   }
 
@@ -268,11 +257,6 @@ class LaptopCatalog {
         return false;
       }
 
-      // 8. In Stock Only
-      if (this.filters.inStockOnly && laptop.quantity <= 0) {
-        return false;
-      }
-
       return true;
     });
 
@@ -313,11 +297,11 @@ class LaptopCatalog {
   render() {
     // Update count display
     if (this.countEl) {
-      this.countEl.innerHTML = `Showing <strong>${this.filteredLaptops.length}</strong> of <strong>${this.laptops.length}</strong> laptops`;
+      this.countEl.innerHTML = `Showing <strong>${this.filteredLaptops.length}</strong> of <strong>${this.laptops.length}</strong> Commercial Models`;
     }
 
     if (this.mobileFilterApplyBtn) {
-      this.mobileFilterApplyBtn.textContent = `Show ${this.filteredLaptops.length} Laptops`;
+      this.mobileFilterApplyBtn.textContent = `Show ${this.filteredLaptops.length} Models`;
     }
 
     if (this.filteredLaptops.length === 0) {
