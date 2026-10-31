@@ -229,11 +229,11 @@
             <div class="hero-visual-img-wrap">
               <img src="assets/images/laptops/dell-vostro.svg" alt="Dell Vostro 3490 LP 7298" style="max-height: 190px; margin: 0 auto;">
             </div>
-            <div style="font-size: 0.8125rem; color: #38BDF8; font-weight: 700; margin-bottom: 4px;">DELL VOSTRO 3490 (LP #7298)</div>
-            <div style="font-size: 1.125rem; font-weight: 800; color: #FFFFFF; margin-bottom: 12px;">10th Gen Intel Core i5 • 8GB RAM • 256GB SSD</div>
+            <div class="hero-spotlight-model">DELL VOSTRO 3490 (LP #7298)</div>
+            <div class="hero-spotlight-title">10th Gen Intel Core i5 • 8GB RAM • 256GB SSD</div>
             <div class="hero-visual-footer">
               <div>
-                <div style="font-size: 0.75rem; color: #94A3B8;">Actual Price</div>
+                <div class="hero-spotlight-price-label">Actual Price</div>
                 <div class="hero-spotlight-price">₹26,500</div>
               </div>
               <a href="laptop-details.html?lp=7298" class="btn btn-primary btn-sm">View Details</a>
@@ -997,60 +997,11 @@
     // Quick Home Page Featured Laptop Populator
     document.addEventListener('DOMContentLoaded', () => {
       const grid = document.getElementById('homepageFeaturedGrid');
-      if (!grid || typeof PRODUCT_INVENTORY === 'undefined') return;
+      if (!grid || typeof PRODUCT_INVENTORY === 'undefined' || typeof LaptopService === 'undefined') return;
 
       // Select top 6 featured laptops from inventory
       const featured = PRODUCT_INVENTORY.filter(p => p.featured).slice(0, 6);
-
-      grid.innerHTML = featured.map(laptop => {
-        const stock = LaptopService.getStockStatus(laptop.quantity);
-        const formattedPrice = LaptopService.formatINR(laptop.price);
-        const warranty = LaptopService.getWarrantyLabel(laptop);
-        const waBuyUrl = LaptopService.generateWhatsAppBuyUrl(laptop);
-        const detailUrl = `laptop-details.html?lp=${laptop.lpNumber}`;
-        const mainImg = laptop.images[0] || 'assets/images/laptops/dell-latitude.svg';
-
-        return `
-          <article class="laptop-card">
-            <div class="laptop-card-image-wrap">
-              <div class="laptop-badge-top-left">
-                <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
-                ${laptop.badge ? `<span class="laptop-badge-custom">${laptop.badge}</span>` : ''}
-              </div>
-              <div class="laptop-badge-top-right">
-                <span class="badge ${stock.badgeClass}">${stock.label}</span>
-              </div>
-              <a href="${detailUrl}">
-                <img src="${mainImg}" alt="${laptop.brand} ${laptop.model}" class="laptop-card-img" loading="lazy">
-              </a>
-            </div>
-            <div class="laptop-card-body">
-              <div class="laptop-card-brand">${laptop.brand}</div>
-              <h3 class="laptop-card-title"><a href="${detailUrl}">${laptop.brand} ${laptop.model}</a></h3>
-              <div class="laptop-spec-chips">
-                <span class="laptop-spec-chip highlight">${laptop.processor}</span>
-                <span class="laptop-spec-chip">${laptop.generation}</span>
-                <span class="laptop-spec-chip">${laptop.ram}</span>
-                <span class="laptop-spec-chip">${laptop.storage}</span>
-              </div>
-              <div class="laptop-warranty-notice">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg>
-                <span>${warranty}</span>
-              </div>
-              <div class="laptop-card-price-row">
-                <div class="laptop-price-value">${formattedPrice}</div>
-                <div class="badge ${stock.badgeClass}">${stock.qtyLabel}</div>
-              </div>
-              <div class="laptop-card-actions">
-                <a href="${detailUrl}" class="btn btn-outline btn-sm">View Details</a>
-                <a href="${waBuyUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm">Buy</a>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
+      grid.innerHTML = featured.map(laptop => LaptopService.createCardHtml(laptop, { showCompare: false })).join('');
     });
 
     function handleHomeRepairSubmit(e) {

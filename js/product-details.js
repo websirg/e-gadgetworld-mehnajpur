@@ -239,42 +239,5 @@ function renderRelatedLaptops(currentLaptop) {
   }
 
   related = related.slice(0, 3);
-
-  relatedContainer.innerHTML = related.map(laptop => {
-    const stock = LaptopService.getStockStatus(laptop.quantity);
-    const formattedPrice = LaptopService.formatINR(laptop.price);
-    const detailUrl = `laptop-details.html?lp=${laptop.lpNumber}`;
-    const mainImg = (laptop.images && laptop.images.length > 0) ? laptop.images[0] : 'assets/images/laptops/dell-latitude.svg';
-
-    return `
-      <article class="laptop-card">
-        <div class="laptop-card-image-wrap">
-          <div class="laptop-badge-top-left">
-            <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
-          </div>
-          <div class="laptop-badge-top-right">
-            <span class="badge ${stock.badgeClass}">${stock.label}</span>
-          </div>
-          <a href="${detailUrl}">
-            <img src="${mainImg}" alt="${laptop.brand} ${laptop.model}" class="laptop-card-img" loading="lazy">
-          </a>
-        </div>
-        <div class="laptop-card-body">
-          <div class="laptop-card-brand">${laptop.brand}</div>
-          <h3 class="laptop-card-title"><a href="${detailUrl}">${laptop.brand} ${laptop.model}</a></h3>
-          <div class="laptop-spec-chips">
-            <span class="laptop-spec-chip highlight">${laptop.processor}</span>
-            <span class="laptop-spec-chip">${laptop.generation}</span>
-            <span class="laptop-spec-chip">${laptop.ram}</span>
-            <span class="laptop-spec-chip">${laptop.storage}</span>
-          </div>
-          <div class="laptop-card-price-row">
-            <div class="laptop-price-value">${formattedPrice}</div>
-            <div class="badge ${stock.badgeClass}">${stock.qtyLabel}</div>
-          </div>
-          <a href="${detailUrl}" class="btn btn-outline btn-sm btn-full" style="margin-top: 10px;">View Laptop</a>
-        </div>
-      </article>
-    `;
-  }).join('');
+  relatedContainer.innerHTML = related.map(laptop => LaptopService.createCardHtml(laptop, { showCompare: false })).join('');
 }

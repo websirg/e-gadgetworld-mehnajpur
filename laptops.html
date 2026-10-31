@@ -122,6 +122,9 @@
       <!-- Main Catalog Layout -->
       <div class="catalog-layout">
         
+        <!-- Filter Backdrop for Mobile Drawer -->
+        <div id="filterBackdrop" class="filter-backdrop"></div>
+
         <!-- Filter Sidebar -->
         <aside class="filter-sidebar" id="filterSidebar">
           <div class="filter-sidebar-header">
@@ -133,7 +136,7 @@
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <button class="btn-clear-filters" id="btnClearFilters">Reset All</button>
-              <button class="btn-outline btn-sm" id="btnMobileFilterClose" style="display: none; padding: 4px 8px;">&times;</button>
+              <button class="btn-filter-close" id="btnMobileFilterClose" aria-label="Close filters">&times;</button>
             </div>
           </div>
 
@@ -260,6 +263,11 @@
               <span style="color: var(--text-muted);">-</span>
               <input type="number" id="filterMaxPrice" class="price-input" placeholder="Max ₹" min="10000" max="32000" step="1000">
             </div>
+          </div>
+
+          <!-- Mobile Drawer Action Footer -->
+          <div class="filter-sidebar-mobile-footer">
+            <button class="btn btn-primary btn-full" id="btnMobileFilterApply">Apply Filters</button>
           </div>
         </aside>
 

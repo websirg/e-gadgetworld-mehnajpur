@@ -15,8 +15,10 @@ class LaptopCatalog {
     this.countEl = document.getElementById('catalogCountInfo');
     this.clearBtn = document.getElementById('btnClearFilters');
     this.filterSidebar = document.getElementById('filterSidebar');
+    this.filterBackdrop = document.getElementById('filterBackdrop');
     this.mobileFilterToggleBtn = document.getElementById('btnMobileFilterToggle');
     this.mobileFilterCloseBtn = document.getElementById('btnMobileFilterClose');
+    this.mobileFilterApplyBtn = document.getElementById('btnMobileFilterApply');
 
     // Filter state
     this.filters = {
@@ -99,18 +101,35 @@ class LaptopCatalog {
     }
 
     // Mobile Filter Drawer Toggle
-    if (this.mobileFilterToggleBtn && this.filterSidebar) {
-      this.mobileFilterToggleBtn.addEventListener('click', () => {
-        this.filterSidebar.classList.add('is-open');
-        document.body.style.overflow = 'hidden';
+    const openDrawer = () => {
+      if (this.filterSidebar) this.filterSidebar.classList.add('is-open');
+      if (this.filterBackdrop) this.filterBackdrop.classList.add('is-active');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeDrawer = () => {
+      if (this.filterSidebar) this.filterSidebar.classList.remove('is-open');
+      if (this.filterBackdrop) this.filterBackdrop.classList.remove('is-active');
+      document.body.style.overflow = '';
+    };
+
+    if (this.mobileFilterToggleBtn) {
+      this.mobileFilterToggleBtn.addEventListener('click', openDrawer);
+    }
+
+    if (this.mobileFilterCloseBtn) {
+      this.mobileFilterCloseBtn.addEventListener('click', closeDrawer);
+    }
+
+    if (this.mobileFilterApplyBtn) {
+      this.mobileFilterApplyBtn.addEventListener('click', () => {
+        closeDrawer();
+        window.scrollTo({ top: document.querySelector('.catalog-content')?.offsetTop - 80 || 0, behavior: 'smooth' });
       });
     }
 
-    if (this.mobileFilterCloseBtn && this.filterSidebar) {
-      this.mobileFilterCloseBtn.addEventListener('click', () => {
-        this.filterSidebar.classList.remove('is-open');
-        document.body.style.overflow = '';
-      });
+    if (this.filterBackdrop) {
+      this.filterBackdrop.addEventListener('click', closeDrawer);
     }
   }
 
@@ -297,6 +316,10 @@ class LaptopCatalog {
       this.countEl.innerHTML = `Showing <strong>${this.filteredLaptops.length}</strong> of <strong>${this.laptops.length}</strong> laptops`;
     }
 
+    if (this.mobileFilterApplyBtn) {
+      this.mobileFilterApplyBtn.textContent = `Show ${this.filteredLaptops.length} Laptops`;
+    }
+
     if (this.filteredLaptops.length === 0) {
       this.gridEl.innerHTML = `
         <div class="catalog-empty-state" style="grid-column: 1 / -1;">
@@ -324,98 +347,10 @@ class LaptopCatalog {
   }
 
   createLaptopCardHtml(laptop) {
-    const stock = LaptopService.getStockStatus(laptop.quantity);
-    const formattedPrice = LaptopService.formatINR(laptop.price);
-    const warrantyLabel = LaptopService.getWarrantyLabel(laptop);
-    const waBuyUrl = LaptopService.generateWhatsAppBuyUrl(laptop);
-    const detailUrl = `laptop-details.html?lp=${laptop.lpNumber}`;
-    const mainImg = (laptop.images && laptop.images.length > 0) ? laptop.images[0] : 'assets/images/laptops/dell-latitude.svg';
-
-    // WhatsApp button state
-    let waButtonHtml = '';
-    if (stock.canBuy) {
-      waButtonHtml = `
-        <a href="${waBuyUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm" title="Buy ${laptop.brand} ${laptop.model} via WhatsApp">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/>
-          </svg>
-          Buy
-        </a>
-      `;
-    } else {
-      waButtonHtml = `
-        <button class="btn btn-disabled btn-sm" disabled title="Currently Unavailable">
-          Out of Stock
-        </button>
-      `;
+    if (typeof LaptopService !== 'undefined' && LaptopService.createCardHtml) {
+      return LaptopService.createCardHtml(laptop, { showCompare: true });
     }
-
-    return `
-      <article class="laptop-card" data-lp="${laptop.lpNumber}">
-        <div class="laptop-card-image-wrap">
-          <div class="laptop-badge-top-left">
-            <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
-            ${laptop.badge ? `<span class="laptop-badge-custom">${laptop.badge}</span>` : ''}
-          </div>
-          <div class="laptop-badge-top-right">
-            <span class="badge ${stock.badgeClass}">${stock.label}</span>
-          </div>
-          <a href="${detailUrl}">
-            <img src="${mainImg}" alt="${laptop.brand} ${laptop.model} LP #${laptop.lpNumber}" class="laptop-card-img" loading="lazy">
-          </a>
-        </div>
-
-        <div class="laptop-card-body">
-          <div class="laptop-card-brand">${laptop.brand}</div>
-          <h3 class="laptop-card-title">
-            <a href="${detailUrl}">${laptop.brand} ${laptop.model}</a>
-          </h3>
-
-          <div class="laptop-spec-chips">
-            <span class="laptop-spec-chip highlight">${laptop.processor}</span>
-            <span class="laptop-spec-chip">${laptop.generation}</span>
-            <span class="laptop-spec-chip">${laptop.ram} RAM</span>
-            <span class="laptop-spec-chip">${laptop.storage}</span>
-          </div>
-
-          <div class="laptop-warranty-notice">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            <span>${warrantyLabel}</span>
-          </div>
-
-          ${laptop.reviewFlag ? `
-            <div class="laptop-review-flag" title="${laptop.reviewFlag}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              <span>Physical tag verification noted</span>
-            </div>
-          ` : ''}
-
-          <div class="laptop-card-price-row">
-            <div>
-              <div class="laptop-price-value">${formattedPrice}</div>
-              <div class="laptop-price-note">All taxes included • Tested</div>
-            </div>
-            <div class="badge ${stock.badgeClass}">${stock.qtyLabel}</div>
-          </div>
-
-          <div class="laptop-card-actions">
-            <a href="${detailUrl}" class="btn btn-outline btn-sm">View Details</a>
-            ${waButtonHtml}
-          </div>
-
-          <label class="laptop-card-compare-checkbox">
-            <input type="checkbox" data-compare-lp="${laptop.lpNumber}" onchange="CompareService?.toggleCompare('${laptop.lpNumber}', this.checked)">
-            <span>Add to Compare</span>
-          </label>
-        </div>
-      </article>
-    `;
+    return '';
   }
 }
 

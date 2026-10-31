@@ -38,22 +38,36 @@ function initMobileNav() {
   const mobileDrawer = document.querySelector('.mobile-nav-drawer');
   if (!hamburgerBtn || !mobileDrawer) return;
 
-  const toggleNav = () => {
-    const isOpen = hamburgerBtn.classList.toggle('is-active');
-    mobileDrawer.classList.toggle('is-open', isOpen);
-    document.body.style.overflow = isOpen ? 'hidden' : '';
+  // Create backdrop if not existing
+  let backdrop = document.querySelector('.mobile-nav-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'mobile-nav-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const toggleNav = (forceState) => {
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : !hamburgerBtn.classList.contains('is-active');
+    hamburgerBtn.classList.toggle('is-active', shouldOpen);
+    mobileDrawer.classList.toggle('is-open', shouldOpen);
+    backdrop.classList.toggle('is-active', shouldOpen);
+    document.body.style.overflow = shouldOpen ? 'hidden' : '';
   };
 
-  hamburgerBtn.addEventListener('click', toggleNav);
+  hamburgerBtn.addEventListener('click', () => toggleNav());
+  backdrop.addEventListener('click', () => toggleNav(false));
 
   // Close when clicking nav link
   const navLinks = mobileDrawer.querySelectorAll('a');
   navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      hamburgerBtn.classList.remove('is-active');
-      mobileDrawer.classList.remove('is-open');
-      document.body.style.overflow = '';
-    });
+    link.addEventListener('click', () => toggleNav(false));
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer.classList.contains('is-open')) {
+      toggleNav(false);
+    }
   });
 }
 
