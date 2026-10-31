@@ -49,10 +49,18 @@ function initMobileNav() {
   const toggleNav = (forceState) => {
     const shouldOpen = typeof forceState === 'boolean' ? forceState : !hamburgerBtn.classList.contains('is-active');
     hamburgerBtn.classList.toggle('is-active', shouldOpen);
+    hamburgerBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
     mobileDrawer.classList.toggle('is-open', shouldOpen);
     backdrop.classList.toggle('is-active', shouldOpen);
     document.body.style.overflow = shouldOpen ? 'hidden' : '';
   };
+
+  // Close drawer if window resized to desktop viewport (> 992px)
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 992 && mobileDrawer.classList.contains('is-open')) {
+      toggleNav(false);
+    }
+  });
 
   hamburgerBtn.addEventListener('click', () => toggleNav());
   backdrop.addEventListener('click', () => toggleNav(false));

@@ -79,7 +79,61 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. TABLETS PORTRAIT & MOBILE (<= 768px)
+   3. TABLETS & BELOW (<= 992px) â€” Mobile Header Activation
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .top-bar {
+    display: none !important;
+  }
+
+  .site-header {
+    height: 72px;
+  }
+
+  .site-header .nav-menu,
+  .site-header .header-actions {
+    display: none !important;
+  }
+
+  .hamburger-btn {
+    display: flex !important;
+  }
+
+  .brand-logo-img {
+    height: 42px;
+  }
+
+  /* Mobile Nav Drawer (Slide-out Off-Canvas) */
+  .mobile-nav-drawer {
+    display: flex !important;
+    flex-direction: column;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    max-width: 380px;
+    height: calc(100vh - 72px);
+    background-color: #FFFFFF;
+    border-right: 1px solid var(--color-border);
+    box-shadow: 10px 0 35px rgba(15, 23, 42, 0.15);
+    padding: 24px 20px;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.28s;
+    z-index: var(--z-sticky);
+  }
+
+  .mobile-nav-drawer.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. TABLETS PORTRAIT & MOBILE (<= 768px)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   :root {
@@ -96,50 +150,6 @@
 
   body {
     padding-bottom: 70px; /* Space for mobile sticky bottom action bar */
-  }
-
-  /* Header Optimization */
-  .top-bar {
-    display: none; /* Keep mobile header clean & focused */
-  }
-
-  .site-header {
-    height: 72px;
-  }
-
-  .site-header .nav-menu,
-  .site-header .header-actions {
-    display: none;
-  }
-
-  .hamburger-btn {
-    display: flex;
-  }
-
-  .brand-logo-img {
-    height: 42px;
-  }
-
-  /* Mobile Nav Drawer */
-  .mobile-nav-drawer {
-    display: block;
-    position: fixed;
-    top: 72px;
-    left: 0;
-    width: 100%;
-    max-width: 100%;
-    height: calc(100vh - 72px);
-    background-color: #FFFFFF;
-    border-top: 1px solid var(--color-border);
-    padding: 24px 20px;
-    overflow-y: auto;
-    transform: translateX(-100%);
-    transition: transform var(--transition-normal);
-    z-index: var(--z-sticky);
-  }
-
-  .mobile-nav-drawer.is-open {
-    transform: translateX(0);
   }
 
   .mobile-nav-links {
