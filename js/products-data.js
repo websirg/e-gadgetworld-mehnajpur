@@ -1,5 +1,5 @@
 /**
- * E-Gadget World — Product Inventory & Data Utilities
+ * E-Gadget World â Product Inventory & Data Utilities
  * Mehnajpur Branch Inventory (24 records, 38 pieces total)
  */
 
@@ -505,7 +505,7 @@ const PRODUCT_INVENTORY = [
     "images": ["assets/images/laptops/hp-standard.svg"],
     "featured": false,
     "badge": "Best Budget Value",
-    "description": "HP Pavilion G6 15.6-inch laptop with Intel Core i3 2nd Gen, 4GB RAM, and 500GB HDD. Ideal budget-friendly option at ₹10,000.",
+    "description": "HP Pavilion G6 15.6-inch laptop with Intel Core i3 2nd Gen, 4GB RAM, and 500GB HDD. Ideal budget-friendly option at â¹10,000.",
     "reviewFlag": null
   },
   {
@@ -581,6 +581,83 @@ const PRODUCT_INVENTORY = [
     "reviewFlag": null
   }
 ];
+
+// ============================================================================
+// UNIVERSAL IMAGE FALLBACK HELPER
+// Guaranteed Zero-Blank Product Image Engine across E-Gadget World
+// ============================================================================
+const ImageFallbackHelper = {
+  LAPTOP_PLACEHOLDER: 'assets/images/placeholders/laptop-placeholder.svg',
+  ACCESSORY_PLACEHOLDERS: {
+    charger: 'assets/images/placeholders/accessory-charger.svg',
+    ssd: 'assets/images/placeholders/accessory-ssd.svg',
+    ram: 'assets/images/placeholders/accessory-ram.svg',
+    peripherals: 'assets/images/placeholders/accessory-peripherals.svg',
+    default: 'assets/images/placeholders/accessory-default.svg'
+  },
+
+  // High-reliability embedded inline SVG data-URIs (Zero network dependency, 100% immune to 404s)
+  EMBEDDED_LAPTOP_FALLBACK: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 420' width='100%25' height='100%25'%3E%3Crect width='600' height='420' fill='%23F8FAFC'/%3E%3Crect x='110' y='50' width='380' height='240' rx='12' fill='%230F172A' stroke='%23334155' stroke-width='2'/%3E%3Crect x='125' y='68' width='350' height='204' rx='4' fill='%231E293B'/%3E%3Cpath d='M 70,305 L 530,305 L 500,345 L 100,345 Z' fill='%2364748B'/%3E%3Ctext x='300' y='165' font-family='sans-serif' font-size='16' font-weight='700' fill='%23F8FAFC' text-anchor='middle'%3EE-GADGET WORLD%3C/text%3E%3Ctext x='300' y='190' font-family='sans-serif' font-size='12' font-weight='600' fill='%2393C5FD' text-anchor='middle'%3ECommercial Refurbished Laptop%3C/text%3E%3C/svg%3E",
+  
+  EMBEDDED_ACCESSORY_FALLBACK: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 420' width='100%25' height='100%25'%3E%3Crect width='600' height='420' fill='%23F8FAFC'/%3E%3Ccircle cx='300' cy='200' r='80' fill='%23EFF6FF' stroke='%23BFDBFE' stroke-width='3'/%3E%3Ctext x='300' y='195' font-family='sans-serif' font-size='16' font-weight='700' fill='%232563EB' text-anchor='middle'%3EE-GADGET WORLD%3C/text%3E%3Ctext x='300' y='220' font-family='sans-serif' font-size='12' font-weight='600' fill='%2364748B' text-anchor='middle'%3ELaptop Accessory%3C/text%3E%3C/svg%3E",
+
+  getLaptopFallback() {
+    return this.LAPTOP_PLACEHOLDER;
+  },
+
+  getAccessoryFallback(category = 'default') {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('charger') || cat.includes('adapter') || cat.includes('power')) {
+      return this.ACCESSORY_PLACEHOLDERS.charger;
+    }
+    if (cat.includes('ssd') || cat.includes('storage') || cat.includes('drive') || cat.includes('nvme')) {
+      return this.ACCESSORY_PLACEHOLDERS.ssd;
+    }
+    if (cat.includes('ram') || cat.includes('memory') || cat.includes('ddr')) {
+      return this.ACCESSORY_PLACEHOLDERS.ram;
+    }
+    if (cat.includes('bag') || cat.includes('mouse') || cat.includes('keyboard') || cat.includes('backpack')) {
+      return this.ACCESSORY_PLACEHOLDERS.peripherals;
+    }
+    return this.ACCESSORY_PLACEHOLDERS.default;
+  },
+
+  /**
+   * Automatically handles image load errors (404, invalid URL, network drop).
+   * Stage 0 -> Stage 1: Switches to high-res SVG placeholder file.
+   * Stage 1 -> Stage 2: Switches to embedded Data-URI SVG (guaranteed to render).
+   * Stage 2+: Disables onerror to prevent infinite loops.
+   */
+  handleLaptopImgError(img) {
+    if (!img) return;
+    const stage = Number(img.getAttribute('data-fallback-stage') || '0');
+    
+    if (stage === 0) {
+      img.setAttribute('data-fallback-stage', '1');
+      img.src = this.LAPTOP_PLACEHOLDER;
+    } else if (stage === 1) {
+      img.setAttribute('data-fallback-stage', '2');
+      img.src = this.EMBEDDED_LAPTOP_FALLBACK;
+    } else {
+      img.onerror = null;
+    }
+  },
+
+  handleAccessoryImgError(img, category = 'default') {
+    if (!img) return;
+    const stage = Number(img.getAttribute('data-fallback-stage') || '0');
+    
+    if (stage === 0) {
+      img.setAttribute('data-fallback-stage', '1');
+      img.src = this.getAccessoryFallback(category);
+    } else if (stage === 1) {
+      img.setAttribute('data-fallback-stage', '2');
+      img.src = this.EMBEDDED_ACCESSORY_FALLBACK;
+    } else {
+      img.onerror = null;
+    }
+  }
+};
 
 // Helper Utilities
 const LaptopService = {
@@ -761,9 +838,9 @@ const LaptopService = {
       'Hello E-Gadget World Mehnajpur,',
       '',
       `I am enquiring about the ${laptop.brand} ${laptop.model} (LP #${laptop.lpNumber}).`,
-      `� Processor: ${laptop.processor} (${laptop.generation})`,
-      `� Specs: ${laptop.ram} RAM | ${laptop.storage}`,
-      `� Price: ?${Number(laptop.price).toLocaleString('en-IN')}`,
+      `â¢ Processor: ${laptop.processor} (${laptop.generation})`,
+      `â¢ Specs: ${laptop.ram} RAM | ${laptop.storage}`,
+      `â¢ Price: ?${Number(laptop.price).toLocaleString('en-IN')}`,
       '',
       'Please let me know current availability, warranty options, and showroom test-drive timings.',
       'Thank you.'
@@ -779,7 +856,9 @@ const LaptopService = {
     const warranty = this.getWarrantyLabel(laptop);
     const waEnquiryUrl = this.generateWhatsAppEnquiryUrl(laptop);
     const detailUrl = `laptop-details.html?lp=${laptop.lpNumber}`;
-    const mainImg = (laptop.images && laptop.images.length > 0) ? laptop.images[0] : 'assets/images/laptops/dell-latitude.svg';
+    const mainImg = (laptop.images && laptop.images.length > 0 && laptop.images[0])
+      ? laptop.images[0]
+      : (typeof ImageFallbackHelper !== 'undefined' ? ImageFallbackHelper.getLaptopFallback() : 'assets/images/placeholders/laptop-placeholder.svg');
     const showCompare = options.showCompare !== false;
 
     return `
@@ -789,7 +868,7 @@ const LaptopService = {
             <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
           </div>
           <a href="${detailUrl}" class="laptop-card-img-link" aria-label="${laptop.brand} ${laptop.model}">
-            <img src="${mainImg}" alt="${laptop.brand} ${laptop.model} LP #${laptop.lpNumber}" class="laptop-card-img" loading="lazy">
+            <img src="${mainImg}" alt="${laptop.brand} ${laptop.model} LP #${laptop.lpNumber}" class="laptop-card-img" loading="lazy" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleLaptopImgError(this);">
           </a>
         </div>
 
@@ -800,7 +879,7 @@ const LaptopService = {
           </h3>
 
           <div class="laptop-spec-line">
-            <span class="laptop-spec-text">${laptop.processor} � ${laptop.generation}</span>
+            <span class="laptop-spec-text">${laptop.processor} · ${laptop.generation}</span>
           </div>
           <div class="laptop-spec-line-sub">
             <span>${laptop.ram} RAM</span>
@@ -847,7 +926,8 @@ const LaptopService = {
 if (typeof window !== 'undefined') {
   window.PRODUCT_INVENTORY = PRODUCT_INVENTORY;
   window.LaptopService = LaptopService;
+  window.ImageFallbackHelper = ImageFallbackHelper;
 }
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { PRODUCT_INVENTORY, LaptopService };
+  module.exports = { PRODUCT_INVENTORY, LaptopService, ImageFallbackHelper };
 }

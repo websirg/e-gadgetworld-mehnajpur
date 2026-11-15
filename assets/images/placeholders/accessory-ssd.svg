@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ssd-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#EEF2F6"/>
+    </linearGradient>
+    <linearGradient id="pcb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065F46"/>
+      <stop offset="100%" stop-color="#064E3B"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#CA8A04"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="420" fill="url(#ssd-bg)"/>
+  <ellipse cx="300" cy="370" rx="220" ry="14" fill="#0F172A" opacity="0.15"/>
+
+  <!-- M.2 NVMe PCB Board -->
+  <rect x="130" y="140" width="340" height="140" rx="8" fill="url(#pcb)" stroke="#047857" stroke-width="2"/>
+  
+  <!-- Golden Pin Connectors -->
+  <g fill="url(#gold)">
+    <rect x="130" y="155" width="16" height="6" rx="1"/>
+    <rect x="130" y="165" width="16" height="6" rx="1"/>
+    <rect x="130" y="175" width="16" height="6" rx="1"/>
+    <rect x="130" y="185" width="16" height="6" rx="1"/>
+    <rect x="130" y="195" width="16" height="6" rx="1"/>
+    <!-- Notch -->
+    <rect x="130" y="215" width="16" height="6" rx="1"/>
+    <rect x="130" y="225" width="16" height="6" rx="1"/>
+    <rect x="130" y="235" width="16" height="6" rx="1"/>
+    <rect x="130" y="245" width="16" height="6" rx="1"/>
+    <rect x="130" y="255" width="16" height="6" rx="1"/>
+  </g>
+  <!-- Mounting Screw Notch -->
+  <circle cx="470" cy="210" r="10" fill="#EEF2F6" stroke="#CA8A04" stroke-width="2"/>
+
+  <!-- NAND Memory Chips -->
+  <rect x="180" y="160" width="75" height="100" rx="4" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="217" y="215" font-family="monospace" font-size="10" fill="#94A3B8" text-anchor="middle">NAND</text>
+  
+  <rect x="270" y="160" width="75" height="100" rx="4" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <text x="307" y="215" font-family="monospace" font-size="10" fill="#94A3B8" text-anchor="middle">NAND</text>
+
+  <!-- Controller Chip -->
+  <rect x="360" y="175" width="70" height="70" rx="4" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+  <circle cx="375" cy="190" r="3" fill="#38BDF8"/>
+  <text x="395" y="215" font-family="monospace" font-size="9" fill="#38BDF8" text-anchor="middle">NVMe</text>
+
+  <!-- Header text -->
+  <text x="300" y="80" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="18" font-weight="800" fill="#2563EB" text-anchor="middle">E-GADGET WORLD</text>
+  <text x="300" y="104" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="600" fill="#059669" text-anchor="middle">High-Speed SSD Storage (NVMe / SATA)</text>
+  <text x="300" y="320" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569" text-anchor="middle">256GB • 512GB • 1TB High Performance Upgrades</text>
+</svg>

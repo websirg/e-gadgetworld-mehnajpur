@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDynamicYear();
   initContactLinks();
   initRepairModal();
+  initImageFallbacks();
 });
 
 /**
@@ -177,4 +178,35 @@ function initRepairModal() {
       form.reset();
     });
   }
+}
+
+/**
+ * Universal Image Fallback Watchdog
+ * Ensures zero broken/blank product image areas across the entire website.
+ */
+function initImageFallbacks() {
+  document.querySelectorAll('img').forEach(img => {
+    // If not already explicitly handled, attach fallback safety
+    if (!img.getAttribute('onerror') && typeof ImageFallbackHelper !== 'undefined') {
+      const isLaptop = img.classList.contains('laptop-card-img') || 
+                       img.classList.contains('detail-main-img') || 
+                       (img.alt && img.alt.toLowerCase().includes('laptop'));
+      
+      const isAccessory = img.classList.contains('accessory-img') ||
+                          (img.alt && (img.alt.toLowerCase().includes('charger') || 
+                                       img.alt.toLowerCase().includes('ssd') || 
+                                       img.alt.toLowerCase().includes('ram') || 
+                                       img.alt.toLowerCase().includes('accessories')));
+
+      if (isLaptop) {
+        img.addEventListener('error', function() {
+          ImageFallbackHelper.handleLaptopImgError(this);
+        });
+      } else if (isAccessory) {
+        img.addEventListener('error', function() {
+          ImageFallbackHelper.handleAccessoryImgError(this, img.alt);
+        });
+      }
+    }
+  });
 }

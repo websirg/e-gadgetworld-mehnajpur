@@ -78,7 +78,7 @@ class ShopGallery {
 
     this.gridEl.innerHTML = this.filteredPhotos.map((photo, index) => `
       <div class="gallery-card" onclick="window.galleryInstance.openLightbox(${index})">
-        <img src="${photo.url}" alt="${photo.title}" class="gallery-card-img" loading="lazy">
+        <img src="${photo.url}" alt="${photo.title}" class="gallery-card-img" loading="lazy" onerror="this.src='assets/images/shop/showroom-display.jpg'; this.onerror=null;">
         <div class="gallery-card-overlay">
           <span class="gallery-card-tag">${photo.category}</span>
           <h4 class="gallery-card-title">${photo.title}</h4>

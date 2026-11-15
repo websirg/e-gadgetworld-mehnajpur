@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <linearGradient id="screen-bevel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="display-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="50%" stop-color="#172554"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="base-metal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94A3B8"/>
+      <stop offset="50%" stop-color="#64748B"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="420" fill="url(#bg-grad)"/>
+  
+  <!-- Subtle Grid Pattern -->
+  <g stroke="#CBD5E1" stroke-width="0.5" opacity="0.4">
+    <line x1="0" y1="70" x2="600" y2="70"/>
+    <line x1="0" y1="140" x2="600" y2="140"/>
+    <line x1="0" y1="210" x2="600" y2="210"/>
+    <line x1="0" y1="280" x2="600" y2="280"/>
+    <line x1="0" y1="350" x2="600" y2="350"/>
+    <line x1="100" y1="0" x2="100" y2="420"/>
+    <line x1="200" y1="0" x2="200" y2="420"/>
+    <line x1="300" y1="0" x2="300" y2="420"/>
+    <line x1="400" y1="0" x2="400" y2="420"/>
+    <line x1="500" y1="0" x2="500" y2="420"/>
+  </g>
+
+  <!-- Laptop Screen Lid -->
+  <rect x="110" y="45" width="380" height="240" rx="14" fill="url(#screen-bevel)" stroke="#475569" stroke-width="2"/>
+  <!-- Webcam Dot -->
+  <circle cx="300" cy="56" r="3" fill="#334155"/>
+  <circle cx="300" cy="56" r="1.5" fill="#22D3EE"/>
+  
+  <!-- Display Area -->
+  <rect x="126" y="68" width="348" height="204" rx="4" fill="url(#display-glow)"/>
+
+  <!-- Screen Content Graphic -->
+  <g opacity="0.9">
+    <!-- Laptop Vector Icon on Screen -->
+    <rect x="260" y="110" width="80" height="52" rx="4" fill="none" stroke="#60A5FA" stroke-width="2"/>
+    <line x1="246" y1="162" x2="354" y2="162" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="300" cy="136" r="12" fill="#2563EB" opacity="0.5"/>
+    <path d="M295 136 L305 136 M300 131 L300 141" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/>
+    
+    <text x="300" y="190" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="14" font-weight="700" fill="#F8FAFC" text-anchor="middle">E-GADGET WORLD</text>
+    <text x="300" y="210" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="500" fill="#93C5FD" text-anchor="middle">Commercial Refurbished Laptop</text>
+    <rect x="235" y="226" width="130" height="22" rx="11" fill="#2563EB" opacity="0.3" stroke="#3B82F6" stroke-width="1"/>
+    <text x="300" y="241" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="10" font-weight="600" fill="#60A5FA" text-anchor="middle">100% Tested &amp; Verified</text>
+  </g>
+
+  <!-- Laptop Base (Keyboard Chassis) -->
+  <path d="M 70,305 L 530,305 L 500,345 L 100,345 Z" fill="url(#base-metal)" stroke="#475569" stroke-width="2"/>
+  <!-- Keyboard area recess -->
+  <path d="M 120,310 L 480,310 L 465,332 L 135,332 Z" fill="#1E293B" opacity="0.8"/>
+  <!-- Trackpad -->
+  <rect x="265" y="336" width="70" height="6" rx="2" fill="#334155" stroke="#64748B" stroke-width="0.5"/>
+  <!-- Front lip & thumb indent -->
+  <rect x="285" y="305" width="30" height="4" rx="2" fill="#CBD5E1"/>
+
+  <!-- Bottom Shadow -->
+  <ellipse cx="300" cy="370" rx="250" ry="14" fill="#0F172A" opacity="0.18"/>
+
+  <!-- Status / Store Badge -->
+  <rect x="20" y="20" width="140" height="26" rx="13" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <circle cx="32" cy="33" r="4" fill="#2563EB"/>
+  <text x="42" y="37" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="#1D4ED8">Mehnajpur Store</text>
+</svg>

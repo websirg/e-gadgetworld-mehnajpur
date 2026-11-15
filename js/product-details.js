@@ -58,7 +58,9 @@ function renderProductDetails(container, laptop) {
   const formattedPrice = LaptopService.formatINR(laptop.price);
   const warrantyLabel = LaptopService.getWarrantyLabel(laptop);
   const waEnquiryUrl = LaptopService.generateWhatsAppEnquiryUrl(laptop);
-  const mainImg = (laptop.images && laptop.images.length > 0) ? laptop.images[0] : 'assets/images/laptops/dell-latitude.svg';
+  const mainImg = (laptop.images && laptop.images.length > 0 && laptop.images[0])
+    ? laptop.images[0]
+    : (typeof ImageFallbackHelper !== 'undefined' ? ImageFallbackHelper.getLaptopFallback() : 'assets/images/placeholders/laptop-placeholder.svg');
 
   container.innerHTML = `
     <!-- Breadcrumb -->
@@ -76,7 +78,7 @@ function renderProductDetails(container, laptop) {
           <span class="badge badge-brand">Commercial Grade</span>
         </div>
 
-        <img src="${mainImg}" alt="${laptop.brand} ${laptop.model}" class="detail-main-img" id="detailMainImage">
+        <img src="${mainImg}" alt="${laptop.brand} ${laptop.model}" class="detail-main-img" id="detailMainImage" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleLaptopImgError(this);">
         
         <p style="margin-top: 20px; font-size: 0.875rem; color: var(--text-muted); text-align: center;">
           Refurbished &amp; Multi-Point Inspected Unit • Mehnajpur Showroom

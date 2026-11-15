@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" width="100%" height="100%">
+  <defs>
+    <linearGradient id="p-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#EEF2F6"/>
+    </linearGradient>
+    <linearGradient id="bag-body" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="420" fill="url(#p-bg)"/>
+  <ellipse cx="300" cy="370" rx="220" ry="14" fill="#0F172A" opacity="0.15"/>
+
+  <!-- Backpack Shape -->
+  <path d="M 180,140 C 180,90 280,90 280,140 L 290,320 L 170,320 Z" fill="url(#bag-body)" stroke="#334155" stroke-width="2"/>
+  <!-- Handle -->
+  <path d="M 205,100 C 205,75 255,75 255,100" fill="none" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+  <!-- Front Pocket -->
+  <rect x="185" y="220" width="90" height="80" rx="8" fill="#2563EB" opacity="0.8"/>
+
+  <!-- Optical Mouse -->
+  <g transform="translate(340, 160)">
+    <ellipse cx="60" cy="90" rx="45" ry="65" fill="#1E293B" stroke="#475569" stroke-width="2"/>
+    <!-- Mouse button divider -->
+    <line x1="60" y1="25" x2="60" y2="85" stroke="#64748B" stroke-width="2"/>
+    <line x1="18" y1="75" x2="102" y2="75" stroke="#64748B" stroke-width="1.5"/>
+    <!-- Scroll Wheel -->
+    <rect x="54" y="45" width="12" height="22" rx="4" fill="#38BDF8"/>
+    <!-- Brand glow -->
+    <circle cx="60" cy="120" r="8" fill="#2563EB" opacity="0.6"/>
+  </g>
+
+  <!-- Brand Header -->
+  <text x="300" y="50" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="18" font-weight="800" fill="#2563EB" text-anchor="middle">E-GADGET WORLD</text>
+  <text x="300" y="72" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="600" fill="#64748B" text-anchor="middle">Bags, Keyboards, Mice &amp; Peripherals</text>
+  <text x="300" y="360" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569" text-anchor="middle">Premium Waterproof Backpacks • Wireless Mice • Keyboards</text>
+</svg>
