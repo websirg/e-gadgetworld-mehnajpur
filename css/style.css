@@ -115,10 +115,20 @@ img {
   height: auto;
 }
 
+/* Universal SVG Safety Guardrail: Strict defaults prevent any unconstrained SVG from blowing up */
 svg {
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;
+  max-width: 100%;
+}
+
+svg:not([width]) {
+  width: 24px;
+}
+
+svg:not([height]) {
+  height: 24px;
 }
 
 a {

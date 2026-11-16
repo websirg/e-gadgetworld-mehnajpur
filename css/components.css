@@ -232,9 +232,12 @@
   transform: translateY(-2px);
 }
 
+/* Strict Icon Container and SVG Sizing Guards */
 .highlight-icon-wrap {
-  width: 52px;
-  height: 52px;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
   border-radius: var(--radius-md);
   background-color: var(--color-primary-light);
   color: var(--color-primary);
@@ -242,12 +245,39 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 18px;
+  flex-shrink: 0 !important;
 }
 
 .highlight-icon-wrap svg {
-  width: 26px;
-  height: 26px;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  max-width: 26px !important;
   stroke: var(--color-primary);
+  flex-shrink: 0 !important;
+}
+
+.category-card-icon {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0 !important;
+}
+
+.category-card-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  max-width: 24px !important;
+  stroke: var(--color-primary);
+  flex-shrink: 0 !important;
 }
 
 .highlight-title {
