@@ -597,9 +597,9 @@ const ImageFallbackHelper = {
   },
 
   // High-reliability embedded inline SVG data-URIs (Zero network dependency, 100% immune to 404s)
-  EMBEDDED_LAPTOP_FALLBACK: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 420' width='100%25' height='100%25'%3E%3Crect width='600' height='420' fill='%23F8FAFC'/%3E%3Crect x='110' y='50' width='380' height='240' rx='12' fill='%230F172A' stroke='%23334155' stroke-width='2'/%3E%3Crect x='125' y='68' width='350' height='204' rx='4' fill='%231E293B'/%3E%3Cpath d='M 70,305 L 530,305 L 500,345 L 100,345 Z' fill='%2364748B'/%3E%3Ctext x='300' y='165' font-family='sans-serif' font-size='16' font-weight='700' fill='%23F8FAFC' text-anchor='middle'%3EE-GADGET WORLD%3C/text%3E%3Ctext x='300' y='190' font-family='sans-serif' font-size='12' font-weight='600' fill='%2393C5FD' text-anchor='middle'%3ECommercial Refurbished Laptop%3C/text%3E%3C/svg%3E",
+  EMBEDDED_LAPTOP_FALLBACK: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 420' width='600' height='420'%3E%3Crect width='600' height='420' fill='%23F8FAFC'/%3E%3Crect x='110' y='50' width='380' height='240' rx='12' fill='%230F172A' stroke='%23334155' stroke-width='2'/%3E%3Crect x='125' y='68' width='350' height='204' rx='4' fill='%231E293B'/%3E%3Cpath d='M 70,305 L 530,305 L 500,345 L 100,345 Z' fill='%2364748B'/%3E%3Ctext x='300' y='165' font-family='sans-serif' font-size='16' font-weight='700' fill='%23F8FAFC' text-anchor='middle'%3EE-GADGET WORLD%3C/text%3E%3Ctext x='300' y='190' font-family='sans-serif' font-size='12' font-weight='600' fill='%2393C5FD' text-anchor='middle'%3ECommercial Refurbished Laptop%3C/text%3E%3C/svg%3E",
   
-  EMBEDDED_ACCESSORY_FALLBACK: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 420' width='100%25' height='100%25'%3E%3Crect width='600' height='420' fill='%23F8FAFC'/%3E%3Ccircle cx='300' cy='200' r='80' fill='%23EFF6FF' stroke='%23BFDBFE' stroke-width='3'/%3E%3Ctext x='300' y='195' font-family='sans-serif' font-size='16' font-weight='700' fill='%232563EB' text-anchor='middle'%3EE-GADGET WORLD%3C/text%3E%3Ctext x='300' y='220' font-family='sans-serif' font-size='12' font-weight='600' fill='%2364748B' text-anchor='middle'%3ELaptop Accessory%3C/text%3E%3C/svg%3E",
+  EMBEDDED_ACCESSORY_FALLBACK: "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 420' width='600' height='420'%3E%3Crect width='600' height='420' fill='%23F8FAFC'/%3E%3Ccircle cx='300' cy='200' r='80' fill='%23EFF6FF' stroke='%23BFDBFE' stroke-width='3'/%3E%3Ctext x='300' y='195' font-family='sans-serif' font-size='16' font-weight='700' fill='%232563EB' text-anchor='middle'%3EE-GADGET WORLD%3C/text%3E%3Ctext x='300' y='220' font-family='sans-serif' font-size='12' font-weight='600' fill='%2364748B' text-anchor='middle'%3ELaptop Accessory%3C/text%3E%3C/svg%3E",
 
   getLaptopFallback() {
     return this.LAPTOP_PLACEHOLDER;
@@ -860,7 +860,7 @@ const LaptopService = {
             <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
           </div>
           <a href="${detailUrl}" class="laptop-card-img-link" aria-label="${laptop.brand} ${laptop.model}">
-            <img src="${mainImg}" alt="${laptop.brand} ${laptop.model} LP #${laptop.lpNumber}" class="laptop-card-img" loading="lazy" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleLaptopImgError(this);">
+            <img src="${mainImg}" alt="${laptop.brand} ${laptop.model} LP #${laptop.lpNumber}" class="laptop-card-img" width="240" height="165" loading="eager" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleLaptopImgError(this);">
           </a>
         </div>
 

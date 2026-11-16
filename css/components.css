@@ -421,9 +421,10 @@
 }
 
 .laptop-card-img {
-  width: 100%;
-  max-width: 250px;
-  height: 165px;
+  width: 240px !important;
+  height: 165px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   object-fit: contain;
   display: block;
   margin: 0 auto;
