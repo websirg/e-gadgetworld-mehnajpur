@@ -1715,3 +1715,12 @@ textarea.form-control {
     gap: 10px;
   }
 }
+
+
+/* Hero Showroom Display Image */
+.hero-showroom-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+}
