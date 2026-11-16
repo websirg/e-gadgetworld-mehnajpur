@@ -119,6 +119,9 @@ const CompareService = {
     if (!dock || !preview || !countEl) return;
 
     countEl.textContent = this.selectedLps.length;
+    if (typeof window.updateHeaderCompareBadge === 'function') {
+      window.updateHeaderCompareBadge();
+    }
 
     if (this.selectedLps.length > 0) {
       dock.classList.add('is-visible');

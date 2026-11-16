@@ -23,156 +23,204 @@
 </head>
 <body>
 
-  <!-- Top Information Bar -->
+    <!-- Top Information Bar -->
   <div class="top-bar">
     <div class="container top-bar-inner">
       <div class="top-bar-left">
-        <span class="top-badge-verified">Mehnajpur Showroom</span>
+        <span class="top-badge-verified">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          Mehnajpur Showroom
+        </span>
         <div class="top-bar-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
             <circle cx="12" cy="9" r="2.5"></circle>
           </svg>
-          <span>Near Mehnajpur Thana, Azamgarh 276203</span>
+          <span class="conf-address">Near Mehnajpur Thana, Azamgarh 276203</span>
         </div>
-        <div class="top-bar-item">
+        <div class="top-bar-item top-bar-hours">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          <span class="conf-hours">8:00 AM – 9:00 PM</span>
+          <span class="conf-hours">8:00 AM – 9:00 PM Daily</span>
         </div>
       </div>
       <div class="top-bar-right">
+        <a href="branches.html" class="top-bar-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span>5 Branches Directory</span>
+        </a>
+        <span class="top-bar-divider">|</span>
         <div class="top-bar-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
           </svg>
-          <span>Call: <a href="tel:+919984359860" class="conf-phone-link">+91 9984359860</a></span>
+          <span>Store Helpline: <a href="tel:+919984359860" class="conf-phone-link">+91 9984359860</a></span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Sticky Main Header -->
+  <!-- Sticky Main Header & Category Navigation -->
   <header class="site-header">
-    <div class="container header-inner">
-      <a href="index.html" class="brand-logo-wrap" title="E-Gadget World Mehnajpur">
-        <img src="assets/images/logo.svg" alt="E-Gadget World Logo" class="brand-logo-img">
-      </a>
+    <div class="main-header">
+      <div class="container main-header-inner">
+        <!-- Logo -->
+        <a href="index.html" class="brand-logo-wrap" title="E-Gadget World Mehnajpur">
+          <img src="assets/images/logo.svg" alt="E-Gadget World Logo" class="brand-logo-img">
+        </a>
 
-      <!-- Desktop Nav -->
-      <nav class="nav-menu">
-        <div class="nav-item">
-          <a href="index.html" class="nav-link active">Home</a>
+        <!-- Prominent Live Search Bar -->
+        <div class="header-search-container">
+          <form class="header-search-form" action="laptops.html" method="GET" role="search" id="headerSearchForm">
+            <div class="header-search-scope">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <input type="search" name="search" id="headerSearchInput" class="header-search-input" placeholder="Search 24+ laptops (Dell, ThinkPad, i5, i7...) or accessories..." autocomplete="off" aria-label="Search laptops and accessories">
+            <button type="button" class="header-search-clear" id="headerSearchClear" aria-label="Clear search" style="display: none;">&times;</button>
+            <button type="submit" class="header-search-btn" aria-label="Submit search">
+              <span>Search</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </form>
+          <div class="header-search-dropdown" id="headerSearchDropdown" style="display: none;"></div>
         </div>
-        <div class="nav-item">
-          <a href="laptops.html" class="nav-link">Laptops</a>
-        </div>
-        <div class="nav-item">
-          <a href="services.html" class="nav-link">
-            Services
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- Compare Button -->
+          <a href="javascript:void(0)" class="header-action-btn btn-header-compare" id="headerCompareBtn" onclick="CompareService?.openModal()" title="View compared laptops">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span class="action-btn-text">Compare</span>
+            <span class="compare-badge-count" id="headerCompareCount" style="display: none;">0</span>
           </a>
-          <div class="dropdown-menu">
-            <a href="services.html#laptop-repair" class="dropdown-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-              </svg>
-              Laptop Repair &amp; Service
-            </a>
-            <a href="services.html#laptop-accessories" class="dropdown-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-              </svg>
-              Laptop Accessories
-            </a>
-            <a href="services.html#csc-services" class="dropdown-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-              </svg>
-              CSC Digital Services
-            </a>
-            <a href="services.html#indian-bank" class="dropdown-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="21" x2="21" y2="21"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-                <polyline points="5 6 12 3 19 6"></polyline>
-                <line x1="4" y1="10" x2="4" y2="21"></line>
-                <line x1="20" y1="10" x2="20" y2="21"></line>
-              </svg>
-              Indian Bank Services Info
-            </a>
-          </div>
-        </div>
-        <div class="nav-item">
-          <a href="about.html" class="nav-link">About Us</a>
-        </div>
-        <div class="nav-item">
-          <a href="branches.html" class="nav-link">Our Branches</a>
-        </div>
-        <div class="nav-item">
-          <a href="gallery.html" class="nav-link">Gallery</a>
-        </div>
-        <div class="nav-item">
-          <a href="contact.html" class="nav-link">Contact</a>
-        </div>
-      </nav>
 
-      <!-- Header CTAs -->
-      <div class="header-actions">
-        <a href="tel:+919984359860" class="btn-header-call conf-phone-link">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-          </svg>
-          Call Now
-        </a>
-        <a href="https://wa.me/919984359860" target="_blank" rel="noopener" class="btn-header-whatsapp conf-whatsapp-link">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/>
-          </svg>
-          WhatsApp Enquiry
-        </a>
+          <!-- Call Store -->
+          <a href="tel:+919984359860" class="header-action-btn btn-header-call conf-phone-link" title="Call Mehnajpur Store">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <div class="header-btn-col">
+              <span class="header-btn-sub">Call Store</span>
+              <span class="header-btn-main">+91 9984359860</span>
+            </div>
+          </a>
+
+          <!-- WhatsApp Enquiry -->
+          <a href="https://wa.me/919984359860" target="_blank" rel="noopener" class="header-action-btn btn-header-whatsapp conf-whatsapp-link" title="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+            <div class="header-btn-col">
+              <span class="header-btn-sub">WhatsApp</span>
+              <span class="header-btn-main">Enquire Now</span>
+            </div>
+          </a>
+
+          <!-- Mobile Hamburger Button -->
+          <button class="hamburger-btn" aria-label="Toggle navigation menu" id="hamburgerBtn">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+        </div>
       </div>
+    </div>
 
-      <!-- Mobile Hamburger Button -->
-      <button class="hamburger-btn" aria-label="Toggle navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
+    <!-- Category Sub-Navigation Bar -->
+    <div class="category-nav-bar">
+      <div class="container category-nav-inner">
+        <nav class="category-links" aria-label="Quick Category Navigation">
+          <a href="laptops.html" class="cat-link highlight ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line></svg>
+            <span>All Laptops (24)</span>
+          </a>
+          <a href="laptops.html?brand=Dell" class="cat-link">Dell Latitude</a>
+          <a href="laptops.html?brand=HP" class="cat-link">HP EliteBook</a>
+          <a href="laptops.html?brand=Lenovo" class="cat-link">Lenovo ThinkPad</a>
+          <a href="laptops.html?brand=Acer" class="cat-link">Gaming Laptops</a>
+          <span class="cat-separator"></span>
+          <a href="services.html#laptop-accessories" class="cat-link ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span>Accessories &amp; Chargers</span>
+          </a>
+          <a href="services.html#laptop-repair" class="cat-link ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+            <span>Laptop Repair</span>
+          </a>
+          <a href="services.html#csc-services" class="cat-link ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+            <span>CSC Services</span>
+          </a>
+          <span class="cat-separator"></span>
+          <a href="about.html" class="cat-link ">About Us</a>
+          <a href="branches.html" class="cat-link ">Our Branches</a>
+          <a href="gallery.html" class="cat-link ">Gallery</a>
+          <a href="contact.html" class="cat-link ">Contact</a>
+        </nav>
+      </div>
     </div>
 
     <!-- Mobile Navigation Drawer -->
-    <div class="mobile-nav-drawer">
-      <div class="mobile-nav-links">
-        <a href="index.html" class="mobile-nav-link active">Home</a>
-        <a href="laptops.html" class="mobile-nav-link">Laptops (24 Models)</a>
-        <div>
-          <a href="services.html" class="mobile-nav-link">Services</a>
-          <div class="mobile-nav-sublinks">
-            <a href="services.html#laptop-repair" class="mobile-nav-sublink">Laptop Repair</a>
-            <a href="services.html#laptop-accessories" class="mobile-nav-sublink">Laptop Accessories</a>
-            <a href="services.html#csc-services" class="mobile-nav-sublink">CSC Digital Services</a>
-            <a href="services.html#indian-bank" class="mobile-nav-sublink">Indian Bank Services</a>
-          </div>
-        </div>
-        <a href="about.html" class="mobile-nav-link">About Us</a>
-        <a href="branches.html" class="mobile-nav-link">Our Branches</a>
-        <a href="gallery.html" class="mobile-nav-link">Shop Gallery</a>
-        <a href="contact.html" class="mobile-nav-link">Contact</a>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+      <div class="mobile-drawer-header">
+        <a href="index.html" class="mobile-drawer-logo">
+          <img src="assets/images/logo.svg" alt="E-Gadget World Logo" style="height: 38px;">
+        </a>
+        <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu">&times;</button>
       </div>
 
-      <div class="mobile-nav-contact-card">
-        <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 6px;">E-GADGET WORLD MEHNAJPUR</div>
-        <div style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Owner: Sunil Kumar Maurya (Sonu)</div>
-        <div style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 12px;">Near Mehnajpur Thana, Azamgarh 276203</div>
-        <a href="tel:+919984359860" class="btn btn-outline btn-sm btn-full" style="margin-bottom: 8px;">Call +91 9984359860</a>
-        <a href="https://wa.me/919984359860" target="_blank" class="btn btn-whatsapp btn-sm btn-full">Chat on WhatsApp</a>
+      <!-- Mobile Search inside Drawer -->
+      <div class="mobile-drawer-search">
+        <form action="laptops.html" method="GET" class="mobile-search-form">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="search" name="search" placeholder="Search laptops or accessories..." class="mobile-search-input">
+          <button type="submit" class="mobile-search-btn">Go</button>
+        </form>
+      </div>
+
+      <div class="mobile-drawer-body">
+        <div class="mobile-group-title">Browse Laptops</div>
+        <a href="laptops.html" class="mobile-item-link highlight-item ">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line></svg>
+          <span>All Laptops (24 Models)</span>
+          <span class="mobile-pill">Full Stock</span>
+        </a>
+        <a href="laptops.html?brand=Dell" class="mobile-item-link">Dell Commercial Latitude</a>
+        <a href="laptops.html?brand=HP" class="mobile-item-link">HP EliteBook / ProBook</a>
+        <a href="laptops.html?brand=Lenovo" class="mobile-item-link">Lenovo ThinkPad Series</a>
+        <a href="laptops.html?brand=Acer" class="mobile-item-link">Gaming &amp; Performance Laptops</a>
+
+        <div class="mobile-group-title">Accessories &amp; Upgrades</div>
+        <a href="services.html#laptop-accessories" class="mobile-item-link">Original Laptop Chargers (Dell, HP, Lenovo)</a>
+        <a href="services.html#laptop-accessories" class="mobile-item-link">SSD High-Speed Storage (128GB - 1TB)</a>
+        <a href="services.html#laptop-accessories" class="mobile-item-link">RAM Memory Upgrades (DDR3L / DDR4)</a>
+        <a href="services.html#laptop-accessories" class="mobile-item-link">Bags, Keyboards &amp; Peripherals</a>
+
+        <div class="mobile-group-title">Workshop &amp; Digital Services</div>
+        <a href="services.html#laptop-repair" class="mobile-item-link">Motherboard &amp; Screen Hardware Repair</a>
+        <a href="services.html#csc-services" class="mobile-item-link">CSC Digital Citizen Desk</a>
+        <a href="services.html#indian-bank" class="mobile-item-link">Indian Bank Service Desk</a>
+
+        <div class="mobile-group-title">Store &amp; Information</div>
+        <a href="about.html" class="mobile-item-link ">About E-Gadget World</a>
+        <a href="branches.html" class="mobile-item-link ">Our 5 Showrooms &amp; Branches</a>
+        <a href="gallery.html" class="mobile-item-link ">Showroom Photo Gallery</a>
+        <a href="contact.html" class="mobile-item-link ">Contact &amp; Store Location</a>
+      </div>
+
+      <div class="mobile-drawer-footer">
+        <div class="drawer-contact-card">
+          <div class="drawer-store-name">E-GADGET WORLD MEHNAJPUR</div>
+          <div class="drawer-owner">Owner: Sunil Kumar Maurya (Sonu)</div>
+          <div class="drawer-addr">Near Mehnajpur Thana, Azamgarh 276203</div>
+          <div class="drawer-hours">8:00 AM – 9:00 PM Daily</div>
+          <div class="drawer-cta-grid">
+            <a href="tel:+919984359860" class="btn btn-outline btn-sm conf-phone-link">Call Store</a>
+            <a href="https://wa.me/919984359860" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm conf-whatsapp-link">WhatsApp</a>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -210,7 +258,8 @@
               <div class="hero-stat-label">Live Inventory Models</div>
             </div>
             <div class="hero-stat-item">
-              <div class="hero-stat-num">100%</div>`n              <div class="hero-stat-label">Tested &amp; Verified</div>
+              <div class="hero-stat-num">100%</div>
+              <div class="hero-stat-label">Tested &amp; Verified</div>
             </div>
             <div class="hero-stat-item">
               <div class="hero-stat-num">6-12<span>M</span></div>
@@ -234,7 +283,7 @@
               <div style="position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase;">Mehnajpur Showroom</div>
                 <div style="font-size: 0.9375rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">Dell, HP &amp; Lenovo Commercial Laptops</div>
-                <div style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">Near Mehnajpur Thana, Azamgarh â€¢ 8 AM â€“ 8 PM</div>
+                <div style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">Near Mehnajpur Thana, Azamgarh • 8:00 AM – 9:00 PM Daily</div>
               </div>
             </div>
           </div>
@@ -438,6 +487,65 @@
       </div>
     </section>
 
+    <!-- PROMOTIONAL VALUE BANNER -->
+    <div class="container">
+      <div class="promo-banner">
+        <div class="promo-grid">
+          <div>
+            <span class="promo-pill">Why Buy Commercial Refurbished?</span>
+            <h2 class="promo-title">Save Up to <span>70%</span> on Enterprise-Grade Laptops</h2>
+            <p class="promo-desc">
+              Get corporate-tested Dell Latitude, HP EliteBook, and Lenovo ThinkPad machines with magnesium-alloy durability and pure high-speed SSD performance—all backed by our local Mehnajpur store warranty.
+            </p>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <a href="laptops.html" class="btn btn-primary btn-lg">Explore 24+ Live Models &rarr;</a>
+              <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20want%20to%20know%20more%20about%20your%20refurbished%20laptops." target="_blank" rel="noopener" class="btn btn-outline btn-lg" style="color: #FFFFFF; border-color: rgba(255,255,255,0.35);">
+                WhatsApp Us
+              </a>
+            </div>
+          </div>
+          <div class="promo-features">
+            <div class="promo-feature-item">
+              <div class="promo-feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div>
+                <div class="promo-feature-title">Store Warranty</div>
+                <div class="promo-feature-sub">6 to 12 months verified store warranty</div>
+              </div>
+            </div>
+            <div class="promo-feature-item">
+              <div class="promo-feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              </div>
+              <div>
+                <div class="promo-feature-title">40+ Point Checks</div>
+                <div class="promo-feature-sub">Screen, battery, keyboard &amp; thermals tested</div>
+              </div>
+            </div>
+            <div class="promo-feature-item">
+              <div class="promo-feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <div>
+                <div class="promo-feature-title">100% Fast SSD</div>
+                <div class="promo-feature-sub">10x faster boot times than conventional HDDs</div>
+              </div>
+            </div>
+            <div class="promo-feature-item">
+              <div class="promo-feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+              </div>
+              <div>
+                <div class="promo-feature-title">Local Support</div>
+                <div class="promo-feature-sub">Immediate physical help in Mehnajpur Showroom</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- SECTION 4: FEATURED LAPTOPS -->
     <section class="section section-soft" id="featured-laptops">
       <div class="container">
@@ -449,6 +557,14 @@
           </p>
         </div>
 
+        <!-- Interactive Brand Tabs -->
+        <div class="featured-tabs">
+          <button class="featured-tab active" data-brand="all" onclick="filterFeatured('all')">All Featured</button>
+          <button class="featured-tab" data-brand="Dell" onclick="filterFeatured('Dell')">Dell Latitude</button>
+          <button class="featured-tab" data-brand="HP" onclick="filterFeatured('HP')">HP EliteBook</button>
+          <button class="featured-tab" data-brand="Lenovo" onclick="filterFeatured('Lenovo')">Lenovo ThinkPad</button>
+        </div>
+
         <!-- Featured Grid populated from products-data.js -->
         <div class="laptops-grid" id="homepageFeaturedGrid">
           <!-- Rendered via JS -->
@@ -458,6 +574,61 @@
           <a href="laptops.html" class="btn btn-primary btn-lg">
             View All 24 Laptops in Catalog &rarr;
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: ACCESSORIES & UPGRADES HIGHLIGHT -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Genuine Hardware Parts</span>
+          <h2 class="section-title">Original Laptop Accessories &amp; Upgrades</h2>
+          <p class="section-subtitle">
+            Stocked in our Mehnajpur showroom. Guaranteed compatibility for Dell, HP, Lenovo and all major commercial brands.
+          </p>
+        </div>
+
+        <div class="categories-grid">
+          <div class="category-card">
+            <div class="accessory-card-image-wrap">
+              <img src="assets/images/placeholders/accessory-charger.svg" alt="Original Laptop Chargers" class="accessory-img" loading="lazy" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'charger');">
+            </div>
+            <h3 class="category-card-title">Original Power Adapters</h3>
+            <p class="category-card-desc">Dell barrel &amp; USB-C, HP blue-pin &amp; Type-C, Lenovo yellow square &amp; 65W/90W chargers.</p>
+            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 14px;">In Showroom Stock</div>
+            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20need%20an%20original%20laptop%20charger." target="_blank" rel="noopener" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
+          </div>
+
+          <div class="category-card">
+            <div class="accessory-card-image-wrap">
+              <img src="assets/images/placeholders/accessory-ssd.svg" alt="High-Speed SSD Storage" class="accessory-img" loading="lazy" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'ssd');">
+            </div>
+            <h3 class="category-card-title">SSD Storage Upgrades</h3>
+            <p class="category-card-desc">128GB, 256GB, 512GB &amp; 1TB SATA and NVMe SSDs with free on-the-spot OS installation.</p>
+            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 14px;">Same-Day Fitting</div>
+            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20want%20to%20upgrade%20my%20laptop%20SSD." target="_blank" rel="noopener" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
+          </div>
+
+          <div class="category-card">
+            <div class="accessory-card-image-wrap">
+              <img src="assets/images/placeholders/accessory-ram.svg" alt="RAM Memory Modules" class="accessory-img" loading="lazy" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'ram');">
+            </div>
+            <h3 class="category-card-title">RAM Memory Modules</h3>
+            <p class="category-card-desc">4GB, 8GB &amp; 16GB DDR3L and DDR4 laptop RAM to eliminate lag in office work and multitasking.</p>
+            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 14px;">Free Compatibility Check</div>
+            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20need%20a%20RAM%20upgrade%20for%20my%20laptop." target="_blank" rel="noopener" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
+          </div>
+
+          <div class="category-card">
+            <div class="accessory-card-image-wrap">
+              <img src="assets/images/placeholders/accessory-peripherals.svg" alt="Bags, Mice & Keyboards" class="accessory-img" loading="lazy" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'peripherals');">
+            </div>
+            <h3 class="category-card-title">Bags &amp; Peripherals</h3>
+            <p class="category-card-desc">Heavy-duty laptop backpacks, wireless optical mice, replacement laptop keyboards, and cleaning kits.</p>
+            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 14px;">Top Quality Brands</div>
+            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20am%20looking%20for%20laptop%20accessories." target="_blank" rel="noopener" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
+          </div>
         </div>
       </div>
     </section>
@@ -993,14 +1164,30 @@
   <script src="js/gallery.js"></script>
 
   <script>
-    // Quick Home Page Featured Laptop Populator
-    document.addEventListener('DOMContentLoaded', () => {
+    // Interactive Home Page Featured Laptop Populator & Filter
+    function renderFeaturedLaptops(brand = 'all') {
       const grid = document.getElementById('homepageFeaturedGrid');
       if (!grid || typeof PRODUCT_INVENTORY === 'undefined' || typeof LaptopService === 'undefined') return;
 
-      // Select top 6 featured laptops from inventory
-      const featured = PRODUCT_INVENTORY.filter(p => p.featured).slice(0, 6);
-      grid.innerHTML = featured.map(laptop => LaptopService.createCardHtml(laptop, { showCompare: false })).join('');
+      let list = PRODUCT_INVENTORY;
+      if (brand !== 'all') {
+        list = list.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
+      } else {
+        list = list.filter(p => p.featured);
+      }
+
+      const topItems = list.slice(0, 6);
+      grid.innerHTML = topItems.map(laptop => LaptopService.createCardHtml(laptop, { showCompare: true })).join('');
+
+      document.querySelectorAll('.featured-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-brand') === brand);
+      });
+    }
+
+    window.filterFeatured = renderFeaturedLaptops;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFeaturedLaptops('all');
     });
 
     function handleHomeRepairSubmit(e) {

@@ -685,20 +685,12 @@ const LaptopService = {
   },
 
   getStockStatus(qty) {
-    if (qty > 1) {
+    if (qty > 0) {
       return {
         code: 'in_stock',
         label: 'In Stock',
-        qtyLabel: `${qty} units left`,
+        qtyLabel: 'Available in Showroom',
         badgeClass: 'badge-stock-in',
-        canBuy: true
-      };
-    } else if (qty === 1) {
-      return {
-        code: 'low_stock',
-        label: 'Only 1 Left',
-        qtyLabel: '1 unit left',
-        badgeClass: 'badge-stock-low',
         canBuy: true
       };
     } else {
@@ -744,7 +736,7 @@ const LaptopService = {
       '',
       `Laptop: ${laptop.brand} ${laptop.model}`,
       `LP Number: ${laptop.lpNumber}`,
-      `Processor: ${laptop.processor}`,
+      `• Processor: ${laptop.processor} (${laptop.generation})`,
       `Generation: ${laptop.generation}`,
       `RAM: ${laptop.ram}`,
       `Storage: ${laptop.storage}`,
@@ -838,9 +830,9 @@ const LaptopService = {
       'Hello E-Gadget World Mehnajpur,',
       '',
       `I am enquiring about the ${laptop.brand} ${laptop.model} (LP #${laptop.lpNumber}).`,
-      `â¢ Processor: ${laptop.processor} (${laptop.generation})`,
-      `â¢ Specs: ${laptop.ram} RAM | ${laptop.storage}`,
-      `â¢ Price: ?${Number(laptop.price).toLocaleString('en-IN')}`,
+      `• Processor: ${laptop.processor} (${laptop.generation})`,
+      `• Specs: ${laptop.ram} RAM | ${laptop.storage}`,
+      `• Price: ₹${Number(laptop.price).toLocaleString('en-IN')}`,
       '',
       'Please let me know current availability, warranty options, and showroom test-drive timings.',
       'Thank you.'
