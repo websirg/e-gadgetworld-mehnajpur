@@ -29,6 +29,14 @@
     --fs-section: 1.875rem;        /* 30px */
   }
 
+  .main-nav {
+    display: none !important;
+  }
+
+  .hamburger-btn {
+    display: flex !important;
+  }
+
   .container {
     padding-left: 20px;
     padding-right: 20px;
@@ -70,10 +78,12 @@
   }
 
   .about-grid,
+  .contact-grid,
+  .repair-features-grid,
   .service-split,
   .contact-page-grid,
   .branch-spotlight-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     gap: 36px;
   }
 }
@@ -93,7 +103,8 @@
 @media (max-width: 992px) {
   .top-bar-hours,
   .top-bar-divider,
-  .top-bar-link {
+  .top-bar-link,
+  .top-bar-left .top-bar-item {
     display: none !important;
   }
 
@@ -110,39 +121,33 @@
   }
 
   .header-search-container {
-    max-width: 300px;
+    display: none !important;
   }
 
-  .header-search-form {
-    height: 40px;
-  }
-
-  .header-search-btn span {
-    display: none;
-  }
-
-  .header-search-btn {
-    padding: 0 12px;
-    height: 32px;
+  .header-actions {
+    gap: 8px;
   }
 
   .header-actions .header-btn-col {
     display: none;
   }
 
-  .btn-header-call,
-  .btn-header-whatsapp {
-    padding: 0 12px;
-    min-width: 42px;
-    justify-content: center;
+  .btn-header-call {
+    display: none !important;
   }
 
+  .btn-header-whatsapp .action-btn-text,
   .btn-header-compare .action-btn-text {
     display: none;
   }
 
+  .btn-header-whatsapp,
   .btn-header-compare {
     padding: 0 10px;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
   }
 
   .hamburger-btn {
@@ -352,19 +357,10 @@
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   .main-header-inner {
-    flex-wrap: wrap;
-    gap: 10px 12px;
-  }
-
-  .header-search-container {
-    order: 3;
-    width: 100%;
-    max-width: 100%;
-    margin-top: 4px;
-  }
-
-  .header-search-form {
-    height: 42px;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   .header-actions {
@@ -557,6 +553,14 @@
    Single-column spacious design: full-width cards, large readable fonts (18px title, 24px price, 16px buttons), zero cramping
    -------------------------------------------------------------------------- */
 @media (max-width: 579px) {
+  .top-badge-verified {
+    display: none !important;
+  }
+
+  .top-bar-inner {
+    justify-content: center !important;
+  }
+
   .laptops-grid {
     grid-template-columns: 1fr !important;
     gap: 22px !important;
