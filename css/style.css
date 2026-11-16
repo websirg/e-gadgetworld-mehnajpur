@@ -214,6 +214,8 @@ ul, ol {
   font-size: 0.8125rem;
   padding: 8px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 101;
 }
 
 .top-bar-inner {
@@ -221,14 +223,42 @@ ul, ol {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-height: 28px;
 }
 
-.top-bar-left, .top-bar-right {
+.top-bar-left {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 14px;
+  flex-wrap: nowrap;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Universal Top Bar SVG Dimensions to prevent oversized rendering */
+.top-bar svg,
+.top-bar-item svg,
+.top-bar-link svg {
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  max-width: 14px !important;
+  min-height: 14px !important;
+  max-height: 14px !important;
+  stroke: #38BDF8;
+  flex-shrink: 0 !important;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .top-bar-item {
@@ -236,32 +266,36 @@ ul, ol {
   align-items: center;
   gap: 6px;
   color: #CBD5E1;
+  white-space: nowrap;
+  font-size: 0.8125rem;
 }
 
-.top-bar-item svg {
-  width: 14px;
-  height: 14px;
-  stroke: #38BDF8;
-  flex-shrink: 0;
-}
-
-.top-bar-item a, .top-bar-link {
+.top-bar-item a,
+.top-bar-link {
   color: #E2E8F0;
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  white-space: nowrap;
   transition: color var(--transition-fast);
 }
 
-.top-bar-item a:hover, .top-bar-link:hover {
+.top-bar-item a:hover,
+.top-bar-link:hover {
   color: #38BDF8;
+}
+
+.top-bar-link span {
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .top-bar-divider {
   color: #334155;
   font-size: 0.75rem;
+  user-select: none;
 }
 
 .top-badge-verified {
@@ -275,12 +309,17 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .top-badge-verified svg {
-  width: 12px;
-  height: 12px;
+  width: 12px !important;
+  height: 12px !important;
+  min-width: 12px !important;
+  max-width: 12px !important;
   fill: currentColor;
+  stroke: none !important;
 }
 
 /* ==========================================================================

@@ -291,11 +291,19 @@ function initContactLinks() {
   });
 
   document.querySelectorAll('.conf-address').forEach(el => {
-    el.textContent = BUSINESS_CONFIG.address.full;
+    if (el.closest('.top-bar')) {
+      el.textContent = "Near Mehnajpur Thana, Azamgarh 276203";
+    } else {
+      el.textContent = BUSINESS_CONFIG.address.full;
+    }
   });
 
   document.querySelectorAll('.conf-hours').forEach(el => {
-    el.textContent = BUSINESS_CONFIG.hours;
+    if (el.closest('.top-bar')) {
+      el.textContent = "8:00 AM – 9:00 PM Daily";
+    } else {
+      el.textContent = BUSINESS_CONFIG.hours;
+    }
   });
 }
 
