@@ -322,7 +322,10 @@ ul, ol {
 .brand-logo-img {
   height: 48px;
   width: auto;
+  max-width: 150px;
   object-fit: contain;
+  border-radius: 6px;
+  display: block;
 }
 
 /* Header Live Search Container */
@@ -1130,3 +1133,34 @@ ul, ol {
 .footer-legal-link:hover {
   color: #94A3B8;
 }
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-bottom-links a {
+  color: #64748B;
+  transition: color 0.15s ease;
+  font-size: 13px;
+}
+
+.footer-bottom-links a:hover {
+  color: #94A3B8;
+}
+
+.footer-bottom-links a.admin-portal-link {
+  color: #38BDF8;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer-bottom-links a.admin-portal-link:hover {
+  color: #7DD3FC;
+  text-decoration: underline;
+}
+

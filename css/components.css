@@ -411,10 +411,22 @@
   justify-content: center;
 }
 
+.laptop-card-img-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+
 .laptop-card-img {
-  max-height: 165px;
-  width: auto;
+  width: 100%;
+  max-width: 250px;
+  height: 165px;
   object-fit: contain;
+  display: block;
+  margin: 0 auto;
   transition: transform var(--transition-normal);
 }
 
