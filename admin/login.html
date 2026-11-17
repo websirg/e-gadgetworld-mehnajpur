@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="../assets/images/logo-official.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
   <style>
@@ -47,7 +47,7 @@
     }
     .admin-card-header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     .admin-card-logo {
       height: 48px;
@@ -68,14 +68,14 @@
       margin: 0;
     }
     .admin-status-box {
-      background: #F0F9FF;
-      border: 1px solid #BAE6FD;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
       border-radius: 8px;
       padding: 12px 14px;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       font-size: 12.5px;
       line-height: 1.5;
-      color: #0369A1;
+      color: #166534;
       display: flex;
       gap: 10px;
       align-items: flex-start;
@@ -83,6 +83,7 @@
     .admin-status-icon {
       flex-shrink: 0;
       margin-top: 1px;
+      color: #16A34A;
     }
     .form-group {
       margin-bottom: 18px;
@@ -96,7 +97,7 @@
     }
     .form-input, .form-select {
       width: 100%;
-      padding: 10px 14px;
+      padding: 11px 14px;
       border: 1px solid #CBD5E1;
       border-radius: 8px;
       font-size: 14px;
@@ -140,8 +141,12 @@
       gap: 8px;
       transition: background 0.15s ease;
     }
-    .btn-admin-submit:hover {
+    .btn-admin-submit:hover:not(:disabled) {
       background: #1D4ED8;
+    }
+    .btn-admin-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
     .admin-auth-footer {
       text-align: center;
@@ -166,15 +171,31 @@
     }
     .alert-box {
       display: none;
-      padding: 12px;
+      padding: 12px 14px;
       border-radius: 8px;
       font-size: 13px;
-      margin-bottom: 16px;
+      line-height: 1.5;
+      margin-bottom: 18px;
     }
     .alert-box.info {
       background: #EFF6FF;
       color: #1E40AF;
       border: 1px solid #BFDBFE;
+    }
+    .alert-box.success {
+      background: #F0FDF4;
+      color: #166534;
+      border: 1px solid #BBF7D0;
+    }
+    .alert-box.error {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+    .alert-box.warning {
+      background: #FFFBEB;
+      color: #92400E;
+      border: 1px solid #FDE68A;
     }
   </style>
 </head>
@@ -207,32 +228,31 @@
       <!-- Environment / Status Notice -->
       <div class="admin-status-box">
         <svg class="admin-status-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="16" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
         <div>
-          <strong>Backend Status:</strong> Laravel + MySQL authentication is staged in <code>backend-laravel/</code>. Database migrations are awaiting user execution approval.
+          <strong>Backend Active:</strong> Connected to independent database <code>e_gadget_world</code>. Authenticate with authorized staff credentials.
         </div>
       </div>
 
-      <div id="loginFeedback" class="alert-box info"></div>
+      <div id="loginFeedback" class="alert-box"></div>
 
       <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
           <label class="form-label" for="branchSelect">Branch / Office</label>
           <select id="branchSelect" class="form-select" required>
-            <option value="mehnajpur" selected>Mehnajpur HQ (Azamgarh, UP)</option>
-            <option value="burari">Burari Branch (Delhi)</option>
-            <option value="varanasi">Varanasi Hub (UP)</option>
-            <option value="haldwani">Haldwani Branch (Uttarakhand)</option>
-            <option value="bangalore">Bangalore Logistics Hub</option>
+            <option value="MEHNAJPUR" selected>Mehnajpur HQ (Azamgarh, UP)</option>
+            <option value="BURARI">Burari Branch (Delhi)</option>
+            <option value="VARANASI">Varanasi Hub (UP)</option>
+            <option value="HALDWANI">Haldwani Branch (Uttarakhand)</option>
+            <option value="BANGALORE">Bangalore Logistics Hub</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="staffEmail">Staff Username / Email</label>
-          <input type="text" id="staffEmail" class="form-input" placeholder="admin@egadgetworld.com" autocomplete="username" required>
+          <label class="form-label" for="staffEmail">Staff Email</label>
+          <input type="email" id="staffEmail" class="form-input" placeholder="egadgetworld@websirg.com" autocomplete="username" required>
         </div>
 
         <div class="form-group">
@@ -242,18 +262,18 @@
 
         <div class="form-options">
           <label class="checkbox-label">
-            <input type="checkbox" id="rememberMe">
+            <input type="checkbox" id="rememberMe" checked>
             Remember this terminal
           </label>
           <a href="../contact.html" style="color: #2563EB; text-decoration: none; font-size: 12.5px;">Need Help?</a>
         </div>
 
-        <button type="submit" class="btn-admin-submit">
+        <button type="submit" id="submitBtn" class="btn-admin-submit">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
-          Sign In to Management Console
+          <span id="btnText">Sign In to Management Console</span>
         </button>
       </form>
     </div>
@@ -264,15 +284,89 @@
   </footer>
 
   <script>
-    function handleLoginSubmit(event) {
-      event.preventDefault();
-      var feedback = document.getElementById('loginFeedback');
-      var email = document.getElementById('staffEmail').value.trim();
-      var branch = document.getElementById('branchSelect').value;
+    const API_BASE = window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
 
-      feedback.style.display = 'block';
-      feedback.className = 'alert-box info';
-      feedback.innerHTML = '<strong>Connection Staged:</strong> Authentication service target is <code>backend-laravel/routes/web.php</code>. Live MySQL database migrations have not been run per deployment rules. Once migrations are initiated, staff credentials for <em>' + branch.toUpperCase() + '</em> will authenticate against the database.';
+    // Check URL parameters for status notices
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const feedback = document.getElementById('loginFeedback');
+
+      if (urlParams.get('unauthorized') === '1') {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box warning';
+        feedback.innerHTML = '<strong>Access Restricted:</strong> Please log in to access the E-Gadget World Admin Dashboard.';
+      } else if (urlParams.get('expired') === '1') {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box warning';
+        feedback.innerHTML = '<strong>Session Expired:</strong> Your staff session has timed out. Please sign in again.';
+      } else if (urlParams.get('logged_out') === '1') {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box info';
+        feedback.innerHTML = '<strong>Logged Out:</strong> You have been safely signed out of the management console.';
+      }
+
+      // Check if already authenticated
+      const existingToken = localStorage.getItem('egadget_admin_token');
+      if (existingToken && !urlParams.get('logged_out')) {
+        // Fast redirect to dashboard
+        window.location.replace('dashboard.html');
+      }
+    });
+
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      const feedback = document.getElementById('loginFeedback');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const email = document.getElementById('staffEmail').value.trim();
+      const password = document.getElementById('staffPassword').value;
+      const branch = document.getElementById('branchSelect').value;
+
+      // Loading UI
+      submitBtn.disabled = true;
+      btnText.textContent = 'Verifying credentials...';
+      feedback.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/admin/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ email, password, branch })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Success: Store token & profile
+          localStorage.setItem('egadget_admin_token', data.token);
+          localStorage.setItem('egadget_admin_user', JSON.stringify(data.user));
+
+          feedback.style.display = 'block';
+          feedback.className = 'alert-box success';
+          feedback.innerHTML = `<strong>Authenticated!</strong> Welcome back, ${data.user.name}. Redirecting to Management Dashboard...`;
+
+          setTimeout(() => {
+            window.location.href = data.redirect || 'dashboard.html';
+          }, 600);
+        } else {
+          // Error response
+          feedback.style.display = 'block';
+          feedback.className = 'alert-box error';
+          feedback.innerHTML = `<strong>Authentication Failed:</strong> ${data.message || 'Invalid credentials.'}`;
+          submitBtn.disabled = false;
+          btnText.textContent = 'Sign In to Management Console';
+        }
+      } catch (err) {
+        console.error('Login request failed:', err);
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box error';
+        feedback.innerHTML = `<strong>Connection Error:</strong> Could not connect to Laravel backend service (${API_BASE}). Please ensure the local server is running.`;
+        submitBtn.disabled = false;
+        btnText.textContent = 'Sign In to Management Console';
+      }
     }
   </script>
 </body>
