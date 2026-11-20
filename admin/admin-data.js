@@ -1,0 +1,905 @@
+/**
+ * E-Gadget World — Admin Frontend Local State & UI Management Engine
+ * Mehnajpur HQ, Azamgarh
+ * UI-ONLY IMPLEMENTATION (Zero Backend Mutation / Demo Mode Protected)
+ */
+
+(function(window) {
+  'use strict';
+
+  // 1. Initial Verified Categories
+  const INITIAL_CATEGORIES = [
+    {
+      id: 'cat-laptops',
+      name: 'Commercial Laptops',
+      slug: 'commercial-laptops',
+      code: 'laptop',
+      description: 'Refurbished commercial laptops (Dell Latitude, HP EliteBook, Lenovo ThinkPad) tested for high performance.',
+      image: '../assets/images/placeholders/laptop-placeholder.svg',
+      status: 'active',
+      displayOrder: 1,
+      itemCount: 24
+    },
+    {
+      id: 'cat-accessories',
+      name: 'Laptop Accessories',
+      slug: 'laptop-accessories',
+      code: 'accessories',
+      description: 'Genuine OEM chargers, power adapters, SSD & RAM upgrades, ergonomic stands, and peripherals.',
+      image: '../assets/images/placeholders/accessories-placeholder.svg',
+      status: 'active',
+      displayOrder: 2,
+      itemCount: 12
+    },
+    {
+      id: 'cat-peripherals',
+      name: 'Computer Peripherals',
+      slug: 'computer-peripherals',
+      code: 'peripherals',
+      description: 'Wired and wireless optical mice, mechanical keyboards, multi-port hubs, and laptop bags.',
+      image: '../assets/images/placeholders/accessory-peripherals.svg',
+      status: 'active',
+      displayOrder: 3,
+      itemCount: 6
+    },
+    {
+      id: 'cat-repair-parts',
+      name: 'Repair Workshop Spares',
+      slug: 'repair-spares',
+      code: 'spares',
+      description: 'Replacement screens, internal cooling fans, genuine hinges, DC jacks, and replacement batteries.',
+      image: '../assets/images/placeholders/product-placeholder.svg',
+      status: 'inactive',
+      displayOrder: 4,
+      itemCount: 0
+    }
+  ];
+
+  // 2. Initial Verified Accessories Inventory (12 Live Showroom Items)
+  const INITIAL_ACCESSORIES = [
+    {
+      id: 'acc-1',
+      sku: 'ACC-CHG-65W-HP-01',
+      name: 'HP 65W Blue Pin Smart AC Power Adapter',
+      brand: 'HP',
+      type: 'Charger',
+      model: '710412-001',
+      compatibility: 'HP EliteBook 840 G3/G4/G5, ProBook 440 G1',
+      connectivity: 'Barrel 4.5mm Blue Pin',
+      color: 'Black',
+      warranty: '12 Months Replacement',
+      description: '100% Genuine HP 65W Smart AC adapter with surge protection & heavy-duty AC cord.',
+      quantity: 8,
+      soldQuantity: 0,
+      purchasePrice: 650,
+      price: 1250,
+      image: '../assets/images/placeholders/accessory-charger.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-2',
+      sku: 'ACC-CHG-65W-DEL-02',
+      name: 'Dell 65W 7.4mm Barrel Original Laptop Charger',
+      brand: 'Dell',
+      type: 'Charger',
+      model: 'HA65NS5-00',
+      compatibility: 'Dell Latitude E7450, 3490, 5480, Inspiron N4110',
+      connectivity: '7.4mm with Center Pin',
+      color: 'Black',
+      warranty: '12 Months Replacement',
+      description: 'High durability OEM Dell laptop power brick with reinforced strain relief.',
+      quantity: 6,
+      soldQuantity: 0,
+      purchasePrice: 700,
+      price: 1350,
+      image: '../assets/images/placeholders/accessory-charger.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-3',
+      sku: 'ACC-CHG-65W-LEN-03',
+      name: 'Lenovo 65W Type-C Rapid Charging Adapter',
+      brand: 'Lenovo',
+      type: 'Charger',
+      model: 'ADLX65YLC3A',
+      compatibility: 'Lenovo ThinkPad L14, T480, Universal Type-C Laptops',
+      connectivity: 'USB Type-C',
+      color: 'Black',
+      warranty: '12 Months Replacement',
+      description: 'Lenovo ThinkPad official 65W USB-PD fast power adapter with detachable cord.',
+      quantity: 4,
+      soldQuantity: 0,
+      purchasePrice: 850,
+      price: 1650,
+      image: '../assets/images/placeholders/accessory-charger.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-4',
+      sku: 'ACC-RAM-8GB-DDR4-04',
+      name: 'Kingston 8GB DDR4 2666MHz SODIMM Laptop RAM',
+      brand: 'Kingston',
+      type: 'RAM Upgrade',
+      model: 'KVR26S19S8/8',
+      compatibility: 'Dell, HP, Lenovo 6th to 11th Gen Commercial Laptops',
+      connectivity: '260-Pin SODIMM',
+      color: 'Green',
+      warranty: '3 Years Warranty',
+      description: 'High-speed commercial laptop RAM module for seamless multitasking and performance boost.',
+      quantity: 10,
+      soldQuantity: 0,
+      purchasePrice: 1100,
+      price: 1850,
+      image: '../assets/images/placeholders/accessory-ram.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-5',
+      sku: 'ACC-RAM-16GB-DDR4-05',
+      name: 'Crucial 16GB DDR4 3200MHz High-Speed Laptop RAM',
+      brand: 'Crucial',
+      type: 'RAM Upgrade',
+      model: 'CT16G4SFRA32A',
+      compatibility: 'Modern Business & Multitasking Laptops',
+      connectivity: '260-Pin SODIMM',
+      color: 'Green',
+      warranty: '3 Years Warranty',
+      description: 'Premium Micron-die DDR4 laptop memory for heavy software and virtualization.',
+      quantity: 2,
+      soldQuantity: 0,
+      purchasePrice: 2100,
+      price: 3200,
+      image: '../assets/images/placeholders/accessory-ram.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-6',
+      sku: 'ACC-SSD-256GB-NVME-06',
+      name: 'Western Digital Green 256GB NVMe M.2 SSD',
+      brand: 'Western Digital',
+      type: 'Storage Upgrade',
+      model: 'WDS256G2G0C',
+      compatibility: 'M.2 NVMe Supported Commercial Laptops',
+      connectivity: 'PCIe Gen3 x4 M.2 2280',
+      color: 'Black/Green',
+      warranty: '3 Years Warranty',
+      description: 'Blazing fast solid state drive with up to 2400MB/s sequential read performance.',
+      quantity: 5,
+      soldQuantity: 0,
+      purchasePrice: 1250,
+      price: 2100,
+      image: '../assets/images/placeholders/accessory-ssd.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-7',
+      sku: 'ACC-SSD-512GB-SATA-07',
+      name: 'Crucial BX500 512GB 2.5" SATA III SSD',
+      brand: 'Crucial',
+      type: 'Storage Upgrade',
+      model: 'CT512BX500SSD1',
+      compatibility: 'All 2.5" Laptop Bays (Legacy & Modern SATA)',
+      connectivity: 'SATA III 6Gb/s',
+      color: 'Black',
+      warranty: '3 Years Warranty',
+      description: 'High capacity reliable solid state drive replacement for mechanical hard drives.',
+      quantity: 4,
+      soldQuantity: 0,
+      purchasePrice: 1800,
+      price: 2900,
+      image: '../assets/images/placeholders/accessory-ssd.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-8',
+      sku: 'ACC-PER-LOGI-MOU-08',
+      name: 'Logitech B100 Optical USB Wired Mouse',
+      brand: 'Logitech',
+      type: 'Peripherals',
+      model: 'B100',
+      compatibility: 'Windows, macOS, Linux (Plug and Play)',
+      connectivity: 'USB-A Wired (1.8m Cable)',
+      color: 'Black',
+      warranty: '3 Years Warranty',
+      description: 'Full-size ambidextrous optical mouse with high-precision 800 DPI tracking.',
+      quantity: 12,
+      soldQuantity: 0,
+      purchasePrice: 210,
+      price: 350,
+      image: '../assets/images/placeholders/accessory-peripherals.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-9',
+      sku: 'ACC-PER-DEL-COMBO-09',
+      name: 'Dell KM117 Wireless Keyboard & Mouse Combo',
+      brand: 'Dell',
+      type: 'Peripherals',
+      model: 'KM117',
+      compatibility: 'Universal PC / Laptop / Smart TV',
+      connectivity: '2.4GHz Wireless USB Nano Dongle',
+      color: 'Black',
+      warranty: '1 Year Brand Warranty',
+      description: 'Sleek, spill-resistant wireless keyboard and mouse set with 12 months battery life.',
+      quantity: 3,
+      soldQuantity: 0,
+      purchasePrice: 850,
+      price: 1450,
+      image: '../assets/images/placeholders/accessory-peripherals.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-10',
+      sku: 'ACC-BAG-LEN-B210-10',
+      name: 'Lenovo 15.6" Casual Laptop Backpack B210',
+      brand: 'Lenovo',
+      type: 'Laptop Bag',
+      model: 'GX40Q17225',
+      compatibility: 'Up to 15.6" Laptops',
+      connectivity: 'N/A',
+      color: 'Charcoal Grey',
+      warranty: '1 Year Warranty',
+      description: 'Water-repellent snow yarn polyester fabric with quilted padded laptop compartment.',
+      quantity: 7,
+      soldQuantity: 0,
+      purchasePrice: 450,
+      price: 899,
+      image: '../assets/images/placeholders/accessories-placeholder.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-11',
+      sku: 'ACC-STD-ALU-ADJ-11',
+      name: 'Portronics My Buddy K Foldable Ergonomic Stand',
+      brand: 'Portronics',
+      type: 'Laptop Stand',
+      model: 'POR-1153',
+      compatibility: 'Laptops 10" to 17" & Tablets',
+      connectivity: 'N/A',
+      color: 'Silver Aluminium',
+      warranty: '1 Year Warranty',
+      description: 'Multi-level angle adjustment aluminium stand with anti-slip silicone pads for heat dissipation.',
+      quantity: 5,
+      soldQuantity: 0,
+      purchasePrice: 400,
+      price: 799,
+      image: '../assets/images/placeholders/accessories-placeholder.svg',
+      gallery: [],
+      status: 'published'
+    },
+    {
+      id: 'acc-12',
+      sku: 'ACC-ADP-TYPEC-HUB-12',
+      name: 'Zebronics 4-in-1 Type-C Multiport Adapter Hub',
+      brand: 'Zebronics',
+      type: 'Cable & Adapter',
+      model: 'ZEB-90HB',
+      compatibility: 'Type-C Laptops (HDMI 4K, USB 3.0, PD 60W)',
+      connectivity: 'USB Type-C',
+      color: 'Space Grey',
+      warranty: '1 Year Brand Warranty',
+      description: 'Expands single Type-C port into HDMI 4K, USB 3.0, USB 2.0 and PD pass-through charging.',
+      quantity: 2,
+      soldQuantity: 0,
+      purchasePrice: 600,
+      price: 1150,
+      image: '../assets/images/placeholders/accessories-placeholder.svg',
+      gallery: [],
+      status: 'published'
+    }
+  ];
+
+  // 3. Dynamic Form Field Schemas (Section 3 & Architecture)
+  const CATEGORY_FORM_SCHEMAS = {
+    laptop: {
+      categoryName: 'Commercial Laptops',
+      code: 'laptop',
+      sections: [
+        {
+          title: 'Primary Laptop Identification',
+          fields: [
+            { id: 'lpNumber', label: 'LP NO.', type: 'text', placeholder: 'e.g. 3964', required: true, hint: 'Unique showroom inventory number' },
+            { id: 'modelBrand', label: 'MODEL & BRAND', type: 'text', placeholder: 'e.g. HP EliteBook 840 G5', required: true, hint: 'Include brand and specific model' },
+            { id: 'processor', label: 'PROCESSOR', type: 'text', placeholder: 'e.g. Intel Core i5', required: true },
+            { id: 'generation', label: 'GENERATION', type: 'text', placeholder: 'e.g. 8th Gen', required: true }
+          ]
+        },
+        {
+          title: 'Hardware Specifications',
+          fields: [
+            { id: 'ram', label: 'RAM', type: 'text', placeholder: 'e.g. 8GB DDR4', required: true },
+            { id: 'storage', label: 'STORAGE', type: 'text', placeholder: 'e.g. 256GB SSD', required: true },
+            { id: 'quantity', label: 'Piece', type: 'number', placeholder: 'e.g. 1', required: true, min: 1, defaultValue: 1 },
+            { id: 'price', label: 'Price', type: 'number', placeholder: 'e.g. 26500', required: true, min: 0 }
+          ]
+        },
+        {
+          title: 'Catalog Visuals & Publication Status',
+          fields: [
+            { id: 'status', label: 'Product Status', type: 'select', options: [{ value: 'published', label: 'Published (Visible in Catalog)' }, { value: 'draft', label: 'Draft (Showroom Review)' }], required: true },
+            { id: 'warrantyDisplay', label: 'Warranty Terms', type: 'text', placeholder: 'e.g. 6-12 Months Store Warranty', required: false },
+            { id: 'description', label: 'Public Description', type: 'textarea', placeholder: 'Commercial grade durable business laptop tested for office, development and student use...', required: false }
+          ]
+        }
+      ]
+    },
+    accessories: {
+      categoryName: 'Laptop Accessories',
+      code: 'accessories',
+      sections: [
+        {
+          title: 'Accessory SKU & Identification',
+          fields: [
+            { id: 'sku', label: 'SKU / Item Code', type: 'text', placeholder: 'e.g. ACC-CHG-HP-01', required: true, hint: 'Store barcode or item code' },
+            { id: 'name', label: 'Product Name', type: 'text', placeholder: 'e.g. HP 65W Blue Pin Smart AC Adapter', required: true },
+            { id: 'brand', label: 'Brand', type: 'text', placeholder: 'e.g. HP, Dell, Logitech, Crucial', required: true },
+            { id: 'type', label: 'Accessory Type', type: 'select', options: [
+              { value: 'Charger', label: 'Charger & Power Adapter' },
+              { value: 'RAM Upgrade', label: 'RAM Memory' },
+              { value: 'Storage Upgrade', label: 'SSD / Storage' },
+              { value: 'Peripherals', label: 'Mouse & Keyboard' },
+              { value: 'Laptop Bag', label: 'Backpack & Sleeve' },
+              { value: 'Laptop Stand', label: 'Cooling Pad & Stand' },
+              { value: 'Cable & Adapter', label: 'Cable, Hub & Converter' }
+            ], required: true }
+          ]
+        },
+        {
+          title: 'Compatibility & Hardware Specs',
+          fields: [
+            { id: 'model', label: 'Model', type: 'text', placeholder: 'e.g. 710412-001', required: false },
+            { id: 'compatibility', label: 'Compatibility', type: 'text', placeholder: 'e.g. HP EliteBook 840 G3/G4/G5', required: true },
+            { id: 'connectivity', label: 'Connectivity', type: 'text', placeholder: 'e.g. 4.5mm Blue Pin / USB Type-C', required: false },
+            { id: 'color', label: 'Color', type: 'text', placeholder: 'e.g. Black / Silver', required: false },
+            { id: 'warranty', label: 'Warranty', type: 'text', placeholder: 'e.g. 1 Year Brand Replacement', required: true }
+          ]
+        },
+        {
+          title: 'Quantity & Commercial Pricing',
+          fields: [
+            { id: 'quantity', label: 'Piece / Quantity', type: 'number', placeholder: 'e.g. 5', required: true, min: 1, defaultValue: 1 },
+            { id: 'purchasePrice', label: 'Purchase Price (Admin-Only)', type: 'number', placeholder: 'e.g. 650', required: true, hint: 'Protected: Never exposed on public website' },
+            { id: 'price', label: 'Selling Price (Public INR)', type: 'number', placeholder: 'e.g. 1250', required: true },
+            { id: 'status', label: 'Status', type: 'select', options: [{ value: 'published', label: 'Published' }, { value: 'draft', label: 'Draft' }], required: true }
+          ]
+        },
+        {
+          title: 'Description & Notes',
+          fields: [
+            { id: 'description', label: 'Description', type: 'textarea', placeholder: 'Detailed product specifications, warranty conditions, and genuine verification details...', required: false }
+          ]
+        }
+      ]
+    }
+  };
+
+  // 4. Central Admin State Manager
+  class AdminStateManager {
+    constructor() {
+      this.STORAGE_KEY = 'egadget_admin_ui_state_v1';
+      this.state = this.loadState();
+    }
+
+    // Load initial or persisted demo state
+    loadState() {
+      try {
+        const saved = localStorage.getItem(this.STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return parsed;
+        }
+      } catch (err) {
+        console.warn('Failed reading admin state from localStorage:', err);
+      }
+
+      // Fresh default state
+      const initialLaptops = this.normalizeInitialLaptops();
+      return {
+        categories: JSON.parse(JSON.stringify(INITIAL_CATEGORIES)),
+        laptops: initialLaptops,
+        accessories: JSON.parse(JSON.stringify(INITIAL_ACCESSORIES)),
+        sales: [
+          {
+            id: 'SALE-1001',
+            date: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
+            productId: '3909',
+            productName: 'HP EliteBook 840 G3 (LP #3909)',
+            lpNumber: '3909',
+            category: 'Commercial Laptops',
+            quantity: 1,
+            unitPrice: 23000,
+            totalAmount: 23000,
+            paymentMethod: 'UPI',
+            customerName: 'Ramesh Singh',
+            customerPhone: '9876543210',
+            notes: 'Showroom delivery with 6-month store warranty',
+            status: 'Completed',
+            isDemo: true
+          }
+        ],
+        demoModeActive: true
+      };
+    }
+
+    // Map 24 laptops from PRODUCT_INVENTORY with fallback
+    normalizeInitialLaptops() {
+      const source = (typeof window.PRODUCT_INVENTORY !== 'undefined' && Array.isArray(window.PRODUCT_INVENTORY))
+        ? window.PRODUCT_INVENTORY
+        : [];
+
+      return source.map((item, index) => ({
+        id: item.id || String(item.lpNumber || index + 1),
+        lpNumber: String(item.lpNumber || item.id || (3000 + index)),
+        brand: item.brand || 'Commercial',
+        model: item.model || 'Laptop',
+        processor: item.processor || 'Intel Core i5',
+        generation: item.generation || '8th Gen',
+        ram: item.ram || '8GB',
+        storage: item.storage || '256GB SSD',
+        quantity: typeof item.quantity === 'number' ? item.quantity : 1,
+        soldQuantity: 0,
+        price: Number(item.price) || 22000,
+        image: (item.images && item.images[0]) ? item.images[0] : '../assets/images/placeholders/laptop-placeholder.svg',
+        gallery: item.images || [],
+        status: 'published',
+        warrantyDisplay: item.warrantyDisplay || '6-12 Months Store Warranty',
+        description: item.description || '',
+        badge: item.badge || ''
+      }));
+    }
+
+    saveState() {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.state));
+      } catch (err) {
+        console.error('Failed saving admin state to localStorage:', err);
+      }
+    }
+
+    resetDemoState() {
+      localStorage.removeItem(this.STORAGE_KEY);
+      this.state = this.loadState();
+      return true;
+    }
+
+    // Public Stock Rules Presentation Helper (Section 6)
+    static getPublicStockPresentation(quantity) {
+      const qty = Number(quantity) || 0;
+      if (qty > 2) {
+        return { label: 'In Stock', badgeClass: 'stock-in', isAvailable: true, displayCode: 'in_stock' };
+      } else if (qty === 2) {
+        return { label: 'Only 2 Left', badgeClass: 'stock-low', isAvailable: true, displayCode: 'only_2_left' };
+      } else if (qty === 1) {
+        return { label: 'Only 1 Left', badgeClass: 'stock-critical', isAvailable: true, displayCode: 'only_1_left' };
+      } else {
+        return { label: 'Sold Out', badgeClass: 'stock-soldout', isAvailable: false, displayCode: 'sold_out' };
+      }
+    }
+
+    // Sales Statistics Engine (Section 8 & 9)
+    getStatistics() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      let todaySalesRevenue = 0;
+      let todaySalesCount = 0;
+      let yesterdaySalesRevenue = 0;
+      let yesterdaySalesCount = 0;
+      let totalSalesRevenue = 0;
+      let totalSalesCount = this.state.sales.length;
+      let totalSoldUnits = 0;
+
+      this.state.sales.forEach(sale => {
+        const amount = Number(sale.totalAmount) || 0;
+        const qty = Number(sale.quantity) || 1;
+        totalSalesRevenue += amount;
+        totalSoldUnits += qty;
+
+        if (sale.date === todayStr) {
+          todaySalesRevenue += amount;
+          todaySalesCount += 1;
+        } else if (sale.date === yesterdayStr) {
+          yesterdaySalesRevenue += amount;
+          yesterdaySalesCount += 1;
+        }
+      });
+
+      // Laptop pieces
+      let totalLaptopUnits = 0;
+      let lowStockLaptops = 0;
+      let outOfStockLaptops = 0;
+      this.state.laptops.forEach(lp => {
+        const q = Number(lp.quantity) || 0;
+        totalLaptopUnits += q;
+        if (q === 0) outOfStockLaptops++;
+        else if (q <= 2) lowStockLaptops++;
+      });
+
+      // Accessories pieces
+      let totalAccessoryUnits = 0;
+      let lowStockAccessories = 0;
+      let outOfStockAccessories = 0;
+      this.state.accessories.forEach(acc => {
+        const q = Number(acc.quantity) || 0;
+        totalAccessoryUnits += q;
+        if (q === 0) outOfStockAccessories++;
+        else if (q <= 2) lowStockAccessories++;
+      });
+
+      const totalItemsUnits = totalLaptopUnits + totalAccessoryUnits;
+      const totalProductsModels = this.state.laptops.length + this.state.accessories.length;
+      const lowStockItems = lowStockLaptops + lowStockAccessories;
+      const outOfStockItems = outOfStockLaptops + outOfStockAccessories;
+      const remainingStock = totalItemsUnits;
+
+      return {
+        // Sales Cards
+        todayRevenue: todaySalesRevenue,
+        todayCount: todaySalesCount,
+        yesterdayRevenue: yesterdaySalesRevenue,
+        yesterdayCount: yesterdaySalesCount,
+        allTimeRevenue: totalSalesRevenue,
+        allTimeInvoices: totalSalesCount,
+
+        // 6 Inventory Stats
+        totalItemsUnits,
+        totalSoldUnits,
+        remainingStock,
+        totalProductsModels,
+        lowStockItems,
+        outOfStockItems,
+
+        // Details breakdown
+        laptopCount: this.state.laptops.length,
+        laptopUnits: totalLaptopUnits,
+        accessoriesCount: this.state.accessories.length,
+        accessoriesUnits: totalAccessoryUnits
+      };
+    }
+
+    // Record Sold Item (Section 7 — UI ONLY)
+    recordSale(saleParams) {
+      const {
+        category,
+        itemId,
+        quantity,
+        unitPrice,
+        customerName,
+        customerPhone,
+        paymentMethod,
+        notes,
+        saleDate
+      } = saleParams;
+
+      const qtyToSell = parseInt(quantity, 10);
+      if (isNaN(qtyToSell) || qtyToSell <= 0) {
+        throw new Error('Please enter a valid positive sale quantity.');
+      }
+
+      let product = null;
+      let categoryName = 'Commercial Laptops';
+      let lpOrSku = '';
+
+      if (category === 'laptop') {
+        product = this.state.laptops.find(l => l.id === itemId || l.lpNumber === itemId);
+        categoryName = 'Commercial Laptops';
+        if (product) lpOrSku = `LP #${product.lpNumber}`;
+      } else {
+        product = this.state.accessories.find(a => a.id === itemId || a.sku === itemId);
+        categoryName = 'Laptop Accessories';
+        if (product) lpOrSku = product.sku;
+      }
+
+      if (!product) {
+        throw new Error('Item not found in current inventory.');
+      }
+
+      if (product.quantity < qtyToSell) {
+        throw new Error(`Insufficient stock. Only ${product.quantity} piece(s) available.`);
+      }
+
+      const totalAmount = qtyToSell * (Number(unitPrice) || product.price);
+
+      // 1. Update product demo stock
+      product.quantity -= qtyToSell;
+      product.soldQuantity = (product.soldQuantity || 0) + qtyToSell;
+
+      // 2. Create sale record
+      const saleRecord = {
+        id: `SALE-${Date.now().toString().slice(-5)}`,
+        date: saleDate || new Date().toISOString().split('T')[0],
+        productId: product.id,
+        productName: category === 'laptop' ? `${product.brand} ${product.model} (${lpOrSku})` : product.name,
+        lpNumber: lpOrSku,
+        category: categoryName,
+        quantity: qtyToSell,
+        unitPrice: Number(unitPrice) || product.price,
+        totalAmount,
+        paymentMethod: paymentMethod || 'Cash',
+        customerName: customerName ? customerName.trim() : 'Walk-in Showroom Guest',
+        customerPhone: customerPhone ? customerPhone.trim() : 'N/A',
+        notes: notes ? notes.trim() : '',
+        status: 'Completed',
+        isDemo: true
+      };
+
+      this.state.sales.unshift(saleRecord);
+      this.saveState();
+      return saleRecord;
+    }
+
+    // Cancel Demo Sale
+    cancelSale(saleId) {
+      const index = this.state.sales.findIndex(s => s.id === saleId);
+      if (index === -1) throw new Error('Sale record not found.');
+
+      const sale = this.state.sales[index];
+
+      // Restore stock
+      if (sale.category === 'Commercial Laptops') {
+        const lpClean = sale.lpNumber.replace('LP #', '').trim();
+        const lp = this.state.laptops.find(l => l.lpNumber === lpClean || l.id === sale.productId);
+        if (lp) {
+          lp.quantity += sale.quantity;
+          lp.soldQuantity = Math.max(0, (lp.soldQuantity || 0) - sale.quantity);
+        }
+      } else {
+        const acc = this.state.accessories.find(a => a.sku === sale.lpNumber || a.id === sale.productId);
+        if (acc) {
+          acc.quantity += sale.quantity;
+          acc.soldQuantity = Math.max(0, (acc.soldQuantity || 0) - sale.quantity);
+        }
+      }
+
+      this.state.sales.splice(index, 1);
+      this.saveState();
+      return true;
+    }
+
+    // Add Laptop
+    addLaptop(data) {
+      const lpNum = String(data.lpNumber).trim();
+      if (!lpNum) throw new Error('LP NO. is required.');
+
+      const exists = this.state.laptops.some(l => l.lpNumber.toLowerCase() === lpNum.toLowerCase());
+      if (exists) {
+        throw new Error(`LP #${lpNum} already exists in laptop inventory.`);
+      }
+
+      const newLaptop = {
+        id: `lp-${Date.now()}`,
+        lpNumber: lpNum,
+        brand: data.brand || 'Commercial',
+        model: data.model || 'Business Laptop',
+        processor: data.processor || 'Intel Core i5',
+        generation: data.generation || '8th Gen',
+        ram: data.ram || '8GB',
+        storage: data.storage || '256GB SSD',
+        quantity: parseInt(data.quantity, 10) || 1,
+        soldQuantity: 0,
+        price: Number(data.price) || 20000,
+        image: data.image || '../assets/images/placeholders/laptop-placeholder.svg',
+        gallery: data.gallery || [],
+        status: data.status || 'published',
+        warrantyDisplay: data.warrantyDisplay || '6-12 Months Store Warranty',
+        description: data.description || 'Commercial tested laptop.'
+      };
+
+      this.state.laptops.unshift(newLaptop);
+      this.updateCategoryCounts();
+      this.saveState();
+      return newLaptop;
+    }
+
+    // Add Accessory
+    addAccessory(data) {
+      const sku = String(data.sku).trim();
+      if (!sku) throw new Error('SKU / Item Code is required.');
+
+      const exists = this.state.accessories.some(a => a.sku.toLowerCase() === sku.toLowerCase());
+      if (exists) {
+        throw new Error(`SKU ${sku} already exists in accessories inventory.`);
+      }
+
+      const newAcc = {
+        id: `acc-${Date.now()}`,
+        sku,
+        name: data.name || 'Laptop Accessory',
+        brand: data.brand || 'Generic',
+        type: data.type || 'Charger',
+        model: data.model || '',
+        compatibility: data.compatibility || 'Universal',
+        connectivity: data.connectivity || '',
+        color: data.color || 'Black',
+        warranty: data.warranty || '1 Year Replacement',
+        description: data.description || '',
+        quantity: parseInt(data.quantity, 10) || 1,
+        soldQuantity: 0,
+        purchasePrice: Number(data.purchasePrice) || 500,
+        price: Number(data.price) || 999,
+        image: data.image || '../assets/images/placeholders/accessories-placeholder.svg',
+        gallery: data.gallery || [],
+        status: data.status || 'published'
+      };
+
+      this.state.accessories.unshift(newAcc);
+      this.updateCategoryCounts();
+      this.saveState();
+      return newAcc;
+    }
+
+    // Toggle status (Published <-> Draft)
+    toggleItemStatus(category, id) {
+      const list = category === 'laptop' ? this.state.laptops : this.state.accessories;
+      const item = list.find(x => x.id === id || x.lpNumber === id || x.sku === id);
+      if (!item) return false;
+      item.status = item.status === 'published' ? 'draft' : 'published';
+      this.saveState();
+      return item.status;
+    }
+
+    // Delete Item
+    deleteItem(category, id) {
+      if (category === 'laptop') {
+        this.state.laptops = this.state.laptops.filter(l => l.id !== id && l.lpNumber !== id);
+      } else {
+        this.state.accessories = this.state.accessories.filter(a => a.id !== id && a.sku !== id);
+      }
+      this.updateCategoryCounts();
+      this.saveState();
+      return true;
+    }
+
+    // Categories Methods (Section 2)
+    addCategory(catData) {
+      const name = (catData.name || '').trim();
+      if (!name) throw new Error('Category Name is required.');
+
+      const slug = (catData.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')).trim();
+      const code = (catData.code || slug).trim();
+
+      const newCat = {
+        id: `cat-${Date.now()}`,
+        name,
+        slug,
+        code,
+        description: catData.description || '',
+        image: catData.image || '../assets/images/placeholders/product-placeholder.svg',
+        status: catData.status || 'active',
+        displayOrder: parseInt(catData.displayOrder, 10) || (this.state.categories.length + 1),
+        itemCount: 0
+      };
+
+      this.state.categories.push(newCat);
+      this.saveState();
+      return newCat;
+    }
+
+    toggleCategoryStatus(catId) {
+      const cat = this.state.categories.find(c => c.id === catId);
+      if (cat) {
+        cat.status = cat.status === 'active' ? 'inactive' : 'active';
+        this.saveState();
+        return cat.status;
+      }
+      return null;
+    }
+
+    deleteCategory(catId) {
+      this.state.categories = this.state.categories.filter(c => c.id !== catId);
+      this.saveState();
+      return true;
+    }
+
+    updateCategoryCounts() {
+      const catLaptops = this.state.categories.find(c => c.code === 'laptop');
+      if (catLaptops) catLaptops.itemCount = this.state.laptops.length;
+
+      const catAcc = this.state.categories.find(c => c.code === 'accessories');
+      if (catAcc) catAcc.itemCount = this.state.accessories.length;
+    }
+
+    // Excel / CSV Template Generator (Section 11)
+    static generateTemplateCSV(type) {
+      if (type === 'laptop') {
+        const headers = ['LP NO.', 'MODEL & BRAND', 'PROCESSOR', 'GENERATION', 'RAM', 'STORAGE', 'Piece', 'Price', 'PIC'];
+        const sampleRows = [
+          ['3965', 'HP EliteBook 840 G5', 'Intel Core i5', '8th Gen', '8GB', '256GB SSD', '1', '26500', 'assets/images/laptops/hp-elitebook-840.svg'],
+          ['3970', 'Dell Latitude 5490', 'Intel Core i5', '8th Gen', '16GB', '512GB SSD', '2', '28000', '']
+        ];
+        return [headers.join(','), ...sampleRows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+      } else {
+        const headers = ['SKU', 'Product Name', 'Brand', 'Accessory Type', 'Model', 'Compatibility', 'Color', 'Warranty', 'Piece', 'Selling Price', 'PIC', 'Description'];
+        const sampleRows = [
+          ['ACC-CHG-HP-05', 'HP 65W Smart Adapter', 'HP', 'Charger', '710412-001', 'HP EliteBook Series', 'Black', '12 Months', '4', '1250', '', 'Genuine replacement power adapter'],
+          ['ACC-RAM-8GB-06', 'Crucial 8GB DDR4 RAM', 'Crucial', 'RAM Upgrade', 'CT8G4SFS824A', 'Universal DDR4 SODIMM', 'Green', '3 Years', '5', '1850', '', 'High speed RAM upgrade module']
+        ];
+        return [headers.join(','), ...sampleRows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
+      }
+    }
+
+    // CSV Exporter (Section 11)
+    exportInventoryCSV(category) {
+      let headers = [];
+      let rows = [];
+
+      if (category === 'laptop') {
+        headers = ['LP NO.', 'MODEL & BRAND', 'PROCESSOR', 'GENERATION', 'RAM', 'STORAGE', 'Piece', 'Price', 'PIC', 'Status'];
+        rows = this.state.laptops.map(l => [
+          l.lpNumber,
+          `${l.brand} ${l.model}`,
+          l.processor,
+          l.generation,
+          l.ram,
+          l.storage,
+          l.quantity,
+          l.price,
+          l.image,
+          l.status
+        ]);
+      } else if (category === 'accessories') {
+        headers = ['SKU', 'Product Name', 'Brand', 'Accessory Type', 'Model', 'Compatibility', 'Color', 'Warranty', 'Piece', 'Selling Price', 'PIC', 'Status'];
+        rows = this.state.accessories.map(a => [
+          a.sku,
+          a.name,
+          a.brand,
+          a.type,
+          a.model,
+          a.compatibility,
+          a.color,
+          a.warranty,
+          a.quantity,
+          a.price,
+          a.image,
+          a.status
+        ]);
+      } else {
+        // Combined
+        headers = ['Category', 'ID / SKU', 'Product Name', 'Key Specs', 'Piece', 'Price', 'Status'];
+        const laptopRows = this.state.laptops.map(l => [
+          'Commercial Laptop',
+          `LP #${l.lpNumber}`,
+          `${l.brand} ${l.model}`,
+          `${l.processor} | ${l.ram} | ${l.storage}`,
+          l.quantity,
+          l.price,
+          l.status
+        ]);
+        const accRows = this.state.accessories.map(a => [
+          'Laptop Accessory',
+          a.sku,
+          a.name,
+          `${a.brand} ${a.type} | ${a.compatibility}`,
+          a.quantity,
+          a.price,
+          a.status
+        ]);
+        rows = [...laptopRows, ...accRows];
+      }
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(r => r.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+      ].join('\n');
+
+      return csvContent;
+    }
+  }
+
+  // Attach global instances
+  window.CATEGORY_FORM_SCHEMAS = CATEGORY_FORM_SCHEMAS;
+  window.AdminStateManager = AdminStateManager;
+  window.adminState = new AdminStateManager();
+
+})(window);

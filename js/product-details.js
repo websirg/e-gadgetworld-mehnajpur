@@ -58,6 +58,7 @@ function renderProductDetails(container, laptop) {
   const formattedPrice = LaptopService.formatINR(laptop.price);
   const warrantyLabel = LaptopService.getWarrantyLabel(laptop);
   const waEnquiryUrl = LaptopService.generateWhatsAppEnquiryUrl(laptop);
+  const stock = LaptopService.getStockStatus ? LaptopService.getStockStatus(laptop.quantity) : { label: 'In Stock', badgeClass: 'badge-stock-in' };
   const mainImg = (laptop.images && laptop.images.length > 0 && laptop.images[0])
     ? laptop.images[0]
     : (typeof ImageFallbackHelper !== 'undefined' ? ImageFallbackHelper.getLaptopFallback() : 'assets/images/placeholders/laptop-placeholder.svg');
@@ -90,6 +91,7 @@ function renderProductDetails(container, laptop) {
         <div class="detail-badge-row">
           <span class="badge badge-brand">${laptop.brand}</span>
           ${laptop.badge ? `<span class="laptop-badge-custom">${laptop.badge}</span>` : ''}
+          <span class="stock-pill ${stock.badgeClass}">${stock.label}</span>
           <span class="badge" style="background-color: #ECFDF5; color: #047857; border: 1px solid #A7F3D0;">100% Verified</span>
         </div>
 

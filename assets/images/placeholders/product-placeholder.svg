@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" width="600" height="420">
+  <defs>
+    <linearGradient id="pBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#F1F5F9"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="420" rx="16" fill="url(#pBg)"/>
+  <rect x="2" y="2" width="596" height="416" rx="14" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+  
+  <!-- Package / Product icon -->
+  <g transform="translate(250, 110)">
+    <circle cx="50" cy="50" r="50" fill="#E2E8F0"/>
+    <path d="M26 38 L50 25 L74 38 L50 51 Z" fill="#94A3B8"/>
+    <path d="M26 38 L50 51 L50 75 L26 62 Z" fill="#64748B"/>
+    <path d="M74 38 L50 51 L50 75 L74 62 Z" fill="#475569"/>
+    <path d="M50 25 L50 51" stroke="#F8FAFC" stroke-width="1.5"/>
+  </g>
+
+  <text x="300" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="800" fill="#0F172A" text-anchor="middle">E-GADGET WORLD</text>
+  <text x="300" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="600" fill="#475569" text-anchor="middle">Product Image Pending Upload</text>
+  <text x="300" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="500" fill="#94A3B8" text-anchor="middle">Showroom Inventory Item</text>
+</svg>

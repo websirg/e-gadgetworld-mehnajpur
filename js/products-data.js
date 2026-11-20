@@ -685,20 +685,37 @@ const LaptopService = {
   },
 
   getStockStatus(qty) {
-    if (qty > 0) {
+    const q = typeof qty === 'number' ? qty : parseInt(qty, 10) || 0;
+    if (q > 2) {
       return {
         code: 'in_stock',
         label: 'In Stock',
-        qtyLabel: 'Available in Showroom',
+        qtyLabel: 'In Stock',
         badgeClass: 'badge-stock-in',
+        canBuy: true
+      };
+    } else if (q === 2) {
+      return {
+        code: 'low_stock',
+        label: 'Only 2 Left',
+        qtyLabel: 'Only 2 Left in Showroom',
+        badgeClass: 'badge-stock-warn',
+        canBuy: true
+      };
+    } else if (q === 1) {
+      return {
+        code: 'critical_stock',
+        label: 'Only 1 Left',
+        qtyLabel: 'Only 1 Unit Remaining',
+        badgeClass: 'badge-stock-danger',
         canBuy: true
       };
     } else {
       return {
         code: 'out_of_stock',
-        label: 'Out of Stock',
+        label: 'Sold Out',
         qtyLabel: 'Currently Unavailable',
-        badgeClass: 'badge-stock-out',
+        badgeClass: 'badge-stock-soldout',
         canBuy: false
       };
     }
@@ -852,12 +869,16 @@ const LaptopService = {
       ? laptop.images[0]
       : (typeof ImageFallbackHelper !== 'undefined' ? ImageFallbackHelper.getLaptopFallback() : 'assets/images/placeholders/laptop-placeholder.svg');
     const showCompare = options.showCompare !== false;
+    const stock = this.getStockStatus(laptop.quantity);
 
     return `
       <article class="laptop-card" data-lp="${laptop.lpNumber}">
         <div class="laptop-card-image-wrap">
           <div class="laptop-badge-top-left">
             <span class="laptop-badge-lp">LP #${laptop.lpNumber}</span>
+          </div>
+          <div class="laptop-badge-top-right">
+            <span class="stock-pill ${stock.badgeClass}">${stock.label}</span>
           </div>
           <a href="${detailUrl}" class="laptop-card-img-link" aria-label="${laptop.brand} ${laptop.model}">
             <img src="${mainImg}" alt="${laptop.brand} ${laptop.model} LP #${laptop.lpNumber}" class="laptop-card-img" width="240" height="165" loading="eager" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleLaptopImgError(this);">

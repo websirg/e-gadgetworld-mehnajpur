@@ -284,7 +284,17 @@
   </footer>
 
   <script>
-    const API_BASE = '';
+    function getApiBase() {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocal) {
+        return window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
+      }
+      if (window.location.pathname.includes('/backend-laravel/public')) {
+        return window.location.origin + '/backend-laravel/public';
+      }
+      return '';
+    }
+    const API_BASE = getApiBase();
 
     // Check URL parameters for status notices
     document.addEventListener('DOMContentLoaded', () => {
