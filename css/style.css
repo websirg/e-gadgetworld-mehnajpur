@@ -858,6 +858,125 @@ ul, ol {
   box-shadow: 0 4px 10px rgba(37, 211, 102, 0.35);
 }
 
+/* Admin Login Header Button */
+.btn-header-admin {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  border: 1px solid #1E293B;
+  padding: 0 13px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.btn-header-admin svg {
+  width: 14px;
+  height: 14px;
+  stroke: #94A3B8;
+  flex-shrink: 0;
+  transition: stroke 0.15s ease;
+}
+
+.btn-header-admin:hover {
+  background-color: #1E293B;
+  border-color: #334155;
+  color: #FFFFFF;
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.25);
+}
+
+.btn-header-admin:hover svg {
+  stroke: #38BDF8;
+}
+
+.btn-header-admin.is-authenticated {
+  background-color: #064E3B;
+  border-color: #059669;
+  color: #ECFDF5;
+}
+
+.btn-header-admin.is-authenticated svg {
+  stroke: #34D399;
+}
+
+.btn-header-admin.is-authenticated:hover {
+  background-color: #047857;
+  border-color: #10B981;
+}
+
+/* Top-bar subtle Admin button */
+.top-bar-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #E2E8F0;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  line-height: 1.4;
+}
+
+.top-bar-admin-btn:hover {
+  background: rgba(37, 99, 235, 0.25);
+  border-color: #3B82F6;
+  color: #FFFFFF;
+}
+
+.top-bar-admin-btn.is-authenticated {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10B981;
+  color: #6EE7B7;
+}
+
+/* Mobile Drawer Admin Button */
+.mobile-drawer-admin {
+  padding: 14px 16px;
+  border-top: 1px solid var(--color-border);
+  margin-top: auto;
+  background: #F8FAFC;
+}
+
+.mobile-drawer-admin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #0F172A;
+  color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.mobile-drawer-admin-btn:hover {
+  background: #1E293B;
+}
+
+.mobile-drawer-admin-btn svg {
+  stroke: #94A3B8;
+}
+
+.mobile-drawer-admin-btn.is-authenticated {
+  background: #064E3B;
+  color: #ECFDF5;
+}
+
+.mobile-drawer-admin-btn.is-authenticated svg {
+  stroke: #34D399;
+}
+
 /* Hamburger Button */
 .hamburger-btn {
   display: none;

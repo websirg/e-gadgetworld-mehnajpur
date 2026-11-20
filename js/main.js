@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initRepairModal();
   initImageFallbacks();
   initCompareHeaderBadge();
+  initAdminHeaderButton();
 });
 
 /**
@@ -462,4 +463,107 @@ function initImageFallbacks() {
       }
     }
   });
+}
+
+/**
+ * Header Admin Login / Dashboard Button Management
+ * Automatically checks authentication status and updates button label/link
+ */
+function initAdminHeaderButton() {
+  const token = localStorage.getItem('egadget_admin_token');
+  const userStr = localStorage.getItem('egadget_admin_user');
+  let user = null;
+  try {
+    if (userStr) user = JSON.parse(userStr);
+  } catch (e) {
+    user = null;
+  }
+
+  const isAuthenticated = Boolean(token);
+
+  // Auto-inject header button into .header-actions if not present in static markup
+  let headerBtn = document.getElementById('headerAdminBtn');
+  const headerActions = document.querySelector('.header-actions');
+  if (!headerBtn && headerActions) {
+    headerBtn = document.createElement('a');
+    headerBtn.id = 'headerAdminBtn';
+    headerBtn.className = 'header-action-btn btn-header-admin';
+    headerBtn.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span class="action-btn-text admin-btn-text">Admin</span>
+    `;
+    const hamburgerBtn = headerActions.querySelector('.hamburger-btn');
+    if (hamburgerBtn) {
+      headerActions.insertBefore(headerBtn, hamburgerBtn);
+    } else {
+      headerActions.appendChild(headerBtn);
+    }
+  }
+
+  // Auto-inject drawer button into mobile drawer if not present
+  let drawerBtn = document.getElementById('drawerAdminBtn');
+  const drawer = document.getElementById('mobileNavDrawer');
+  const drawerFooter = document.querySelector('.mobile-drawer-footer');
+  if (!drawerBtn && drawer && drawerFooter) {
+    const adminWrap = document.createElement('div');
+    adminWrap.className = 'mobile-drawer-admin';
+    adminWrap.innerHTML = `
+      <a href="admin/login.html" class="mobile-drawer-admin-btn" id="drawerAdminBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span class="drawer-admin-text">Admin Login</span>
+      </a>
+    `;
+    drawer.insertBefore(adminWrap, drawerFooter);
+    drawerBtn = adminWrap.querySelector('#drawerAdminBtn');
+  }
+
+  // Update Top Bar button if present
+  const topBarBtn = document.getElementById('topBarAdminBtn');
+  if (topBarBtn) {
+    if (isAuthenticated) {
+      topBarBtn.href = 'admin/dashboard.html';
+      topBarBtn.classList.add('is-authenticated');
+      topBarBtn.title = `Admin Console: ${user?.name || 'Staff'}`;
+      const label = topBarBtn.querySelector('.admin-btn-label');
+      if (label) label.textContent = 'Dashboard';
+    } else {
+      topBarBtn.href = 'admin/login.html';
+      topBarBtn.classList.remove('is-authenticated');
+      topBarBtn.title = 'Staff Admin Login';
+      const label = topBarBtn.querySelector('.admin-btn-label');
+      if (label) label.textContent = 'Admin Login';
+    }
+  }
+
+  // Update Header Action button
+  if (headerBtn) {
+    if (isAuthenticated) {
+      headerBtn.href = 'admin/dashboard.html';
+      headerBtn.classList.add('is-authenticated');
+      headerBtn.title = `Admin Dashboard (${user?.name || 'Authorized Staff'})`;
+      const text = headerBtn.querySelector('.admin-btn-text');
+      if (text) text.textContent = 'Dashboard';
+    } else {
+      headerBtn.href = 'admin/login.html';
+      headerBtn.classList.remove('is-authenticated');
+      headerBtn.title = 'Staff Admin Login';
+      const text = headerBtn.querySelector('.admin-btn-text');
+      if (text) text.textContent = 'Admin Login';
+    }
+  }
+
+  // Update Mobile Drawer button
+  if (drawerBtn) {
+    if (isAuthenticated) {
+      drawerBtn.href = 'admin/dashboard.html';
+      drawerBtn.classList.add('is-authenticated');
+      const text = drawerBtn.querySelector('.drawer-admin-text');
+      if (text) text.textContent = 'Management Dashboard';
+    } else {
+      drawerBtn.href = 'admin/login.html';
+      drawerBtn.classList.remove('is-authenticated');
+      const text = drawerBtn.querySelector('.drawer-admin-text');
+      if (text) text.textContent = 'Admin Login';
+    }
+  }
 }

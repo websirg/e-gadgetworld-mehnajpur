@@ -137,12 +137,14 @@
   }
 
   .btn-header-whatsapp .action-btn-text,
-  .btn-header-compare .action-btn-text {
+  .btn-header-compare .action-btn-text,
+  .btn-header-admin .action-btn-text {
     display: none;
   }
 
   .btn-header-whatsapp,
-  .btn-header-compare {
+  .btn-header-compare,
+  .btn-header-admin {
     padding: 0 10px;
     min-width: 40px;
     width: 40px;
