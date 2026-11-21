@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Clean URLs: /login, /dashboard, /setting
+  RewriteRule ^login/?$ login/index.html [L,QSA]
+  RewriteRule ^dashboard/?$ dashboard/index.html [L,QSA]
+  RewriteRule ^setting/?$ setting/index.html [L,QSA]
+  RewriteRule ^settings/?$ setting/index.html [L,QSA]
+
+  # Clean URLs for admin legacy links
+  RewriteRule ^admin/login/?$ login/index.html [L,QSA]
+  RewriteRule ^admin/dashboard/?$ dashboard/index.html [L,QSA]
+  RewriteRule ^admin/?$ dashboard/index.html [L,QSA]
+</IfModule>

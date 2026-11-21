@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | EGadget</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../assets/images/logo-official.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      color: #0F172A;
+    }
+    .admin-auth-header {
+      padding: 18px 24px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-auth-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .admin-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+      border: 1px solid #E2E8F0;
+      width: 100%;
+      max-width: 440px;
+      padding: 36px 32px;
+    }
+    .admin-card-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .admin-card-logo {
+      height: 48px;
+      width: auto;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      object-fit: contain;
+    }
+    .admin-card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 0 0 6px 0;
+    }
+    .admin-card-subtitle {
+      font-size: 13.5px;
+      color: #64748B;
+      margin: 0;
+    }
+    .admin-status-box {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #166534;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .admin-status-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: #16A34A;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #0F172A;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      box-sizing: border-box;
+      background: #FFFFFF;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: #2563EB;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .form-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      font-size: 13px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #475569;
+      cursor: pointer;
+    }
+    .password-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .password-input-wrap .form-input {
+      padding-right: 44px;
+    }
+    .btn-toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #64748B;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .btn-toggle-password:hover {
+      color: #0F172A;
+      background: #F1F5F9;
+    }
+    .spinner-btn {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spinBtn 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spinBtn {
+      to { transform: rotate(360deg); }
+    }
+    .btn-admin-submit:disabled .spinner-btn {
+      display: inline-block;
+    }
+    .btn-admin-submit {
+      width: 100%;
+      padding: 12px;
+      background: #2563EB;
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s ease;
+    }
+    .btn-admin-submit:hover:not(:disabled) {
+      background: #1D4ED8;
+    }
+    .btn-admin-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .admin-auth-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12.5px;
+      color: #94A3B8;
+      border-top: 1px solid #E2E8F0;
+      background: #FFFFFF;
+    }
+    .back-showroom-link {
+      font-size: 13px;
+      color: #64748B;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    .back-showroom-link:hover {
+      color: #2563EB;
+    }
+    .alert-box {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .alert-box.info {
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
+    }
+    .alert-box.success {
+      background: #F0FDF4;
+      color: #166534;
+      border: 1px solid #BBF7D0;
+    }
+    .alert-box.error {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+    .alert-box.warning {
+      background: #FFFBEB;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-auth-header">
+    <a href="../index.html" class="back-showroom-link" title="Return to Website">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Back to Website
+    </a>
+    <div style="font-size: 12.5px; color: #64748B;">
+      Staff Portal
+    </div>
+  </header>
+
+  <!-- Login Main Container -->
+  <main class="admin-auth-container">
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <a href="../index.html">
+          <img src="../assets/images/logo-official.png" alt="EGadget Logo" class="admin-card-logo">
+        </a>
+        <h1 class="admin-card-title">Admin Login</h1>
+        <p class="admin-card-subtitle">EGadget World Portal</p>
+      </div>
+
+      <!-- Environment / Status Notice -->
+      <div class="admin-status-box">
+        <svg class="admin-status-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <div>
+          <strong>Backend Connected:</strong> Authorized staff login for inventory &amp; sales console.
+        </div>
+      </div>
+
+      <div id="loginFeedback" class="alert-box"></div>
+
+      <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="branchSelect">Branch</label>
+          <select id="branchSelect" class="form-select" required>
+            <option value="MEHNAJPUR" selected>Mehnajpur HQ</option>
+            <option value="BURARI">Delhi (Burari)</option>
+            <option value="VARANASI">Varanasi Hub</option>
+            <option value="HALDWANI">Haldwani</option>
+            <option value="BANGALORE">Bangalore Hub</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="staffEmail">Email</label>
+          <input type="email" id="staffEmail" class="form-input" placeholder="egadgetworld@websirg.com" autocomplete="username" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="staffPassword">Password</label>
+          <div class="password-input-wrap">
+            <input type="password" id="staffPassword" class="form-input" placeholder="••••••••••••" autocomplete="current-password" required>
+            <button type="button" id="btnTogglePassword" class="btn-toggle-password" onclick="togglePasswordVisibility()" title="Show/Hide Password" aria-label="Toggle password visibility">
+              <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg id="eyeOffIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rememberMe" checked>
+            Remember me
+          </label>
+          <a href="../contact.html" style="color: #2563EB; text-decoration: none; font-size: 12.5px;">Help?</a>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-admin-submit">
+          <span class="spinner-btn" id="loginSpinner"></span>
+          <svg id="lockIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span id="btnText">Sign In</span>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="admin-auth-footer">
+    Copyright &copy; 2026 EGadget World. Authorized Access Only.
+  </footer>
+
+  <script>
+    function getApiBase() {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocal) {
+        return window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
+      }
+      if (window.location.pathname.includes('/backend-laravel/public')) {
+        return window.location.origin + '/backend-laravel/public';
+      }
+      return '';
+    }
+    const API_BASE = getApiBase();
+
+    // Check URL parameters for status notices
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const feedback = document.getElementById('loginFeedback');
+
+      if (urlParams.get('unauthorized') === '1') {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box warning';
+        feedback.innerHTML = '<strong>Access Restricted:</strong> Please log in to access the E-Gadget World Admin Dashboard.';
+      } else if (urlParams.get('expired') === '1') {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box warning';
+        feedback.innerHTML = '<strong>Session Expired:</strong> Your staff session has timed out. Please sign in again.';
+      } else if (urlParams.get('logged_out') === '1') {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box info';
+        feedback.innerHTML = '<strong>Logged Out:</strong> You have been safely signed out of the management console.';
+      }
+
+      // Check if already authenticated
+      const existingToken = localStorage.getItem('egadget_admin_token');
+      if (existingToken && !urlParams.get('logged_out')) {
+        // Fast redirect to dashboard
+        window.location.replace(window.location.pathname.includes('/admin') ? 'dashboard.html' : '/dashboard');
+      }
+    });
+
+    function togglePasswordVisibility() {
+      const pwd = document.getElementById('staffPassword');
+      const eye = document.getElementById('eyeIcon');
+      const eyeOff = document.getElementById('eyeOffIcon');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        eye.style.display = 'none';
+        eyeOff.style.display = 'block';
+      } else {
+        pwd.type = 'password';
+        eye.style.display = 'block';
+        eyeOff.style.display = 'none';
+      }
+    }
+
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      const feedback = document.getElementById('loginFeedback');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const lockIcon = document.getElementById('lockIcon');
+      const email = document.getElementById('staffEmail').value.trim();
+      const password = document.getElementById('staffPassword').value;
+      const branch = document.getElementById('branchSelect').value;
+
+      // Validation
+      if (!email || !password) {
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box warning';
+        feedback.innerHTML = '<strong>Validation Error:</strong> Please enter both email and password.';
+        return;
+      }
+
+      // Loading UI
+      submitBtn.disabled = true;
+      if (lockIcon) lockIcon.style.display = 'none';
+      btnText.textContent = 'Verifying credentials...';
+      feedback.style.display = 'none';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/admin/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ email, password, branch })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Success: Store token & profile
+          localStorage.setItem('egadget_admin_token', data.token);
+          localStorage.setItem('egadget_admin_user', JSON.stringify(data.user));
+
+          feedback.style.display = 'block';
+          feedback.className = 'alert-box success';
+          feedback.innerHTML = `<strong>Authenticated!</strong> Welcome back, ${data.user.name}. Redirecting to Management Dashboard...`;
+
+          setTimeout(() => {
+            window.location.href = window.location.pathname.includes('/admin') ? (data.redirect || 'dashboard.html') : '/dashboard';
+          }, 600);
+        } else {
+          // Error response
+          feedback.style.display = 'block';
+          feedback.className = 'alert-box error';
+          feedback.innerHTML = `<strong>Authentication Failed:</strong> ${data.message || 'Invalid credentials.'}`;
+          submitBtn.disabled = false;
+          if (lockIcon) lockIcon.style.display = 'inline-block';
+          btnText.textContent = 'Sign In';
+        }
+      } catch (err) {
+        console.error('Login connection error');
+        feedback.style.display = 'block';
+        feedback.className = 'alert-box error';
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isLocal) {
+          feedback.innerHTML = `<strong>Backend Server Offline:</strong> Could not connect to local Laravel API at <code>${API_BASE || 'http://127.0.0.1:8000'}</code>.<br><small style="margin-top:6px;display:block;">To start the local Laravel service, run: <code>cd backend-laravel && php artisan serve --port=8000</code></small>`;
+        } else {
+          feedback.innerHTML = `<strong>Connection Error:</strong> Could not connect to authentication service. Please check your network or try again shortly.`;
+        }
+        submitBtn.disabled = false;
+        if (lockIcon) lockIcon.style.display = 'inline-block';
+        btnText.textContent = 'Sign In';
+      }
+    }
+  </script>
+</body>
+</html>

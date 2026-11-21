@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Operations Console | E-Gadget World</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../assets/images/logo-official.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="admin.css">
+  <script>
+    // Immediate Auth Guard in head
+    (function() {
+      var token = localStorage.getItem('egadget_admin_token');
+      var userStr = localStorage.getItem('egadget_admin_user');
+      if (!token || !userStr) {
+        window.location.replace('login.html?unauthorized=1');
+      }
+    })();
+  </script>
+</head>
+<body class="admin-body">
+  <!-- Auth Guard Loading Overlay -->
+  <div id="authGuardOverlay" class="auth-guard-overlay">
+    <div class="spinner"></div>
+    <div style="font-size: 14px; font-weight: 600; color: #475569;">Verifying E-Gadget World Staff Session...</div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- Mobile Backdrop -->
+    <div class="admin-sidebar-backdrop" id="adminSidebarBackdrop"></div>
+
+    <!-- ==========================================================================
+         1. PROFESSIONAL ADMIN SIDEBAR (COLLAPSIBLE / RESPONSIVE)
+         ========================================================================== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="#dashboard" class="sidebar-brand" title="E-Gadget World Operations">
+          <img src="../assets/images/logo-official.png" alt="E-Gadget World" class="sidebar-logo">
+          <div class="sidebar-brand-text">
+            <span class="sidebar-brand-name">E-Gadget World</span>
+            <span class="sidebar-brand-sub">Admin Console</span>
+          </div>
+        </a>
+        <button type="button" class="sidebar-toggle-btn" id="btnSidebarToggle" title="Collapse / Expand Sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-nav-wrap">
+        <!-- Main Menu -->
+        <div class="nav-section-title">Main Menu</div>
+        <a href="#dashboard" class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+
+        <!-- Categories Group -->
+        <div class="nav-group" id="navGroupCategories">
+          <a href="#categories" class="nav-item nav-group-toggle" data-view="categories">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Categories</span>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+          <div class="nav-submenu">
+            <a href="#categories" class="subnav-item" data-view="categories">
+              <span class="subnav-bullet">&bull;</span>
+              <span>All Categories</span>
+            </a>
+            <a href="#categories-add" class="subnav-item" data-view="categories-add">
+              <span class="subnav-bullet">&bull;</span>
+              <span>Add Category</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Inventory Group -->
+        <div class="nav-group is-open" id="navGroupInventory">
+          <a href="#laptops" class="nav-item nav-group-toggle" data-view="laptops">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </span>
+            <span class="nav-label">Inventory</span>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+          <div class="nav-submenu">
+            <a href="#inventory-all" class="subnav-item" data-view="inventory-all">
+              <span class="subnav-bullet">&bull;</span>
+              <span>All Items</span>
+            </a>
+            <a href="#inventory-add" class="subnav-item" data-view="inventory-add">
+              <span class="subnav-bullet">&bull;</span>
+              <span>Add Item</span>
+            </a>
+            <a href="#laptops" class="subnav-item" data-view="laptops">
+              <span class="subnav-bullet">&bull;</span>
+              <span>Laptops</span>
+              <span class="nav-badge-count" id="navBadgeLaptops">24</span>
+            </a>
+            <a href="#accessories" class="subnav-item" data-view="accessories">
+              <span class="subnav-bullet">&bull;</span>
+              <span>Accessories</span>
+              <span class="nav-badge-count" id="navBadgeAcc">12</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sales Group -->
+        <div class="nav-group" id="navGroupSales">
+          <a href="#sales-all" class="nav-item nav-group-toggle" data-view="sales-all">
+            <span class="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </span>
+            <span class="nav-label">Sales</span>
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </a>
+          <div class="nav-submenu">
+            <a href="#sales-all" class="subnav-item" data-view="sales-all">
+              <span class="subnav-bullet">&bull;</span>
+              <span>All Sales</span>
+            </a>
+            <a href="#sales-today" class="subnav-item" data-view="sales-today">
+              <span class="subnav-bullet">&bull;</span>
+              <span>Today's Sales</span>
+            </a>
+            <a href="#sales-history" class="subnav-item" data-view="sales-history">
+              <span class="subnav-bullet">&bull;</span>
+              <span>Sales History</span>
+              <span class="nav-badge-count" id="navBadgeSales">1</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Operations Section -->
+        <div class="nav-section-title">Operations</div>
+        <a href="#stock" class="nav-item" data-view="stock">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="20" x2="12" y2="10"></line>
+              <line x1="18" y1="20" x2="18" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="16"></line>
+            </svg>
+          </span>
+          <span class="nav-label">Stock Management</span>
+          <span class="nav-badge-count" id="navBadgeStock">38 pcs</span>
+        </a>
+
+        <a href="#excel" class="nav-item" data-view="excel">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </span>
+          <span class="nav-label">Excel Import / Export</span>
+        </a>
+
+        <a href="#reports" class="nav-item" data-view="reports">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+          </span>
+          <span class="nav-label">Reports</span>
+        </a>
+
+        <a href="#settings" class="nav-item" data-view="settings">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </div>
+
+      <!-- Sidebar User Footer -->
+      <div class="sidebar-footer">
+        <div class="sidebar-user-card">
+          <div class="sidebar-user-avatar" id="avatarInitial">S</div>
+          <div class="sidebar-user-details">
+            <div class="sidebar-user-name" id="currentUserName">Sonu</div>
+            <div class="sidebar-user-role" id="currentUserRole">Owner • Mehnajpur</div>
+          </div>
+          <button type="button" class="sidebar-logout-btn" onclick="handleLogout()" title="Sign Out">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================================================
+         2. MAIN WRAPPER & TOP BAR
+         ========================================================================== -->
+    <div class="admin-main-wrap">
+      <!-- Top Sticky Bar -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button type="button" class="mobile-hamburger-btn" id="btnAdminMobileToggle" title="Open Navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+
+          <nav class="topbar-breadcrumbs">
+            <a href="#dashboard">Admin</a>
+            <span>&rsaquo;</span>
+            <span class="current-crumb" id="crumbCurrent">Operations Dashboard</span>
+          </nav>
+        </div>
+
+        <div class="topbar-right">
+          <div class="system-status-pill" title="Live Operations Console">
+            <span class="status-indicator-live"></span>
+            <span>Live Console</span>
+          </div>
+
+          <a href="../index.html" target="_blank" class="topbar-link-public" title="Open live public website">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>Showroom Website</span>
+          </a>
+
+          <button class="btn-topbar-logout" onclick="handleLogout()" title="Sign Out">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- ==========================================================================
+           3. MAIN CONTENT CONTAINER (MODULAR VIEWS)
+           ========================================================================== -->
+      <main class="admin-content">
+
+        <!-- ====================================================================
+             VIEW A: DASHBOARD OVERVIEW
+             ==================================================================== -->
+        <section class="admin-view active" id="view-dashboard">
+          <!-- Welcome Banner -->
+          <div class="admin-welcome-banner">
+            <div>
+              <h1 style="font-size: 22px; font-weight: 800; margin: 0 0 6px 0;">Welcome back, <span id="welcomeName">Sonu</span>!</h1>
+              <p style="font-size: 13.5px; color: #DBEAFE; margin: 0;">
+                E-Gadget World Operations Hub • Showroom Branch: <strong id="branchBadge">MEHNAJPUR HQ</strong>
+              </p>
+            </div>
+            <div class="welcome-decor-circle"></div>
+          </div>
+
+          <!-- Section 8: Sales Dashboard (Matching Reference Screenshot) -->
+          <div class="sales-cards-row">
+            <!-- Card 1: Today's Sales -->
+            <div class="sales-card card-today">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Today's Sales</span>
+                <div class="sales-card-icon-wrap">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="sales-card-amount" id="cardTodayRevenue">₹0</div>
+              <div class="sales-card-subtitle" id="cardTodaySubtitle">No sales recorded yet</div>
+            </div>
+
+            <!-- Card 2: Yesterday's Sales -->
+            <div class="sales-card card-yesterday">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Yesterday's Sales</span>
+                <div class="sales-card-icon-wrap">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="sales-card-amount" id="cardYesterdayRevenue">₹0</div>
+              <div class="sales-card-subtitle" id="cardYesterdaySubtitle">No sales recorded</div>
+            </div>
+
+            <!-- Card 3: Total Sales (All Time) -->
+            <div class="sales-card card-alltime">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Total Sales (All Time)</span>
+                <div class="sales-card-icon-wrap">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="sales-card-amount" id="cardTotalRevenue">₹0</div>
+              <div class="sales-card-subtitle" id="cardTotalSubtitle">0 Total Invoices</div>
+            </div>
+          </div>
+
+          <!-- Section 9: Inventory Statistics Cards (6-Grid) -->
+          <div class="inventory-stats-grid">
+            <div class="inv-stat-card stat-accent-blue">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Total Units</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statTotalUnits">50</div>
+              <div class="inv-stat-desc">Showroom physical pieces</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-green">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Total Sold Units</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statSoldUnits">1</div>
+              <div class="inv-stat-desc">Delivered to customers</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Remaining Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statRemainingStock">49</div>
+              <div class="inv-stat-desc">Available for immediate sale</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-teal">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Total Models</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statTotalProducts">36</div>
+              <div class="inv-stat-desc">Distinct catalog variants</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-amber">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Low Stock Items</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statLowStock">19</div>
+              <div class="inv-stat-desc">&le; 2 pieces remaining</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-rose">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Out of Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statOutOfStock">0</div>
+              <div class="inv-stat-desc">0 pieces available</div>
+            </div>
+          </div>
+
+          <!-- Quick Showroom Laptops Table -->
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <div>
+                <h2 class="panel-title-text">Recent Showroom Stock (Top Models)</h2>
+                <p class="panel-subtext">Click "Sold" on any row to test live sales deduction in preview mode</p>
+              </div>
+              <div>
+                <a href="#laptops" class="btn-admin-secondary">View All 24 Laptops &rarr;</a>
+              </div>
+            </div>
+
+            <div class="table-responsive-box">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>LP NO.</th>
+                    <th>Model &amp; Brand</th>
+                    <th>Specs</th>
+                    <th>Piece</th>
+                    <th>Price</th>
+                    <th>Stock Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dashRecentTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW B: CATEGORY MANAGEMENT (SECTION 2)
+             ==================================================================== -->
+        <section class="admin-view" id="view-categories">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Category Management</h1>
+              <p class="view-subtitle">Organize commercial laptops, accessories, and replacement spares</p>
+            </div>
+            <div class="view-actions">
+              <a href="#categories-add" class="btn-admin-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Category
+              </a>
+            </div>
+          </div>
+
+          <!-- Categories Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;" id="categoriesGridContainer">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW C: ADD CATEGORY FORM
+             ==================================================================== -->
+        <section class="admin-view" id="view-categories-add">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Add New Category</h1>
+              <p class="view-subtitle">Define category metadata, slug, display order, and status</p>
+            </div>
+            <div>
+              <a href="#categories" class="btn-admin-secondary">&larr; Back to Categories</a>
+            </div>
+          </div>
+
+          <div class="admin-form-card" style="max-width: 780px;">
+            <form id="addCategoryForm" onsubmit="event.preventDefault(); window.adminController.showToast('New category registered in preview state!', 'success'); window.adminController.navigateTo('categories');">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="catNameInput">Category Name <span class="required-star">*</span></label>
+                  <input type="text" id="catNameInput" class="form-input" placeholder="e.g. Gaming Laptops" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="catSlugInput">Slug <span class="required-star">*</span></label>
+                  <input type="text" id="catSlugInput" class="form-input" placeholder="e.g. gaming-laptops" required>
+                  <span class="form-hint">URL friendly identifier</span>
+                </div>
+                <div class="form-group col-full">
+                  <label class="form-label" for="catDescInput">Description</label>
+                  <textarea id="catDescInput" class="form-textarea" placeholder="Describe the items in this category..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Status</label>
+                  <select id="catStatusSelect" class="form-select">
+                    <option value="active">Active (Visible)</option>
+                    <option value="inactive">Inactive (Hidden)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Display Order</label>
+                  <input type="number" id="catOrderInput" class="form-input" value="5" min="1">
+                </div>
+              </div>
+
+              <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                <a href="#categories" class="btn-admin-secondary">Cancel</a>
+                <button type="submit" class="btn-admin-primary">Save Category</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW D: DYNAMIC ADD ITEM FORM (SECTION 3)
+             ==================================================================== -->
+        <section class="admin-view" id="view-inventory-add">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Add Showroom Inventory Item</h1>
+              <p class="view-subtitle">Select category to load specific hardware fields and specs</p>
+            </div>
+            <div>
+              <a href="#laptops" class="btn-admin-secondary">&larr; Back to Inventory</a>
+            </div>
+          </div>
+
+          <div class="admin-form-card" style="max-width: 900px;">
+            <!-- Category Selector Banner -->
+            <div class="category-select-banner">
+              <div>
+                <h3>Select Target Category</h3>
+                <p>Form fields dynamically reconfigure based on whether you are cataloging a laptop or accessory.</p>
+              </div>
+              <div style="min-width: 220px;">
+                <select id="addItemCategorySelect" class="form-select" style="font-weight: 700;">
+                  <option value="laptop">Commercial Laptops</option>
+                  <option value="accessories">Laptop Accessories</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Main Form -->
+            <form id="dynamicItemForm">
+              <!-- Dynamically populated by admin.js based on CATEGORY_FORM_SCHEMAS -->
+              <div id="dynamicFieldsContainer"></div>
+
+              <!-- Image Upload & Preview Section (Section 12) -->
+              <div style="margin-top: 20px; border-top: 1px solid #E2E8F0; padding-top: 20px;">
+                <label class="form-label" style="margin-bottom: 8px;">Product PIC &amp; Gallery Upload</label>
+                <div class="image-upload-dropzone" id="imageUploadDropzone">
+                  <input type="file" id="productImageInput" accept="image/*" multiple style="display: none;">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" style="margin-bottom: 8px;">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <div style="font-weight: 700; color: #0F172A; font-size: 14px;">Click to select or drag &amp; drop product photos</div>
+                  <div style="font-size: 12px; color: #64748B; margin-top: 4px;">PNG, JPG, SVG or WEBP • Zero network dependency (Client preview)</div>
+                </div>
+
+                <div class="preview-grid-wrap" id="imagePreviewWrap">
+                  <!-- Uploaded image thumbnails will render here -->
+                </div>
+              </div>
+
+              <div style="margin-top: 28px; display: flex; gap: 12px; justify-content: flex-end; border-top: 1px solid #E2E8F0; padding-top: 20px;">
+                <button type="button" class="btn-admin-secondary" onclick="window.adminController.navigateTo('laptops')">Cancel</button>
+                <button type="submit" class="btn-admin-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                  Save to Inventory
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW E: LAPTOPS INVENTORY TABLE (SECTION 4)
+             Exact Columns: LP NO. | MODEL & BRAND | PROCESSOR | GENERATION | RAM | STORAGE | Piece | Price | PIC | Status | Actions
+             ==================================================================== -->
+        <section class="admin-view" id="view-laptops">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Commercial Laptop Inventory (24 Models)</h1>
+              <p class="view-subtitle" id="laptopsCountInfo">Verified showroom stock (38 physical pieces total)</p>
+            </div>
+            <div class="view-actions">
+              <a href="#inventory-add" class="btn-admin-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Laptop
+              </a>
+              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('laptop')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Export CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="admin-toolbar">
+            <div class="toolbar-search-wrap">
+              <svg width="16" height="16" class="toolbar-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="laptopSearchInput" class="toolbar-search-input" placeholder="Search LP No., Brand, Model, Processor...">
+            </div>
+
+            <div class="toolbar-filters-group">
+              <select id="laptopBrandFilterSelect" class="toolbar-select">
+                <option value="all">All Brands</option>
+                <option value="Dell">Dell</option>
+                <option value="HP">HP</option>
+                <option value="Lenovo">Lenovo</option>
+              </select>
+
+              <select id="laptopStockFilterSelect" class="toolbar-select">
+                <option value="all">All Stock Levels</option>
+                <option value="in_stock">In Stock (&gt; 2)</option>
+                <option value="low_stock">Low Stock (1-2)</option>
+                <option value="out_of_stock">Sold Out (0)</option>
+              </select>
+
+              <select id="laptopSortSelect" class="toolbar-select">
+                <option value="default">Sort: Default</option>
+                <option value="lp_asc">LP NO. (Ascending)</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="piece_desc">Quantity: High to Low</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive-box">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>LP NO.</th>
+                  <th>MODEL &amp; BRAND</th>
+                  <th>PROCESSOR</th>
+                  <th>GENERATION</th>
+                  <th>RAM</th>
+                  <th>STORAGE</th>
+                  <th>Piece</th>
+                  <th>Price</th>
+                  <th>PIC</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="laptopsTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+            <div class="table-pagination-box" id="laptopPaginationBox"></div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW F: ACCESSORIES INVENTORY TABLE (SECTION 5)
+             ==================================================================== -->
+        <section class="admin-view" id="view-accessories">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Accessories Inventory (12 Items)</h1>
+              <p class="view-subtitle" id="accCountInfo">Genuine chargers, RAM modules, SSDs &amp; laptop peripherals</p>
+            </div>
+            <div class="view-actions">
+              <a href="#inventory-add" class="btn-admin-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Accessory
+              </a>
+              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('accessories')">
+                Export CSV
+              </button>
+            </div>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="admin-toolbar">
+            <div class="toolbar-search-wrap">
+              <svg width="16" height="16" class="toolbar-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="accSearchInput" class="toolbar-search-input" placeholder="Search SKU, Accessory Name, Brand...">
+            </div>
+
+            <div class="toolbar-filters-group">
+              <select id="accTypeFilterSelect" class="toolbar-select">
+                <option value="all">All Types</option>
+                <option value="Charger">Chargers</option>
+                <option value="RAM Upgrade">RAM Memory</option>
+                <option value="Storage Upgrade">SSDs / Storage</option>
+                <option value="Peripherals">Mice &amp; Keyboards</option>
+                <option value="Laptop Bag">Laptop Bags</option>
+                <option value="Laptop Stand">Stands</option>
+                <option value="Cable & Adapter">Cables &amp; Hubs</option>
+              </select>
+
+              <select id="accStockFilterSelect" class="toolbar-select">
+                <option value="all">All Stock Levels</option>
+                <option value="in_stock">In Stock (&gt; 2)</option>
+                <option value="low_stock">Low Stock (1-2)</option>
+                <option value="out_of_stock">Sold Out (0)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive-box">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Product Name</th>
+                  <th>Brand</th>
+                  <th>Type</th>
+                  <th>Piece</th>
+                  <th>Purchase Price <span style="font-size: 10px; color: #92400E;">(Private)</span></th>
+                  <th>Selling Price</th>
+                  <th>PIC</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="accessoriesTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+            <div class="table-pagination-box" id="accessoriesPaginationBox"></div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW G: ALL INVENTORY COMBINED
+             ==================================================================== -->
+        <section class="admin-view" id="view-inventory-all">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>All Inventory Items (Combined Showroom Catalog)</h1>
+              <p class="view-subtitle">Consolidated view of all physical stock in Mehnajpur branch</p>
+            </div>
+            <div>
+              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('all')">Export Complete Catalog</button>
+            </div>
+          </div>
+
+          <div class="table-responsive-box">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>ID / Code</th>
+                  <th>Product Title</th>
+                  <th>Hardware / Compatibility</th>
+                  <th>Piece</th>
+                  <th>Price</th>
+                  <th>Stock Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="allInventoryTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW H: SALES OVERVIEW & TODAY'S SALES
+             ==================================================================== -->
+        <section class="admin-view" id="view-sales-all">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Sales &amp; Revenue Overview</h1>
+              <p class="view-subtitle">Monitor showroom invoices and recorded sales</p>
+            </div>
+            <div>
+              <a href="#sales-history" class="btn-admin-primary">View Full Sales History &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Reusable Sales Cards -->
+          <div class="sales-cards-row">
+            <div class="sales-card card-today">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Today's Sales</span>
+                <div class="sales-card-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+              </div>
+              <div class="sales-card-amount">₹0</div>
+              <div class="sales-card-subtitle">No sales recorded yet</div>
+            </div>
+            <div class="sales-card card-yesterday">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Yesterday's Sales</span>
+                <div class="sales-card-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+              </div>
+              <div class="sales-card-amount">₹0</div>
+              <div class="sales-card-subtitle">No sales recorded</div>
+            </div>
+            <div class="sales-card card-alltime">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Total Sales</span>
+                <div class="sales-card-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+              </div>
+              <div class="sales-card-amount">₹23,000</div>
+              <div class="sales-card-subtitle">0 Total Invoices</div>
+            </div>
+          </div>
+
+          <!-- Sales History embedded -->
+          <div class="admin-panel">
+            <div class="panel-header-row">
+              <h2 class="panel-title-text">All Recorded Invoices</h2>
+            </div>
+            <div class="table-responsive-box">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>Sale ID</th>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>LP NO. / SKU</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Amount</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="salesHistoryTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW I: TODAY'S SALES
+             ==================================================================== -->
+        <section class="admin-view" id="view-sales-today">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Today's Sales Invoices</h1>
+              <p class="view-subtitle">Showroom transactions recorded on the current date</p>
+            </div>
+          </div>
+          <div class="admin-panel">
+            <p style="font-size: 13.5px; color: #64748B;">
+              Transactions logged today appear here immediately. Click <strong>"Sold"</strong> on any product in the inventory table to log a sale.
+            </p>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW J: SALES HISTORY (SECTION 10)
+             Columns: Sale ID | Date | Product | LP NO. / SKU | Category | Quantity | Unit Price | Total Amount | Payment Method | Status | Actions
+             ==================================================================== -->
+        <section class="admin-view" id="view-sales-history">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Sales History &amp; Transaction Logs</h1>
+              <p class="view-subtitle" id="salesHistoryCountInfo">Audit trail of completed customer sales</p>
+            </div>
+          </div>
+
+          <div class="table-responsive-box">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Sale ID</th>
+                  <th>Date</th>
+                  <th>Product</th>
+                  <th>LP NO. / SKU</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Unit Price</th>
+                  <th>Total Amount</th>
+                  <th>Payment Method</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="salesHistoryTableBody2">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW K: STOCK & QUANTITY MANAGEMENT (SECTION 6)
+             ==================================================================== -->
+        <section class="admin-view" id="view-stock">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Stock &amp; Quantity Management</h1>
+              <p class="view-subtitle">Review available quantity, sold units, and public website display rules</p>
+            </div>
+          </div>
+
+          <!-- Public Stock Display Rules Card -->
+          <div class="admin-panel" style="background: #F0FDF4; border-color: #BBF7D0;">
+            <h3 style="font-size: 15px; font-weight: 800; color: #166534; margin: 0 0 8px 0;">
+              Public Website Display Rules (Strictly Applied)
+            </h3>
+            <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: #166534; line-height: 1.6;">
+              <li><strong>Quantity &gt; 2:</strong> Displayed as <span class="stock-badge-tag stock-in">In Stock</span> (Exact quantity is NEVER exposed to customers).</li>
+              <li><strong>Quantity == 2:</strong> Displayed as <span class="stock-badge-tag stock-low">Only 2 Left</span> (Prompts urgency).</li>
+              <li><strong>Quantity == 1:</strong> Displayed as <span class="stock-badge-tag stock-critical">Only 1 Left</span> (Prompts urgency).</li>
+              <li><strong>Quantity == 0:</strong> Displayed as <span class="stock-badge-tag stock-soldout">Sold Out</span> (Disables enquiry CTA).</li>
+            </ul>
+          </div>
+
+          <div class="table-responsive-box">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Code / LP</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Available Quantity</th>
+                  <th>Sold Units</th>
+                  <th>Public Badge Display</th>
+                  <th>Customer View Status</th>
+                </tr>
+              </thead>
+              <tbody id="stockTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW L: EXCEL IMPORT & EXPORT (SECTION 11)
+             ==================================================================== -->
+        <section class="admin-view" id="view-excel">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Excel Import &amp; Export Center</h1>
+              <p class="view-subtitle">Bulk import products using standardized spreadsheets or export live inventory</p>
+            </div>
+          </div>
+
+          <!-- Template Downloads -->
+          <div class="excel-template-card">
+            <div>
+              <div style="font-weight: 800; font-size: 15px; color: #0F172A; margin-bottom: 4px;">Download Standardized CSV Templates</div>
+              <div style="font-size: 13px; color: #64748B;">Pre-configured column headers matching E-Gadget World database schema.</div>
+            </div>
+            <div class="template-download-buttons">
+              <button class="btn-template-dl" onclick="window.adminController.downloadTemplate('laptop')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Laptop Template
+              </button>
+              <button class="btn-template-dl" onclick="window.adminController.downloadTemplate('accessories')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download Accessories Template
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Import Area -->
+          <div class="admin-panel">
+            <h3 class="panel-title-text" style="margin-bottom: 12px;">Upload Spreadsheet (.xlsx, .csv)</h3>
+            <div class="image-upload-dropzone" id="excelDropzone" style="padding: 36px 20px;">
+              <input type="file" id="excelFileInput" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display: none;">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" style="margin-bottom: 10px;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              <div style="font-size: 15px; font-weight: 800; color: #0F172A;">Drop Excel / CSV spreadsheet here or click to browse</div>
+              <div style="font-size: 12.5px; color: #64748B; margin-top: 4px;">Supports Laptop &amp; Accessories formatted files • Zero backend write</div>
+            </div>
+
+            <div id="excelFileInfo" style="display: none; margin-top: 12px; font-size: 13px; color: #1E40AF; background: #EFF6FF; padding: 10px 14px; border-radius: 6px;"></div>
+
+            <!-- Preview Section -->
+            <div id="excelPreviewSection" style="display: none; margin-top: 24px;">
+              <h4 style="font-size: 14px; font-weight: 800; color: #0F172A; margin-bottom: 10px;">Spreadsheet Preview &amp; Validation Table</h4>
+              <div class="table-responsive-box">
+                <table class="admin-data-table" id="excelPreviewTable"></table>
+              </div>
+              <div class="import-summary-banner" id="excelImportSummary"></div>
+            </div>
+          </div>
+
+          <!-- Export Center -->
+          <div class="admin-panel">
+            <h3 class="panel-title-text" style="margin-bottom: 6px;">Export Showroom Catalog</h3>
+            <p class="panel-subtext" style="margin-bottom: 16px;">Download instant CSV export of all current showroom products and stock levels.</p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="btn-admin-primary" onclick="window.adminController.exportInventory('laptop')">Export Laptops (.CSV)</button>
+              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('accessories')">Export Accessories (.CSV)</button>
+              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('all')">Export All Combined (.CSV)</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW M: REPORTS & ANALYTICS (SECTION 15)
+             ==================================================================== -->
+        <section class="admin-view" id="view-reports">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Showroom Analytics &amp; Reports</h1>
+              <p class="view-subtitle">Commercial metrics, inventory turnover &amp; sales performance</p>
+            </div>
+          </div>
+
+          <!-- Summary Metric Cards -->
+          <div class="inventory-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="inv-stat-card stat-accent-green">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Today's Sales</span>
+                <span class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+              </div>
+              <div class="inv-stat-num" id="repTodaySales">₹0</div>
+              <div class="inv-stat-desc">Daily showroom invoices</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-blue">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Yesterday's Sales</span>
+                <span class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              </div>
+              <div class="inv-stat-num" id="repYestSales">₹0</div>
+              <div class="inv-stat-desc">Previous day's turnover</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">All-Time Sales</span>
+                <span class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+              </div>
+              <div class="inv-stat-num" id="repAllSales">₹23,000</div>
+              <div class="inv-stat-desc">Total cumulative sales</div>
+            </div>
+          </div>
+
+          <!-- Visual Bar Chart Placeholder -->
+          <div class="report-chart-container">
+            <div class="panel-header-row">
+              <div>
+                <h3 class="panel-title-text">Weekly Revenue Trend</h3>
+                <p class="panel-subtext">Showroom turnover and invoice metrics</p>
+              </div>
+            </div>
+
+            <div class="chart-bars-wrap">
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹18k</div>
+                <div class="chart-bar-fill" style="height: 45%;"></div>
+                <span class="chart-bar-label">Mon</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹24k</div>
+                <div class="chart-bar-fill" style="height: 60%;"></div>
+                <span class="chart-bar-label">Tue</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹12k</div>
+                <div class="chart-bar-fill" style="height: 30%;"></div>
+                <span class="chart-bar-label">Wed</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹32k</div>
+                <div class="chart-bar-fill" style="height: 80%;"></div>
+                <span class="chart-bar-label">Thu</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹23k</div>
+                <div class="chart-bar-fill" style="height: 58%;"></div>
+                <span class="chart-bar-label">Fri</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹42k</div>
+                <div class="chart-bar-fill" style="height: 95%;"></div>
+                <span class="chart-bar-label">Sat</span>
+              </div>
+              <div class="chart-bar-col">
+                <div class="chart-bar-val">₹26k</div>
+                <div class="chart-bar-fill" style="height: 65%;"></div>
+                <span class="chart-bar-label">Sun</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================================
+             VIEW N: SETTINGS & OPERATIONS CONFIG
+             ==================================================================== -->
+        <section class="admin-view" id="view-settings">
+          <div class="view-header">
+            <div class="view-title-wrap">
+              <h1>Operations Settings</h1>
+              <p class="view-subtitle">Branch profile, operations &amp; cache management</p>
+            </div>
+          </div>
+
+          <div class="admin-panel" style="max-width: 800px;">
+            <h3 class="panel-title-text" style="margin-bottom: 12px;">Mehnajpur Showroom Branch Profile</h3>
+            <div style="font-size: 13.5px; line-height: 1.8; color: #334155;">
+              <div><strong>Owner / Operator:</strong> Sunil Kumar Maurya (Sonu)</div>
+              <div><strong>Primary WhatsApp / Helpline:</strong> +91 9984359860</div>
+              <div><strong>Address:</strong> Near Mehnajpur Thana, Mehnajpur, Azamgarh, UP – 276203</div>
+              <div><strong>Business Hours:</strong> 8:00 AM – 9:00 PM (Monday to Sunday)</div>
+              <div><strong>Database Connection:</strong> <span style="font-family: monospace; color: #16A34A; font-weight: 700;">e_gadget_world (Verified Active)</span></div>
+            </div>
+          </div>
+
+          <div class="admin-panel" style="max-width: 800px; border-color: #FECACA;">
+            <h3 class="panel-title-text" style="color: #DC2626; margin-bottom: 8px;">System Cache &amp; State Reset</h3>
+            <p style="font-size: 13.5px; color: #64748B; margin-bottom: 16px;">
+              Clear local cached session state and restore catalog data from master database records.
+            </p>
+            <button class="btn-admin-secondary" style="color: #DC2626; border-color: #FCA5A5; background: #FEF2F2;" onclick="window.adminController.resetLocalCache()">
+              Clear Local Cache
+            </button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: SOLD CONFIRMATION MODAL (SECTION 7 — UI ONLY)
+       ========================================================================== -->
+  <div class="admin-modal-overlay" id="soldModalOverlay">
+    <div class="admin-modal-box">
+      <div class="modal-header-bar">
+        <h3 class="modal-title-text">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          Record Product Sale
+        </h3>
+        <button type="button" class="btn-modal-close" onclick="window.adminController.closeModal('soldModalOverlay')">&times;</button>
+      </div>
+
+      <div class="modal-body-content">
+        <!-- Product Quick Summary -->
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: #64748B; font-weight: 700; text-transform: uppercase;">Selected Item</div>
+          <div style="font-size: 16px; font-weight: 800; color: #0F172A;" id="soldModalProductName">HP EliteBook 840 G5</div>
+          <div style="display: flex; gap: 12px; margin-top: 4px; font-size: 12.5px;">
+            <span id="soldModalLpSku" class="cell-lp-badge">LP #3963</span>
+            <span id="soldModalAvailableQty" style="font-weight: 700; color: #2563EB;">1 available</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="soldInputQty">Selling Quantity <span class="required-star">*</span></label>
+            <input type="number" id="soldInputQty" class="form-input" min="1" value="1" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="soldInputPrice">Unit Selling Price (₹) <span class="required-star">*</span></label>
+            <input type="number" id="soldInputPrice" class="form-input" required>
+          </div>
+
+          <div class="form-group col-full">
+            <!-- Calculated Total Callout -->
+            <div class="sold-calc-box">
+              <span class="sold-calc-title">Calculated Total Sale Amount:</span>
+              <span class="sold-calc-total" id="soldModalCalculatedTotal">₹0</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="soldInputDate">Sale Date <span class="required-star">*</span></label>
+            <input type="date" id="soldInputDate" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="soldSelectPayment">Payment Method</label>
+            <select id="soldSelectPayment" class="form-select">
+              <option value="UPI">UPI / QR Code</option>
+              <option value="Cash">Cash at Counter</option>
+              <option value="Card">Debit / Credit Card</option>
+              <option value="NetBanking">Net Banking</option>
+              <option value="EMI">Bajaj / Easy EMI</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="soldInputCustomerName">Customer Name (Optional)</label>
+            <input type="text" id="soldInputCustomerName" class="form-input" placeholder="e.g. Rahul Sharma">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="soldInputCustomerPhone">Customer Phone (Optional)</label>
+            <input type="tel" id="soldInputCustomerPhone" class="form-input" placeholder="e.g. 9876543210">
+          </div>
+
+          <div class="form-group col-full">
+            <label class="form-label" for="soldInputNotes">Notes / Serial / Warranty Details</label>
+            <textarea id="soldInputNotes" class="form-textarea" placeholder="Charger included, 6 months store warranty..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-bar">
+        <button type="button" class="btn-admin-secondary" onclick="window.adminController.closeModal('soldModalOverlay')">Cancel</button>
+        <button type="button" class="btn-admin-primary" onclick="window.adminController.handleConfirmSold()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Confirm Sale
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: ITEM & TRANSACTION DETAIL VIEW
+       ========================================================================== -->
+  <div class="admin-modal-overlay" id="viewDetailModalOverlay">
+    <div class="admin-modal-box">
+      <div class="modal-header-bar">
+        <h3 class="modal-title-text" id="viewDetailModalTitle">Product Details</h3>
+        <button type="button" class="btn-modal-close" onclick="window.adminController.closeModal('viewDetailModalOverlay')">&times;</button>
+      </div>
+      <div class="modal-body-content" id="viewDetailModalBody">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer-bar">
+        <button type="button" class="btn-admin-primary" onclick="window.adminController.closeModal('viewDetailModalOverlay')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/products-data.js"></script>
+  <script src="admin-data.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    function getApiBase() {
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocal) {
+        return window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
+      }
+      if (window.location.pathname.includes('/backend-laravel/public')) {
+        return window.location.origin + '/backend-laravel/public';
+      }
+      return '';
+    }
+    const API_BASE = getApiBase();
+
+    // 1. Session verification & Auth Guard (Retained 100%)
+    async function verifyAuthentication() {
+      const token = localStorage.getItem('egadget_admin_token');
+      const userStr = localStorage.getItem('egadget_admin_user');
+
+      if (!token || !userStr) {
+        window.location.replace('login.html?unauthorized=1');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/api/admin/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          localStorage.removeItem('egadget_admin_token');
+          localStorage.removeItem('egadget_admin_user');
+          window.location.replace('login.html?expired=1');
+          return;
+        }
+
+        const data = await response.json();
+        if (data.authenticated && data.user) {
+          updateProfileDisplay(data.user);
+          const overlay = document.getElementById('authGuardOverlay');
+          if (overlay) overlay.style.display = 'none';
+
+          // Sync live MySQL inventory and sales data
+          if (window.adminState && typeof window.adminState.syncWithBackend === 'function') {
+            window.adminState.syncWithBackend().then(() => {
+              if (window.adminController && typeof window.adminController.renderCurrentView === 'function') {
+                window.adminController.renderCurrentView();
+              }
+            });
+          }
+        } else {
+          window.location.replace('login.html?unauthorized=1');
+        }
+      } catch (err) {
+        console.warn('Backend verification fallback:', err);
+        const cachedUser = JSON.parse(userStr);
+        if (cachedUser && cachedUser.email) {
+          updateProfileDisplay(cachedUser);
+          const overlay = document.getElementById('authGuardOverlay');
+          if (overlay) overlay.style.display = 'none';
+        } else {
+          window.location.replace('login.html?unauthorized=1');
+        }
+      }
+    }
+
+    function updateProfileDisplay(user) {
+      const welcomeName = document.getElementById('welcomeName');
+      if (welcomeName) welcomeName.textContent = user.name || 'Sonu';
+
+      const curName = document.getElementById('currentUserName');
+      if (curName) curName.textContent = user.name || 'Sonu';
+
+      const curRole = document.getElementById('currentUserRole');
+      if (curRole) curRole.textContent = `${(user.role || 'owner').toUpperCase()} • ${user.branch || 'MEHNAJPUR'}`;
+
+      const branchBadge = document.getElementById('branchBadge');
+      if (branchBadge) branchBadge.textContent = `${(user.branch || 'MEHNAJPUR').toUpperCase()} HQ`;
+
+      const initial = document.getElementById('avatarInitial');
+      if (initial) initial.textContent = (user.name || 'O').charAt(0).toUpperCase();
+    }
+
+    // 2. Logout Handler (Retained 100%)
+    async function handleLogout() {
+      const token = localStorage.getItem('egadget_admin_token');
+      try {
+        if (token) {
+          await fetch(`${API_BASE}/api/admin/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/json'
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Logout API notification failed:', err);
+      } finally {
+        localStorage.removeItem('egadget_admin_token');
+        localStorage.removeItem('egadget_admin_user');
+        window.location.replace('login.html?logged_out=1');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', verifyAuthentication);
+  </script>
+</body>
+</html>

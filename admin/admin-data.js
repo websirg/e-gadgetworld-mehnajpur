@@ -41,17 +41,6 @@
       status: 'active',
       displayOrder: 3,
       itemCount: 6
-    },
-    {
-      id: 'cat-repair-parts',
-      name: 'Repair Workshop Spares',
-      slug: 'repair-spares',
-      code: 'spares',
-      description: 'Replacement screens, internal cooling fans, genuine hinges, DC jacks, and replacement batteries.',
-      image: '../assets/images/placeholders/product-placeholder.svg',
-      status: 'inactive',
-      displayOrder: 4,
-      itemCount: 0
     }
   ];
 
@@ -386,11 +375,11 @@
   // 4. Central Admin State Manager
   class AdminStateManager {
     constructor() {
-      this.STORAGE_KEY = 'egadget_admin_ui_state_v1';
+      this.STORAGE_KEY = 'egadget_admin_prod_v2';
       this.state = this.loadState();
     }
 
-    // Load initial or persisted demo state
+    // Load initial or persisted state
     loadState() {
       try {
         const saved = localStorage.getItem(this.STORAGE_KEY);
@@ -402,32 +391,14 @@
         console.warn('Failed reading admin state from localStorage:', err);
       }
 
-      // Fresh default state
+      // Fresh production state from real inventory
       const initialLaptops = this.normalizeInitialLaptops();
       return {
         categories: JSON.parse(JSON.stringify(INITIAL_CATEGORIES)),
         laptops: initialLaptops,
         accessories: JSON.parse(JSON.stringify(INITIAL_ACCESSORIES)),
-        sales: [
-          {
-            id: 'SALE-1001',
-            date: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0],
-            productId: '3909',
-            productName: 'HP EliteBook 840 G3 (LP #3909)',
-            lpNumber: '3909',
-            category: 'Commercial Laptops',
-            quantity: 1,
-            unitPrice: 23000,
-            totalAmount: 23000,
-            paymentMethod: 'UPI',
-            customerName: 'Ramesh Singh',
-            customerPhone: '9876543210',
-            notes: 'Showroom delivery with 6-month store warranty',
-            status: 'Completed',
-            isDemo: true
-          }
-        ],
-        demoModeActive: true
+        sales: [],
+        demoModeActive: false
       };
     }
 
@@ -568,7 +539,7 @@
       }
     }
 
-    resetDemoState() {
+    resetLocalCache() {
       localStorage.removeItem(this.STORAGE_KEY);
       this.state = this.loadState();
       return true;
@@ -732,8 +703,7 @@
         customerName: customerName ? customerName.trim() : 'Walk-in Showroom Guest',
         customerPhone: customerPhone ? customerPhone.trim() : 'N/A',
         notes: notes ? notes.trim() : '',
-        status: 'Completed',
-        isDemo: true
+        status: 'Completed'
       };
 
       this.state.sales.unshift(saleRecord);

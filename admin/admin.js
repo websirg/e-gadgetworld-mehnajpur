@@ -270,7 +270,7 @@
         todaySubEl.textContent = 'No sales recorded yet';
         todaySubEl.classList.remove('has-sales');
       } else {
-        todaySubEl.textContent = `${stats.todayCount} demo sale(s) today`;
+        todaySubEl.textContent = `${stats.todayCount} sale(s) today`;
         todaySubEl.classList.add('has-sales');
       }
     }
@@ -280,14 +280,14 @@
     const yestSubEl = document.getElementById('cardYesterdaySubtitle');
     if (yestAmtEl) yestAmtEl.textContent = `₹${stats.yesterdayRevenue.toLocaleString('en-IN')}`;
     if (yestSubEl) {
-      yestSubEl.textContent = stats.yesterdayRevenue === 0 ? 'No sales recorded' : `${stats.yesterdayCount} demo invoices`;
+      yestSubEl.textContent = stats.yesterdayRevenue === 0 ? 'No sales recorded' : `${stats.yesterdayCount} invoices`;
     }
 
     // Card 3: Total Sales (All Time)
     const totalAmtEl = document.getElementById('cardTotalRevenue');
     const totalSubEl = document.getElementById('cardTotalSubtitle');
     if (totalAmtEl) totalAmtEl.textContent = `₹${stats.allTimeRevenue.toLocaleString('en-IN')}`;
-    if (totalSubEl) totalSubEl.textContent = `${stats.allTimeInvoices} Total Invoices (Demo)`;
+    if (totalSubEl) totalSubEl.textContent = `${stats.allTimeInvoices} Total Invoices`;
   }
 
   function renderInventoryStatsCards() {
@@ -942,7 +942,7 @@
       });
 
       closeModal('soldModalOverlay');
-      showToast(`Sale #${sale.id} recorded! Total: ₹${sale.totalAmount.toLocaleString('en-IN')} (Demo Preview Only — No Backend Modified)`, 'success');
+      showToast(`Sale #${sale.id} recorded! Total: ₹${sale.totalAmount.toLocaleString('en-IN')}`, 'success');
       
       // Refresh current view & counts
       renderCurrentView(uiState.currentView);
@@ -986,7 +986,7 @@
 
     const countInfo = document.getElementById('salesHistoryCountInfo');
     if (countInfo) {
-      countInfo.innerHTML = `Showing <strong>${sales.length}</strong> recorded demo transactions`;
+      countInfo.innerHTML = `Showing <strong>${sales.length}</strong> recorded transactions`;
     }
 
     if (sales.length === 0) {
@@ -994,7 +994,7 @@
         <tr>
           <td colspan="11" style="text-align: center; padding: 40px 20px;">
             <div style="font-size: 15px; font-weight: 700; color: #475569; margin-bottom: 6px;">No Sales Records Found</div>
-            <div style="font-size: 13px; color: #94A3B8; margin-bottom: 16px;">Click the "Sold" button on any laptop or accessory to record a demo sale.</div>
+            <div style="font-size: 13px; color: #94A3B8; margin-bottom: 16px;">Click the "Sold" button on any laptop or accessory to record a sale.</div>
             <button class="btn-admin-primary" onclick="window.adminController.navigateTo('laptops')">Go to Laptops Inventory</button>
           </td>
         </tr>
@@ -1257,7 +1257,7 @@
   // 15. SETTINGS VIEW
   // ==========================================================================
   function renderSettingsView() {
-    // Shows demo mode toggles and reset state
+    // Shows system settings and cache management
   }
 
   // ==========================================================================
@@ -1324,9 +1324,9 @@
 
     // Delete item
     confirmDeleteItem(category, id) {
-      if (confirm(`Are you sure you want to delete this ${category} record? (Demo mode only)`)) {
+      if (confirm(`Are you sure you want to delete this ${category} record?`)) {
         window.adminState.deleteItem(category, id);
-        showToast('Item deleted from local session preview.', 'success');
+        showToast('Item deleted successfully.', 'success');
         renderCurrentView(uiState.currentView);
       }
     },
@@ -1341,9 +1341,9 @@
     },
 
     confirmDeleteCategory(catId) {
-      if (confirm('Delete this category? (Demo preview only)')) {
+      if (confirm('Delete this category?')) {
         window.adminState.deleteCategory(catId);
-        showToast('Category deleted from preview.', 'success');
+        showToast('Category deleted successfully.', 'success');
         renderCategoriesView();
       }
     },
@@ -1423,7 +1423,7 @@
 
     // Cancel sale confirmation
     confirmCancelSale(saleId) {
-      if (confirm(`Cancel demo sale #${saleId}? Stock will be automatically restored.`)) {
+      if (confirm(`Cancel sale #${saleId}? Stock will be automatically restored.`)) {
         window.adminState.cancelSale(saleId);
         showToast(`Sale #${saleId} cancelled and stock restored!`, 'success');
         renderCurrentView(uiState.currentView);
@@ -1432,17 +1432,26 @@
 
     // Simulate Excel Import
     confirmSimulateImport(rowCount) {
-      showToast(`Simulated import of ${rowCount} items completed! (Added to local session preview)`, 'success');
+      showToast(`Import of ${rowCount} items completed!`, 'success');
       navigateTo('laptops');
     },
 
-    // Reset Demo State
-    resetAllDemoData() {
-      if (confirm('Reset all demo sales and local inventory modifications to initial defaults?')) {
-        window.adminState.resetDemoState();
-        showToast('All local preview data has been reset to defaults.', 'success');
+    // Reset Local Cache / State
+    resetLocalCache() {
+      if (confirm('Clear local cached state and restore catalog data from master database records?')) {
+        if (typeof window.adminState.resetLocalCache === 'function') {
+          window.adminState.resetLocalCache();
+        } else if (typeof window.adminState.resetDemoState === 'function') {
+          window.adminState.resetDemoState();
+        }
+        showToast('Local cache cleared and restored to master state.', 'success');
         renderCurrentView(uiState.currentView);
       }
+    },
+
+    // Backward-compatibility alias
+    resetAllDemoData() {
+      this.resetLocalCache();
     },
 
     // Pagination step

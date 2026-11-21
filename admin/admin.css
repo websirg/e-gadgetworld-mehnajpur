@@ -587,7 +587,7 @@ body.sidebar-collapsed .admin-main-wrap {
 }
 
 .view-title-wrap h1 {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--admin-text-main);
   margin: 0 0 4px 0;
@@ -634,20 +634,20 @@ body.sidebar-collapsed .admin-main-wrap {
 }
 
 /* ==========================================================================
-   4. SALES DASHBOARD CARDS (MATCH REFERENCE IMAGE)
+   4. SALES DASHBOARD CARDS (COMPACT EXECUTIVE UI)
    ========================================================================== */
 .sales-cards-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .sales-card {
   background-color: #FFFFFF;
-  border-radius: var(--admin-radius);
-  padding: 22px 24px;
-  box-shadow: var(--admin-shadow);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   border: 1px solid var(--admin-border);
   display: flex;
   flex-direction: column;
@@ -692,9 +692,9 @@ body.sidebar-collapsed .admin-main-wrap {
 }
 
 .sales-card-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -716,7 +716,7 @@ body.sidebar-collapsed .admin-main-wrap {
 }
 
 .sales-card-amount {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--admin-text-main);
   letter-spacing: -0.02em;
@@ -738,21 +738,21 @@ body.sidebar-collapsed .admin-main-wrap {
 }
 
 /* ==========================================================================
-   5. INVENTORY STATISTICS 6-GRID CARDS
+   5. INVENTORY STATISTICS 6-GRID CARDS (COMPACT EXECUTIVE UI)
    ========================================================================== */
 .inventory-stats-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .inv-stat-card {
   background-color: #FFFFFF;
   border: 1px solid var(--admin-border);
-  border-radius: var(--admin-radius);
-  padding: 16px 18px;
-  box-shadow: var(--admin-shadow);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -790,7 +790,7 @@ body.sidebar-collapsed .admin-main-wrap {
 }
 
 .inv-stat-num {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--admin-text-main);
   margin-bottom: 4px;
@@ -1672,4 +1672,25 @@ body.sidebar-collapsed .admin-main-wrap {
   .inventory-stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* System Status Live Pill */
+.system-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+}
+.status-indicator-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10B981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }

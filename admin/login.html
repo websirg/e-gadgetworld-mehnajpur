@@ -375,7 +375,7 @@
       const existingToken = localStorage.getItem('egadget_admin_token');
       if (existingToken && !urlParams.get('logged_out')) {
         // Fast redirect to dashboard
-        window.location.replace('dashboard.html');
+        window.location.replace(window.location.pathname.includes('/admin') ? 'dashboard.html' : '/dashboard');
       }
     });
 
@@ -440,7 +440,7 @@
           feedback.innerHTML = `<strong>Authenticated!</strong> Welcome back, ${data.user.name}. Redirecting to Management Dashboard...`;
 
           setTimeout(() => {
-            window.location.href = data.redirect || 'dashboard.html';
+            window.location.href = window.location.pathname.includes('/admin') ? (data.redirect || 'dashboard.html') : '/dashboard';
           }, 600);
         } else {
           // Error response
