@@ -1563,6 +1563,13 @@
     initSidebar();
     initRouter();
     bindFilterEvents();
+
+    // Auto-sync live MySQL inventory & sales
+    if (window.adminState && typeof window.adminState.syncWithBackend === 'function') {
+      window.adminState.syncWithBackend().then(() => {
+        renderCurrentView(uiState.currentView);
+      });
+    }
   });
 
 })();
