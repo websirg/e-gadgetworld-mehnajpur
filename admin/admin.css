@@ -1694,3 +1694,44 @@ body.sidebar-collapsed .admin-main-wrap {
   background-color: #10B981;
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
+
+/* Topbar Admin Profile Badge */
+.topbar-user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+  padding: 3px 10px 3px 4px;
+}
+
+.topbar-user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar-user-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.topbar-user-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.topbar-user-role {
+  font-size: 10px;
+  color: #64748B;
+}

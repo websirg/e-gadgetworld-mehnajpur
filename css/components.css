@@ -1760,3 +1760,127 @@ textarea.form-control {
   object-fit: cover;
   display: block;
 }
+
+/* ==========================================================================
+   CORPORATE HEAD OFFICE — BURARI DELHI EXECUTIVE SHOWCASE
+   ========================================================================== */
+.corporate-head-office-card {
+  background: linear-gradient(135deg, #0B132B 0%, #172554 55%, #1E1B4B 100%);
+  color: #F8FAFC;
+  border-radius: 16px;
+  border: 1px solid rgba(147, 197, 253, 0.28);
+  padding: 32px 36px;
+  margin-bottom: 36px;
+  box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.corporate-head-office-card::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.corporate-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(147, 197, 253, 0.12);
+  border: 1px solid rgba(147, 197, 253, 0.35);
+  color: #93C5FD;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.corporate-badge-pill svg {
+  width: 14px;
+  height: 14px;
+  stroke: #60A5FA;
+}
+
+.corporate-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.corporate-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.corporate-desc {
+  font-size: 0.9375rem;
+  color: #CBD5E1;
+  line-height: 1.6;
+  max-width: 860px;
+  margin-bottom: 24px;
+}
+
+.corporate-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.corporate-pillar-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.corporate-pillar-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(96, 165, 250, 0.15);
+  color: #60A5FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.corporate-pillar-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 2px;
+}
+
+.corporate-pillar-desc {
+  font-size: 0.8125rem;
+  color: #94A3B8;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .corporate-head-office-card {
+    padding: 24px 20px;
+  }
+  .corporate-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

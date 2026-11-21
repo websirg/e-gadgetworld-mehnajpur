@@ -213,6 +213,18 @@ function initNavDropdowns() {
     }
   });
 
+  // Close when selecting an item inside dropdown
+  const dropdownItems = document.querySelectorAll('.nav-dropdown-menu .dropdown-item');
+  dropdownItems.forEach(item => {
+    item.addEventListener('click', () => {
+      dropdowns.forEach(d => {
+        d.classList.remove('is-open');
+        const b = d.querySelector('.nav-dropdown-toggle');
+        if (b) b.setAttribute('aria-expanded', 'false');
+      });
+    });
+  });
+
   // Close on Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -272,19 +284,20 @@ function initMobileNav() {
 
   backdrop.addEventListener('click', () => toggleNav(false));
 
-  // Mobile Accordion Toggle for Laptop / Accessories
-  const accordionBtn = document.getElementById('mobileLaptopAccBtn') || mobileDrawer.querySelector('.mobile-accordion-btn');
-  const accordionContent = document.getElementById('mobileLaptopAccContent') || mobileDrawer.querySelector('.mobile-accordion-content');
-  if (accordionBtn && accordionContent) {
-    accordionBtn.addEventListener('click', (e) => {
+  // Mobile Accordion Toggle for all expandable sections
+  const accordionBtns = mobileDrawer.querySelectorAll('.mobile-accordion-btn');
+  accordionBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const isExpanded = accordionBtn.getAttribute('aria-expanded') === 'true';
-      accordionBtn.classList.toggle('is-open', !isExpanded);
-      accordionBtn.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
-      accordionContent.classList.toggle('is-open', !isExpanded);
+      const content = btn.nextElementSibling;
+      if (!content) return;
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.classList.toggle('is-open', !isExpanded);
+      btn.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
+      content.classList.toggle('is-open', !isExpanded);
     });
-  }
+  });
 
   // Close when clicking nav link
   const navLinks = mobileDrawer.querySelectorAll('a');

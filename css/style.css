@@ -159,17 +159,17 @@ ul, ol {
 /* Container */
 .container {
   width: 100%;
-  max-width: var(--container-max-width);
+  max-width: 1240px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 28px;
+  padding-right: 28px;
 }
 
 /* Section Common */
 .section {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 36px;
+  padding-bottom: 36px;
 }
 
 .section-soft {
@@ -461,7 +461,7 @@ ul, ol {
   top: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  min-width: 290px;
+  min-width: 320px;
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
   border-radius: 12px;
@@ -1397,28 +1397,30 @@ ul, ol {
 }
 
 /* ==========================================================================
-   FOOTER
+   FOOTER (COMPACT EXECUTIVE 4-COLUMN)
    ========================================================================== */
 .site-footer {
-  background-color: var(--color-secondary);
+  background-color: #0B1120;
   color: #94A3B8;
-  padding-top: 64px;
-  padding-bottom: 32px;
+  padding-top: 36px;
+  padding-bottom: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 0.9fr 1fr 1.1fr;
-  gap: 40px;
-  margin-bottom: 52px;
+  grid-template-columns: 1.3fr 0.9fr 1.1fr 1.1fr;
+  gap: 28px;
+  margin-bottom: 24px;
 }
 
 .footer-col-title {
   color: #FFFFFF;
-  font-size: 1.1875rem;
-  font-weight: 800;
-  margin-bottom: 20px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   letter-spacing: -0.01em;
 }
 
@@ -1426,7 +1428,7 @@ ul, ol {
   font-size: var(--fs-body);
   line-height: 1.65;
   color: #94A3B8;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .footer-links-list {
