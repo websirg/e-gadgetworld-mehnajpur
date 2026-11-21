@@ -218,4 +218,81 @@ class LaptopController extends Controller
             'message' => "Laptop LP #{$lpNo} deleted successfully.",
         ]);
     }
+
+    public function bulkImport(Request $request)
+    {
+        $items = $request->input('items');
+        if (!is_array($items) || empty($items)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No items provided for import.',
+            ], 422);
+        }
+
+        $imported = [];
+        $user = $request->get('auth_user');
+
+        foreach ($items as $item) {
+            $lpNo = trim((string)($item['lp_no'] ?? $item['lpNumber'] ?? ''));
+            if (empty($lpNo)) {
+                continue;
+            }
+
+            $brand = trim((string)($item['brand'] ?? 'HP'));
+            $model = trim((string)($item['model'] ?? 'Laptop'));
+            $processor = trim((string)($item['processor'] ?? 'Intel Core i5'));
+            $generation = trim((string)($item['generation'] ?? '8th Gen'));
+            $ram = trim((string)($item['ram'] ?? '8GB'));
+            $storage = trim((string)($item['storage'] ?? '256GB SSD'));
+            $piece = isset($item['piece']) ? (int)$item['piece'] : (isset($item['quantity']) ? (int)$item['quantity'] : 1);
+            $price = isset($item['price']) ? (float)$item['price'] : 20000;
+            $pic = !empty($item['pic']) ? $item['pic'] : (!empty($item['image']) ? $item['image'] : 'assets/images/placeholders/laptop-placeholder.svg');
+            $status = !empty($item['status']) ? $item['status'] : 'published';
+            $desc = $item['desc'] ?? $item['description'] ?? '';
+
+            $laptop = Laptop::updateOrCreate(
+                ['lp_no' => $lpNo],
+                [
+                    'brand' => $brand,
+                    'model' => $model,
+                    'processor' => $processor,
+                    'generation' => $generation,
+                    'ram' => $ram,
+                    'storage' => $storage,
+                    'piece' => $piece,
+                    'price' => $price,
+                    'pic' => $pic,
+                    'status' => $status,
+                    'desc' => $desc,
+                ]
+            );
+
+            StockLog::create([
+                'item_type' => 'laptop',
+                'item_id' => $laptop->id,
+                'user_id' => $user['id'] ?? null,
+                'action' => 'import',
+                'qty_change' => $piece,
+                'old_qty' => 0,
+                'new_qty' => $piece,
+                'notes' => 'Imported via Excel/CSV',
+            ]);
+
+            $imported[] = $laptop;
+        }
+
+        ActivityLog::create([
+            'user_id' => $user['id'] ?? null,
+            'action' => 'import_laptops',
+            'detail' => 'Bulk imported ' . count($imported) . ' laptops',
+            'ip' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully imported ' . count($imported) . ' laptops.',
+            'count' => count($imported),
+            'data' => $imported,
+        ]);
+    }
 }

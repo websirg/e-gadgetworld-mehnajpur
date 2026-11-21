@@ -389,12 +389,36 @@
     }
 
     if (items.length === 0) {
+      const isFiltered = Boolean(uiState.laptopSearch || uiState.laptopBrandFilter !== 'all' || uiState.laptopStockFilter !== 'all');
       tbody.innerHTML = `
         <tr>
-          <td colspan="11" style="text-align: center; padding: 40px 20px;">
-            <div style="font-size: 15px; font-weight: 700; color: #475569; margin-bottom: 6px;">No Laptop Models Found</div>
-            <div style="font-size: 13px; color: #94A3B8; margin-bottom: 16px;">Try adjusting your search query or brand filter.</div>
-            <button class="btn-admin-secondary" onclick="window.adminController.resetLaptopFilters()">Reset All Filters</button>
+          <td colspan="11" style="text-align: center; padding: 48px 20px;">
+            <div style="margin-bottom: 12px;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" style="margin: 0 auto; display: block;">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 800; color: #0F172A; margin-bottom: 6px;">
+              ${isFiltered ? 'No Laptops Matching Filter Criteria' : 'No Laptop Inventory Records in Database'}
+            </div>
+            <div style="font-size: 13px; color: #64748B; margin-bottom: 18px; max-width: 480px; margin-left: auto; margin-right: auto;">
+              ${isFiltered ? 'Try clearing your search query or brand filters to see all showroom stock.' : 'The showroom laptop catalog is currently empty. Use Excel Import to bulk import laptop records, or add a single model.'}
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+              ${isFiltered ? `
+                <button class="btn-admin-secondary" onclick="window.adminController.resetLaptopFilters()">Reset All Filters</button>
+              ` : `
+                <a href="#excel" class="btn-admin-primary" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                  Import Laptops (Excel / CSV)
+                </a>
+                <a href="#inventory-add" class="btn-admin-secondary" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                  + Add Single Laptop
+                </a>
+              `}
+            </div>
           </td>
         </tr>
       `;
@@ -495,12 +519,35 @@
     }
 
     if (items.length === 0) {
+      const isFiltered = Boolean(uiState.accSearch || uiState.accTypeFilter !== 'all' || uiState.accStockFilter !== 'all');
       tbody.innerHTML = `
         <tr>
-          <td colspan="10" style="text-align: center; padding: 40px 20px;">
-            <div style="font-size: 15px; font-weight: 700; color: #475569; margin-bottom: 6px;">No Accessories Found</div>
-            <div style="font-size: 13px; color: #94A3B8; margin-bottom: 16px;">Try adjusting your search query or accessory type.</div>
-            <button class="btn-admin-secondary" onclick="window.adminController.resetAccFilters()">Reset All Filters</button>
+          <td colspan="10" style="text-align: center; padding: 48px 20px;">
+            <div style="margin-bottom: 12px;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" style="margin: 0 auto; display: block;">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 800; color: #0F172A; margin-bottom: 6px;">
+              ${isFiltered ? 'No Accessories Matching Filter Criteria' : 'No Accessory Records in Database'}
+            </div>
+            <div style="font-size: 13px; color: #64748B; margin-bottom: 18px; max-width: 480px; margin-left: auto; margin-right: auto;">
+              ${isFiltered ? 'Try clearing your search query or category filters to see all showroom accessories.' : 'The showroom accessory catalog is currently empty. Use Excel Import to bulk import accessories, or add a single accessory item.'}
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+              ${isFiltered ? `
+                <button class="btn-admin-secondary" onclick="window.adminController.resetAccFilters()">Reset All Filters</button>
+              ` : `
+                <a href="#excel" class="btn-admin-primary" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                  Import Accessories (Excel / CSV)
+                </a>
+                <a href="#inventory-add" class="btn-admin-secondary" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                  + Add Single Accessory
+                </a>
+              `}
+            </div>
           </td>
         </tr>
       `;
@@ -1120,6 +1167,8 @@
     reader.readAsText(file);
   }
 
+  let stagedImportData = null;
+
   function parseAndPreviewCSV(csvText, fileName) {
     const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
     if (lines.length < 2) {
@@ -1127,47 +1176,144 @@
       return;
     }
 
-    const headers = lines[0].split(',').map(h => h.replace(/^["']|["']$/g, '').trim());
+    const rawHeaders = lines[0].split(',').map(h => h.replace(/^["']|["']$/g, '').trim());
+    const upperHeaders = rawHeaders.map(h => h.toUpperCase());
+
     const rows = lines.slice(1).map(l => {
-      // Basic CSV regex split
       const matches = l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || l.split(',');
       return matches.map(c => c.replace(/^["']|["']$/g, '').trim());
     });
 
-    const previewContainer = document.getElementById('excelPreviewSection');
-    const tableEl = document.getElementById('excelPreviewTable');
+    const isLaptop = upperHeaders.some(h => h.includes('LP') || h.includes('PROCESSOR') || h.includes('GENERATION') || h.includes('RAM'));
 
-    if (!previewContainer || !tableEl) return;
-    previewContainer.style.display = 'block';
+    function getVal(row, aliases, fallbackIdx) {
+      for (const alias of aliases) {
+        const idx = upperHeaders.findIndex(h => h.includes(alias.toUpperCase()));
+        if (idx !== -1 && row[idx] !== undefined && row[idx].trim() !== '') {
+          return row[idx].trim();
+        }
+      }
+      return fallbackIdx !== undefined && row[fallbackIdx] !== undefined ? row[fallbackIdx].trim() : '';
+    }
 
-    const isLaptop = headers.some(h => h.toUpperCase().includes('LP NO') || h.toUpperCase().includes('MODEL'));
-
+    let parsedItems = [];
     let validCount = 0;
     let warningCount = 0;
 
-    const rowsHtml = rows.map((row, idx) => {
-      const code = row[0] || `ROW-${idx + 1}`;
-      const name = row[1] || 'Unnamed Product';
-      const pic = isLaptop ? (row[8] || '') : (row[10] || '');
+    if (isLaptop) {
+      parsedItems = rows.map((row, idx) => {
+        const lpNumber = getVal(row, ['LP NO', 'LP NUMBER', 'LP', 'ID'], 0) || String(4000 + idx);
+        const modelBrand = getVal(row, ['MODEL & BRAND', 'MODEL', 'BRAND'], 1) || 'Commercial Laptop';
+        
+        let brand = 'HP';
+        let model = modelBrand;
+        const brandMatch = modelBrand.match(/^(HP|Dell|Lenovo|Apple|Asus|Acer|MSI|Toshiba|Samsung|Microsoft)\b/i);
+        if (brandMatch) {
+          brand = brandMatch[1];
+          model = modelBrand.slice(brandMatch[0].length).trim() || 'Commercial Laptop';
+        }
 
-      let warning = '';
-      if (!pic) {
-        warning = 'Missing Image (Default SVG will be used)';
-        warningCount++;
-      } else {
-        validCount++;
-      }
+        const processor = getVal(row, ['PROCESSOR', 'CPU'], 2) || 'Intel Core i5';
+        const generation = getVal(row, ['GENERATION', 'GEN'], 3) || '8th Gen';
+        const ram = getVal(row, ['RAM', 'MEMORY'], 4) || '8GB';
+        const storage = getVal(row, ['STORAGE', 'SSD', 'HDD'], 5) || '256GB SSD';
+        const piece = parseInt(getVal(row, ['PIECE', 'QUANTITY', 'QTY', 'PIECES'], 6), 10) || 1;
+        const rawPrice = getVal(row, ['PRICE', 'SELLING PRICE', 'RATE', 'MRP'], 7);
+        const price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 22000;
+        const pic = getVal(row, ['PIC', 'IMAGE', 'PHOTO'], 8) || '../assets/images/placeholders/laptop-placeholder.svg';
+
+        if (pic && !pic.includes('placeholder')) {
+          validCount++;
+        } else {
+          warningCount++;
+        }
+
+        return {
+          id: `lp-imp-${Date.now()}-${idx}`,
+          lpNumber,
+          brand,
+          model,
+          processor,
+          generation,
+          ram,
+          storage,
+          quantity: piece,
+          price,
+          image: pic,
+          status: 'published',
+          warrantyDisplay: '6-12 Months Store Warranty',
+          description: `${brand} ${model} Commercial Business Laptop • ${processor} • ${ram} • ${storage}`
+        };
+      });
+    } else {
+      // Accessories
+      parsedItems = rows.map((row, idx) => {
+        const sku = getVal(row, ['SKU', 'CODE', 'ID'], 0) || `ACC-${Date.now()}-${idx + 1}`;
+        const name = getVal(row, ['PRODUCT NAME', 'NAME', 'TITLE'], 1) || 'Laptop Accessory';
+        const brand = getVal(row, ['BRAND', 'MAKE'], 2) || 'Generic';
+        const type = getVal(row, ['ACCESSORY TYPE', 'TYPE', 'CATEGORY'], 3) || 'Charger';
+        const model = getVal(row, ['MODEL', 'PART NO'], 4) || '';
+        const compatibility = getVal(row, ['COMPATIBILITY', 'COMPATIBLE'], 5) || 'Universal';
+        const color = getVal(row, ['COLOR', 'COLOUR'], 6) || 'Black';
+        const warranty = getVal(row, ['WARRANTY'], 7) || '1 Year Replacement';
+        const piece = parseInt(getVal(row, ['PIECE', 'QUANTITY', 'QTY'], 8), 10) || 1;
+        const rawPrice = getVal(row, ['SELLING PRICE', 'PRICE', 'RATE'], 9);
+        const price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 1000;
+        const pic = getVal(row, ['PIC', 'IMAGE', 'PHOTO'], 10) || '../assets/images/placeholders/accessories-placeholder.svg';
+        const desc = getVal(row, ['DESCRIPTION', 'DESC'], 11) || '';
+
+        if (pic && !pic.includes('placeholder')) {
+          validCount++;
+        } else {
+          warningCount++;
+        }
+
+        return {
+          id: `acc-imp-${Date.now()}-${idx}`,
+          sku,
+          name,
+          brand,
+          type,
+          model,
+          compatibility,
+          color,
+          warranty,
+          quantity: piece,
+          price,
+          purchasePrice: Math.round(price * 0.7),
+          image: pic,
+          status: 'published',
+          description: desc
+        };
+      });
+    }
+
+    stagedImportData = {
+      type: isLaptop ? 'laptop' : 'accessories',
+      items: parsedItems
+    };
+
+    const previewContainer = document.getElementById('excelPreviewSection');
+    const tableEl = document.getElementById('excelPreviewTable');
+    if (!previewContainer || !tableEl) return;
+    previewContainer.style.display = 'block';
+
+    const rowsHtml = parsedItems.map((item, idx) => {
+      const code = isLaptop ? `LP #${item.lpNumber}` : item.sku;
+      const title = isLaptop ? `${item.brand} ${item.model}` : item.name;
+      const specs = isLaptop ? `${item.processor} | ${item.ram} | ${item.storage}` : `${item.type} | ${item.compatibility}`;
+      const hasPic = item.image && !item.image.includes('placeholder');
 
       return `
         <tr>
           <td>#${idx + 1}</td>
-          <td><strong>${code}</strong></td>
-          <td>${name}</td>
-          <td>${row[2] || '-'}</td>
-          <td>${row[6] || 1} pcs</td>
-          <td>${row[7] || '-'}</td>
+          <td><strong style="font-family: monospace;">${code}</strong></td>
+          <td><strong>${title}</strong></td>
+          <td>${specs}</td>
+          <td><strong>${item.quantity}</strong> pcs</td>
+          <td>₹${item.price.toLocaleString('en-IN')}</td>
           <td>
-            ${warning ? `<span class="stock-badge-tag stock-low">${warning}</span>` : `<span class="stock-badge-tag stock-in">Valid</span>`}
+            ${hasPic ? `<span class="stock-badge-tag stock-in">Valid Image</span>` : `<span class="stock-badge-tag stock-low">Default SVG</span>`}
           </td>
         </tr>
       `;
@@ -1179,8 +1325,8 @@
           <th>#</th>
           <th>Code / LP</th>
           <th>Name / Model</th>
-          <th>Specs</th>
-          <th>Piece</th>
+          <th>Specifications</th>
+          <th>Quantity</th>
           <th>Price</th>
           <th>Status</th>
         </tr>
@@ -1193,13 +1339,17 @@
     const summaryEl = document.getElementById('excelImportSummary');
     if (summaryEl) {
       summaryEl.innerHTML = `
-        <div>
-          <strong>${rows.length} Total Rows Detected:</strong> ${validCount} fully valid, ${warningCount} with notices.
-          <div style="font-size: 12px; color: #1E40AF; margin-top: 2px;">Ready for simulated preview import into local browser session.</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <strong>${parsedItems.length} Products Detected (${isLaptop ? 'Commercial Laptops' : 'Laptop Accessories'}):</strong>
+            ${validCount} with custom images, ${warningCount} with default SVGs.
+            <div style="font-size: 12px; color: #1E40AF; margin-top: 2px;">Ready to import into live database & showroom inventory.</div>
+          </div>
+          <button class="btn-admin-primary" onclick="window.adminController.confirmImport()" style="background: #10B981; border-color: #10B981; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Confirm & Import ${parsedItems.length} ${isLaptop ? 'Laptops' : 'Accessories'}
+          </button>
         </div>
-        <button class="btn-admin-primary" onclick="window.adminController.confirmSimulateImport(${rows.length})">
-          Confirm Import (UI Preview Only)
-        </button>
       `;
     }
   }
@@ -1430,10 +1580,47 @@
       }
     },
 
-    // Simulate Excel Import
+    // Live Bulk Excel / CSV Import (Syncs MySQL and UI State)
+    async confirmImport() {
+      if (!stagedImportData || !stagedImportData.items || stagedImportData.items.length === 0) {
+        showToast('Please select and preview a CSV spreadsheet before confirming.', 'error');
+        return;
+      }
+
+      const { type, items } = stagedImportData;
+      showToast(`Importing ${items.length} ${type === 'laptop' ? 'laptops' : 'accessories'}...`, 'info');
+
+      try {
+        let res;
+        if (type === 'laptop') {
+          res = await window.adminState.importLaptops(items);
+        } else {
+          res = await window.adminState.importAccessories(items);
+        }
+
+        if (res && res.success) {
+          showToast(`Successfully imported ${res.count} ${type === 'laptop' ? 'laptops' : 'accessories'} into showroom inventory!`, 'success');
+
+          stagedImportData = null;
+          const previewContainer = document.getElementById('excelPreviewSection');
+          if (previewContainer) previewContainer.style.display = 'none';
+          const fileInfo = document.getElementById('excelFileInfo');
+          if (fileInfo) fileInfo.style.display = 'none';
+          const fileInput = document.getElementById('excelFileInput');
+          if (fileInput) fileInput.value = '';
+
+          navigateTo(type === 'laptop' ? 'laptops' : 'accessories');
+          renderCurrentView(type === 'laptop' ? 'laptops' : 'accessories');
+        } else {
+          showToast('Import failed. Please check spreadsheet format.', 'error');
+        }
+      } catch (err) {
+        showToast('Import error: ' + err.message, 'error');
+      }
+    },
+
     confirmSimulateImport(rowCount) {
-      showToast(`Import of ${rowCount} items completed!`, 'success');
-      navigateTo('laptops');
+      this.confirmImport();
     },
 
     // Reset Local Cache / State

@@ -7,7 +7,7 @@
 (function(window) {
   'use strict';
 
-  // 1. Initial Verified Categories
+    // 1. Initial Verified Categories
   const INITIAL_CATEGORIES = [
     {
       id: 'cat-laptops',
@@ -18,7 +18,7 @@
       image: '../assets/images/placeholders/laptop-placeholder.svg',
       status: 'active',
       displayOrder: 1,
-      itemCount: 24
+      itemCount: 0
     },
     {
       id: 'cat-accessories',
@@ -29,7 +29,7 @@
       image: '../assets/images/placeholders/accessories-placeholder.svg',
       status: 'active',
       displayOrder: 2,
-      itemCount: 12
+      itemCount: 0
     },
     {
       id: 'cat-peripherals',
@@ -40,253 +40,12 @@
       image: '../assets/images/placeholders/accessory-peripherals.svg',
       status: 'active',
       displayOrder: 3,
-      itemCount: 6
+      itemCount: 0
     }
   ];
 
-  // 2. Initial Verified Accessories Inventory (12 Live Showroom Items)
-  const INITIAL_ACCESSORIES = [
-    {
-      id: 'acc-1',
-      sku: 'ACC-CHG-65W-HP-01',
-      name: 'HP 65W Blue Pin Smart AC Power Adapter',
-      brand: 'HP',
-      type: 'Charger',
-      model: '710412-001',
-      compatibility: 'HP EliteBook 840 G3/G4/G5, ProBook 440 G1',
-      connectivity: 'Barrel 4.5mm Blue Pin',
-      color: 'Black',
-      warranty: '12 Months Replacement',
-      description: '100% Genuine HP 65W Smart AC adapter with surge protection & heavy-duty AC cord.',
-      quantity: 8,
-      soldQuantity: 0,
-      purchasePrice: 650,
-      price: 1250,
-      image: '../assets/images/placeholders/accessory-charger.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-2',
-      sku: 'ACC-CHG-65W-DEL-02',
-      name: 'Dell 65W 7.4mm Barrel Original Laptop Charger',
-      brand: 'Dell',
-      type: 'Charger',
-      model: 'HA65NS5-00',
-      compatibility: 'Dell Latitude E7450, 3490, 5480, Inspiron N4110',
-      connectivity: '7.4mm with Center Pin',
-      color: 'Black',
-      warranty: '12 Months Replacement',
-      description: 'High durability OEM Dell laptop power brick with reinforced strain relief.',
-      quantity: 6,
-      soldQuantity: 0,
-      purchasePrice: 700,
-      price: 1350,
-      image: '../assets/images/placeholders/accessory-charger.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-3',
-      sku: 'ACC-CHG-65W-LEN-03',
-      name: 'Lenovo 65W Type-C Rapid Charging Adapter',
-      brand: 'Lenovo',
-      type: 'Charger',
-      model: 'ADLX65YLC3A',
-      compatibility: 'Lenovo ThinkPad L14, T480, Universal Type-C Laptops',
-      connectivity: 'USB Type-C',
-      color: 'Black',
-      warranty: '12 Months Replacement',
-      description: 'Lenovo ThinkPad official 65W USB-PD fast power adapter with detachable cord.',
-      quantity: 4,
-      soldQuantity: 0,
-      purchasePrice: 850,
-      price: 1650,
-      image: '../assets/images/placeholders/accessory-charger.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-4',
-      sku: 'ACC-SSD-256G-NVME-04',
-      name: 'Samsung PM991a 256GB NVMe M.2 High-Speed SSD',
-      brand: 'Samsung',
-      type: 'Storage Upgrade',
-      model: 'MZ-VLQ256B',
-      compatibility: 'M.2 PCIe Gen3/Gen4 supported laptops & PCs',
-      connectivity: 'PCIe Gen3 x4 M.2 2280',
-      color: 'Black',
-      warranty: '3 Years Warranty',
-      description: 'Ultra fast solid state drive with up to 3100MB/s sequential read performance.',
-      quantity: 10,
-      soldQuantity: 0,
-      purchasePrice: 1100,
-      price: 1850,
-      image: '../assets/images/placeholders/accessory-ssd.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-5',
-      sku: 'ACC-SSD-512G-NVME-05',
-      name: 'Crucial P3 Plus 512GB PCIe M.2 2280 NVMe SSD',
-      brand: 'Crucial',
-      type: 'Storage Upgrade',
-      model: 'CT500P3PSSD8',
-      compatibility: 'All modern Dell, HP, Lenovo & Asus laptops',
-      connectivity: 'PCIe Gen4 x4 M.2 2280',
-      color: 'Black',
-      warranty: '3 Years Warranty',
-      description: 'Gen4 NVMe solid state storage delivering fast boot times and rapid data access.',
-      quantity: 7,
-      soldQuantity: 0,
-      purchasePrice: 1850,
-      price: 2950,
-      image: '../assets/images/placeholders/accessory-ssd.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-6',
-      sku: 'ACC-RAM-08G-DDR4-06',
-      name: 'Crucial 8GB DDR4 3200MHz SODIMM Laptop Memory',
-      brand: 'Crucial',
-      type: 'RAM Upgrade',
-      model: 'CT8G4SFRA32A',
-      compatibility: 'Dell Latitude, HP EliteBook, Lenovo ThinkPad',
-      connectivity: '260-Pin SODIMM',
-      color: 'Green',
-      warranty: '3 Years Warranty',
-      description: 'High performance commercial DDR4 SODIMM RAM module for seamless multitasking.',
-      quantity: 12,
-      soldQuantity: 0,
-      purchasePrice: 900,
-      price: 1450,
-      image: '../assets/images/placeholders/accessory-ram.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-7',
-      sku: 'ACC-RAM-16G-DDR4-07',
-      name: 'Kingston Fury 16GB DDR4 3200MHz SODIMM RAM',
-      brand: 'Kingston',
-      type: 'RAM Upgrade',
-      model: 'KF432S20IB/16',
-      compatibility: 'Gaming, commercial workstations, Intel 8th-12th Gen',
-      connectivity: '260-Pin SODIMM',
-      color: 'Black',
-      warranty: '3 Years Warranty',
-      description: 'High capacity low latency DDR4 SODIMM module for heavy software workflows.',
-      quantity: 5,
-      soldQuantity: 0,
-      purchasePrice: 1950,
-      price: 2800,
-      image: '../assets/images/placeholders/accessory-ram.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-8',
-      sku: 'ACC-MOU-WIR-LOG-08',
-      name: 'Logitech B170 Wireless Ergonomic Optical Mouse',
-      brand: 'Logitech',
-      type: 'Peripherals',
-      model: 'B170-Black',
-      compatibility: 'Windows, macOS, Linux, ChromeOS',
-      connectivity: '2.4GHz Wireless Nano Receiver (10m range)',
-      color: 'Black',
-      warranty: '1 Year Brand Warranty',
-      description: 'Reliable cordless mouse with 12 months battery life and optical tracking sensor.',
-      quantity: 15,
-      soldQuantity: 0,
-      purchasePrice: 380,
-      price: 599,
-      image: '../assets/images/placeholders/accessory-peripherals.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-9',
-      sku: 'ACC-KEY-USB-DEL-09',
-      name: 'Dell KB216 Wired Multimedia Silent Keyboard',
-      brand: 'Dell',
-      type: 'Peripherals',
-      model: 'KB216-BK',
-      compatibility: 'Universal USB-A compatible with all computers',
-      connectivity: 'Wired USB-A (1.5m Cable)',
-      color: 'Black',
-      warranty: '1 Year Warranty',
-      description: 'Full-sized desktop layout keyboard with chiclet keys for comfortable typing.',
-      quantity: 8,
-      soldQuantity: 0,
-      purchasePrice: 420,
-      price: 649,
-      image: '../assets/images/placeholders/accessory-peripherals.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-10',
-      sku: 'ACC-BAG-BAC-HP-10',
-      name: 'HP Odyssey 15.6-inch Durable Waterproof Backpack',
-      brand: 'HP',
-      type: 'Laptop Bag',
-      model: 'L8J88AA',
-      compatibility: 'Laptops up to 15.6 inch screen size',
-      connectivity: 'N/A',
-      color: 'Black / Smoke Grey',
-      warranty: '1 Year Warranty',
-      description: 'Contoured air-mesh shoulder straps with dedicated protective shock-absorbing sleeve.',
-      quantity: 6,
-      soldQuantity: 0,
-      purchasePrice: 750,
-      price: 1199,
-      image: '../assets/images/placeholders/accessories-placeholder.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-11',
-      sku: 'ACC-HUB-TPC-POR-11',
-      name: 'Portronics 6-in-1 Type-C Multiport Adapter Hub',
-      brand: 'Portronics',
-      type: 'Cable & Adapter',
-      model: 'M-Port 61',
-      compatibility: 'MacBook, Dell Latitude, ThinkPad, USB-C Laptops',
-      connectivity: 'USB Type-C',
-      color: 'Space Grey Aluminium',
-      warranty: '1 Year Warranty',
-      description: 'High grade aluminium hub with 4K HDMI, 3x USB 3.0, and 87W Power Delivery charging.',
-      quantity: 4,
-      soldQuantity: 0,
-      purchasePrice: 950,
-      price: 1499,
-      image: '../assets/images/placeholders/accessories-placeholder.svg',
-      gallery: [],
-      status: 'published'
-    },
-    {
-      id: 'acc-12',
-      sku: 'ACC-CLN-KIT-PRO-12',
-      name: 'Professional Screen & Keyboard Cleaning Kit',
-      brand: 'Antigravity',
-      type: 'Maintenance',
-      model: 'CLN-500ML',
-      compatibility: 'LED screens, laptop bodies, keyboards, smartphones',
-      connectivity: 'N/A',
-      color: 'Transparent Blue Solution',
-      warranty: 'Quality Assured',
-      description: 'Anti-static, alcohol-free screen cleaning solution with microfiber cloth & dust brush.',
-      quantity: 20,
-      soldQuantity: 0,
-      purchasePrice: 80,
-      price: 199,
-      image: '../assets/images/placeholders/accessories-placeholder.svg',
-      gallery: [],
-      status: 'published'
-    }
-  ];
+  // 2. Initial Accessories Inventory (Clean State - Populated via Excel/CSV Import)
+  const INITIAL_ACCESSORIES = [];
 
   // 3. Dynamic Form Field Schemas (Section 3 & Architecture)
   const CATEGORY_FORM_SCHEMAS = {
@@ -375,7 +134,14 @@
   // 4. Central Admin State Manager
   class AdminStateManager {
     constructor() {
-      this.STORAGE_KEY = 'egadget_admin_prod_v3';
+      this.STORAGE_KEY = 'egadget_admin_prod_v5';
+      try {
+        localStorage.removeItem('egadget_admin_prod_v1');
+        localStorage.removeItem('egadget_admin_prod_v2');
+        localStorage.removeItem('egadget_admin_prod_v3');
+        localStorage.removeItem('egadget_admin_prod_v4');
+        localStorage.removeItem('egadget_admin_state');
+      } catch (e) {}
       this.state = this.loadState();
     }
 
@@ -391,42 +157,18 @@
         console.warn('Failed reading admin state from localStorage:', err);
       }
 
-      // Fresh production state from real inventory
-      const initialLaptops = this.normalizeInitialLaptops();
+      // Fresh clean production state ready for import
       return {
         categories: JSON.parse(JSON.stringify(INITIAL_CATEGORIES)),
-        laptops: initialLaptops,
-        accessories: JSON.parse(JSON.stringify(INITIAL_ACCESSORIES)),
+        laptops: [],
+        accessories: [],
         sales: [],
         demoModeActive: false
       };
     }
 
-    // Map 24 laptops from PRODUCT_INVENTORY with fallback
     normalizeInitialLaptops() {
-      const source = (typeof window.PRODUCT_INVENTORY !== 'undefined' && Array.isArray(window.PRODUCT_INVENTORY))
-        ? window.PRODUCT_INVENTORY
-        : [];
-
-      return source.map((item, index) => ({
-        id: item.id || String(item.lpNumber || index + 1),
-        lpNumber: String(item.lpNumber || item.id || (3000 + index)),
-        brand: item.brand || 'Commercial',
-        model: item.model || 'Laptop',
-        processor: item.processor || 'Intel Core i5',
-        generation: item.generation || '8th Gen',
-        ram: item.ram || '8GB',
-        storage: item.storage || '256GB SSD',
-        quantity: typeof item.quantity === 'number' ? item.quantity : 1,
-        soldQuantity: 0,
-        price: Number(item.price) || 22000,
-        image: (item.images && item.images[0]) ? item.images[0] : '../assets/images/placeholders/laptop-placeholder.svg',
-        gallery: item.images || [],
-        status: 'published',
-        warrantyDisplay: item.warrantyDisplay || '6-12 Months Store Warranty',
-        description: item.description || '',
-        badge: item.badge || ''
-      }));
+      return [];
     }
 
     saveState() {
@@ -917,6 +659,154 @@
 
       const catAcc = this.state.categories.find(c => c.code === 'accessories');
       if (catAcc) catAcc.itemCount = this.state.accessories.length;
+    }
+
+    // Bulk Import Laptops (Syncs State and Live MySQL Backend)
+    async importLaptops(items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return { success: false, message: 'No laptop items provided.' };
+      }
+
+      const importedItems = items.map((item, idx) => ({
+        id: item.id || `lp-imp-${Date.now()}-${idx}`,
+        lpNumber: String(item.lpNumber || item.lp_no || (4000 + idx)),
+        brand: item.brand || 'Commercial',
+        model: item.model || 'Laptop',
+        processor: item.processor || 'Intel Core i5',
+        generation: item.generation || '8th Gen',
+        ram: item.ram || '8GB',
+        storage: item.storage || '256GB SSD',
+        quantity: typeof item.quantity === 'number' ? item.quantity : (parseInt(item.piece, 10) || 1),
+        soldQuantity: 0,
+        price: Number(item.price) || 20000,
+        image: item.image || item.pic || '../assets/images/placeholders/laptop-placeholder.svg',
+        gallery: item.gallery || [],
+        status: item.status || 'published',
+        warrantyDisplay: item.warrantyDisplay || '6-12 Months Store Warranty',
+        description: item.description || item.desc || '',
+        badge: item.badge || ''
+      }));
+
+      // Update existing by lpNumber or append
+      importedItems.forEach(newItem => {
+        const existingIdx = this.state.laptops.findIndex(l => String(l.lpNumber) === String(newItem.lpNumber));
+        if (existingIdx >= 0) {
+          this.state.laptops[existingIdx] = { ...this.state.laptops[existingIdx], ...newItem };
+        } else {
+          this.state.laptops.unshift(newItem);
+        }
+      });
+
+      this.updateCategoryCounts();
+      this.saveState();
+
+      // Backend MySQL Sync
+      try {
+        const token = localStorage.getItem('egadget_admin_token');
+        const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+        const payload = importedItems.map(l => ({
+          lp_no: l.lpNumber,
+          brand: l.brand,
+          model: l.model,
+          processor: l.processor,
+          generation: l.generation,
+          ram: l.ram,
+          storage: l.storage,
+          piece: l.quantity,
+          price: l.price,
+          pic: l.image,
+          status: l.status,
+          desc: l.description
+        }));
+
+        await fetch(`${apiBase}/api/admin/laptops/import`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ items: payload })
+        });
+      } catch (err) {
+        console.warn('Backend MySQL laptop sync warning:', err);
+      }
+
+      return { success: true, count: importedItems.length };
+    }
+
+    // Bulk Import Accessories (Syncs State and Live MySQL Backend)
+    async importAccessories(items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return { success: false, message: 'No accessory items provided.' };
+      }
+
+      const importedItems = items.map((item, idx) => ({
+        id: item.id || `acc-imp-${Date.now()}-${idx}`,
+        sku: item.sku || `ACC-${Date.now()}-${idx}`,
+        name: item.name || 'Laptop Accessory',
+        brand: item.brand || 'Generic',
+        type: item.type || 'Charger',
+        model: item.model || '',
+        compatibility: item.compatibility || '',
+        connectivity: item.connectivity || '',
+        color: item.color || '',
+        quantity: typeof item.quantity === 'number' ? item.quantity : (parseInt(item.piece, 10) || 1),
+        soldQuantity: 0,
+        price: Number(item.price) || 1000,
+        purchasePrice: Number(item.purchasePrice) || (Number(item.price) * 0.7) || 700,
+        image: item.image || item.pic || '../assets/images/placeholders/accessories-placeholder.svg',
+        gallery: item.gallery || [],
+        status: item.status || 'published',
+        warranty: item.warranty || '1 Year Replacement',
+        description: item.description || item.desc || ''
+      }));
+
+      // Update existing by sku or append
+      importedItems.forEach(newItem => {
+        const existingIdx = this.state.accessories.findIndex(a => a.sku.toLowerCase() === newItem.sku.toLowerCase());
+        if (existingIdx >= 0) {
+          this.state.accessories[existingIdx] = { ...this.state.accessories[existingIdx], ...newItem };
+        } else {
+          this.state.accessories.unshift(newItem);
+        }
+      });
+
+      this.updateCategoryCounts();
+      this.saveState();
+
+      // Backend MySQL Sync
+      try {
+        const token = localStorage.getItem('egadget_admin_token');
+        const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+        const payload = importedItems.map(a => ({
+          sku: a.sku,
+          name: a.name,
+          brand: a.brand,
+          type: a.type,
+          model: a.model,
+          compatibility: a.compatibility,
+          piece: a.quantity,
+          price: a.price,
+          pic: a.image,
+          status: a.status,
+          desc: a.description
+        }));
+
+        await fetch(`${apiBase}/api/admin/accessories/import`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ items: payload })
+        });
+      } catch (err) {
+        console.warn('Backend MySQL accessory sync warning:', err);
+      }
+
+      return { success: true, count: importedItems.length };
     }
 
     // Excel / CSV Template Generator (Section 11)

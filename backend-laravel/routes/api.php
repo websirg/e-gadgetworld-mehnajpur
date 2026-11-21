@@ -29,15 +29,17 @@ $registerRoutes = function () {
         // Dashboard metrics
         Route::get('/dashboard', [DashboardController::class, 'index']);
 
-        // Laptops CRUD
+        // Laptops CRUD & Bulk Import
         Route::get('/laptops', [LaptopController::class, 'index']);
+        Route::post('/laptops/import', [LaptopController::class, 'bulkImport']);
         Route::post('/laptops', [LaptopController::class, 'store']);
         Route::get('/laptops/{id}', [LaptopController::class, 'show']);
         Route::put('/laptops/{id}', [LaptopController::class, 'update']);
         Route::delete('/laptops/{id}', [LaptopController::class, 'destroy']);
 
-        // Accessories CRUD
+        // Accessories CRUD & Bulk Import
         Route::get('/accessories', [AccessoryController::class, 'index']);
+        Route::post('/accessories/import', [AccessoryController::class, 'bulkImport']);
         Route::post('/accessories', [AccessoryController::class, 'store']);
         Route::get('/accessories/{id}', [AccessoryController::class, 'show']);
         Route::put('/accessories/{id}', [AccessoryController::class, 'update']);

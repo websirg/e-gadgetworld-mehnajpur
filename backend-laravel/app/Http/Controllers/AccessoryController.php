@@ -182,4 +182,82 @@ class AccessoryController extends Controller
             'message' => "Accessory deleted successfully.",
         ]);
     }
+
+    public function bulkImport(Request $request)
+    {
+        $items = $request->input('items');
+        if (!is_array($items) || empty($items)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No items provided for import.',
+            ], 422);
+        }
+
+        $imported = [];
+        $user = $request->get('auth_user');
+
+        foreach ($items as $item) {
+            $sku = trim((string)($item['sku'] ?? ''));
+            $name = trim((string)($item['name'] ?? ''));
+            if (empty($sku) && empty($name)) {
+                continue;
+            }
+            if (empty($sku)) {
+                $sku = 'ACC-' . strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $name), 0, 8)) . '-' . rand(100, 999);
+            }
+
+            $brand = trim((string)($item['brand'] ?? 'Generic'));
+            $type = trim((string)($item['type'] ?? 'Accessories'));
+            $model = trim((string)($item['model'] ?? ''));
+            $compatibility = trim((string)($item['compatibility'] ?? ''));
+            $piece = isset($item['piece']) ? (int)$item['piece'] : (isset($item['quantity']) ? (int)$item['quantity'] : 1);
+            $price = isset($item['price']) ? (float)$item['price'] : 1000;
+            $pic = !empty($item['pic']) ? $item['pic'] : (!empty($item['image']) ? $item['image'] : 'assets/images/placeholders/accessories-placeholder.svg');
+            $status = !empty($item['status']) ? $item['status'] : 'published';
+            $desc = $item['desc'] ?? $item['description'] ?? '';
+
+            $acc = Accessory::updateOrCreate(
+                ['sku' => $sku],
+                [
+                    'name' => $name ?: 'Showroom Accessory',
+                    'brand' => $brand,
+                    'type' => $type,
+                    'model' => $model,
+                    'compatibility' => $compatibility,
+                    'piece' => $piece,
+                    'price' => $price,
+                    'pic' => $pic,
+                    'status' => $status,
+                    'desc' => $desc,
+                ]
+            );
+
+            StockLog::create([
+                'item_type' => 'accessory',
+                'item_id' => $acc->id,
+                'user_id' => $user['id'] ?? null,
+                'action' => 'import',
+                'qty_change' => $piece,
+                'old_qty' => 0,
+                'new_qty' => $piece,
+                'notes' => 'Imported via Excel/CSV',
+            ]);
+
+            $imported[] = $acc;
+        }
+
+        ActivityLog::create([
+            'user_id' => $user['id'] ?? null,
+            'action' => 'import_accessories',
+            'detail' => 'Bulk imported ' . count($imported) . ' accessories',
+            'ip' => $request->ip(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully imported ' . count($imported) . ' accessories.',
+            'count' => count($imported),
+            'data' => $imported,
+        ]);
+    }
 }

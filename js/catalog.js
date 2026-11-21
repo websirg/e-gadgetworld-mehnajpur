@@ -312,6 +312,28 @@ class LaptopCatalog {
       this.mobileFilterApplyBtn.textContent = `Show ${this.filteredLaptops.length} Models`;
     }
 
+    if (this.laptops.length === 0) {
+      this.gridEl.innerHTML = `
+        <div class="catalog-empty-state" style="grid-column: 1 / -1; padding: 56px 24px; text-align: center;">
+          <div class="catalog-empty-icon" style="margin-bottom: 16px;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" style="margin: 0 auto; display: block;">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
+          <h3 class="catalog-empty-title" style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">Showroom Inventory Update in Progress</h3>
+          <p class="catalog-empty-desc" style="font-size: 14px; color: #64748B; max-width: 500px; margin: 0 auto 20px;">
+            Our Mehnajpur showroom inventory is currently being refreshed with newly tested commercial laptops. Please enquire directly on WhatsApp for live models and pricing.
+          </p>
+          <a href="https://wa.me/919451996328?text=Hello%20E-Gadget%20World%2C%20please%20share%20the%20currently%20available%20laptop%20models%20at%20Mehnajpur." target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background: #25D366; border-color: #25D366; color: #FFFFFF; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;">
+            Enquire on WhatsApp
+          </a>
+        </div>
+      `;
+      return;
+    }
+
     if (this.filteredLaptops.length === 0) {
       this.gridEl.innerHTML = `
         <div class="catalog-empty-state" style="grid-column: 1 / -1;">
