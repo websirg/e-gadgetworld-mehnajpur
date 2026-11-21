@@ -46,6 +46,14 @@ class LaptopCatalog {
   }
 
   bindEvents() {
+    // Listen for live MySQL inventory sync
+    window.addEventListener('egadget:inventory-synced', (e) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        this.laptops = e.detail;
+        this.applyFiltersAndRender();
+      }
+    });
+
     // Live Search
     if (this.searchInput) {
       this.searchInput.addEventListener('input', (e) => {

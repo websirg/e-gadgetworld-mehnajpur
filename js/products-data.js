@@ -661,6 +661,66 @@ const ImageFallbackHelper = {
 
 // Helper Utilities
 const LaptopService = {
+  getApiBase() {
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    if (isLocal) {
+      return window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
+    }
+    if (typeof window !== 'undefined' && window.location.pathname.includes('/backend-laravel/public')) {
+      return window.location.origin + '/backend-laravel/public';
+    }
+    return '';
+  },
+
+  async syncWithApi() {
+    try {
+      const apiBase = this.getApiBase();
+      const res = await fetch(`${apiBase}/api/public/laptops`, { credentials: 'omit' });
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.data)) {
+        data.data.forEach(dbItem => {
+          const lpStr = String(dbItem.lp_no || dbItem.id);
+          const existing = PRODUCT_INVENTORY.find(item => String(item.lpNumber) === lpStr || String(item.id) === lpStr);
+          if (existing) {
+            existing.quantity = typeof dbItem.piece === 'number' ? dbItem.piece : parseInt(dbItem.piece, 10) || 0;
+            existing.price = Number(dbItem.price) || existing.price;
+            existing.status = dbItem.status || existing.status;
+            if (dbItem.badge) existing.badge = dbItem.badge;
+            if (dbItem.featured !== undefined) existing.featured = Boolean(dbItem.featured);
+          } else {
+            PRODUCT_INVENTORY.push({
+              id: String(dbItem.id),
+              lpNumber: String(dbItem.lp_no),
+              brand: dbItem.brand,
+              model: dbItem.model,
+              processor: dbItem.processor,
+              generation: dbItem.generation,
+              ram: dbItem.ram,
+              storage: dbItem.storage,
+              price: Number(dbItem.price),
+              quantity: typeof dbItem.piece === 'number' ? dbItem.piece : parseInt(dbItem.piece, 10) || 0,
+              condition: 'Refurbished / Tested',
+              warrantyDisplay: 'Warranty: Please Confirm with Store',
+              images: dbItem.pic ? [dbItem.pic] : ['assets/images/placeholders/laptop-placeholder.svg'],
+              featured: Boolean(dbItem.featured),
+              badge: dbItem.badge || '',
+              description: dbItem.desc || ''
+            });
+          }
+        });
+
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('egadget:inventory-synced', { detail: PRODUCT_INVENTORY }));
+        }
+        return true;
+      }
+    } catch (err) {
+      console.info('Live MySQL inventory sync: Backend offline, using local verified dataset.');
+    }
+    return false;
+  },
+
   getAll() {
     return PRODUCT_INVENTORY;
   },
@@ -940,6 +1000,13 @@ if (typeof window !== 'undefined') {
   window.PRODUCT_INVENTORY = PRODUCT_INVENTORY;
   window.LaptopService = LaptopService;
   window.ImageFallbackHelper = ImageFallbackHelper;
+
+  // Auto-trigger live MySQL inventory sync on page ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => LaptopService.syncWithApi());
+  } else {
+    LaptopService.syncWithApi();
+  }
 }
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { PRODUCT_INVENTORY, LaptopService, ImageFallbackHelper };

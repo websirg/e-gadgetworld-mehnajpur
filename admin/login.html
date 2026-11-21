@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staff Admin Login | E-Gadget World</title>
+  <title>Admin Login | EGadget</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="../assets/images/logo-official.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -245,15 +245,15 @@
 <body>
   <!-- Admin Header -->
   <header class="admin-auth-header">
-    <a href="../index.html" class="back-showroom-link" title="Return to Public Showroom">
+    <a href="../index.html" class="back-showroom-link" title="Return to Website">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"></line>
         <polyline points="12 19 5 12 12 5"></polyline>
       </svg>
-      Back to Customer Showroom
+      Back to Website
     </a>
     <div style="font-size: 12.5px; color: #64748B;">
-      Internal Operations Portal
+      Staff Portal
     </div>
   </header>
 
@@ -262,10 +262,10 @@
     <div class="admin-card">
       <div class="admin-card-header">
         <a href="../index.html">
-          <img src="../assets/images/logo-official.png" alt="E-Gadget World Logo" class="admin-card-logo">
+          <img src="../assets/images/logo-official.png" alt="EGadget Logo" class="admin-card-logo">
         </a>
-        <h1 class="admin-card-title">Staff Administration Portal</h1>
-        <p class="admin-card-subtitle">E-Gadget World Operations &amp; Inventory Management</p>
+        <h1 class="admin-card-title">Admin Login</h1>
+        <p class="admin-card-subtitle">EGadget World Portal</p>
       </div>
 
       <!-- Environment / Status Notice -->
@@ -275,7 +275,7 @@
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
         <div>
-          <strong>Backend Active:</strong> Connected to independent database <code>e_gadget_world</code>. Authenticate with authorized staff credentials.
+          <strong>Backend Connected:</strong> Authorized staff login for inventory &amp; sales console.
         </div>
       </div>
 
@@ -283,18 +283,18 @@
 
       <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label class="form-label" for="branchSelect">Branch / Office</label>
+          <label class="form-label" for="branchSelect">Branch</label>
           <select id="branchSelect" class="form-select" required>
-            <option value="MEHNAJPUR" selected>Mehnajpur HQ (Azamgarh, UP)</option>
-            <option value="BURARI">Burari Branch (Delhi)</option>
-            <option value="VARANASI">Varanasi Hub (UP)</option>
-            <option value="HALDWANI">Haldwani Branch (Uttarakhand)</option>
-            <option value="BANGALORE">Bangalore Logistics Hub</option>
+            <option value="MEHNAJPUR" selected>Mehnajpur HQ</option>
+            <option value="BURARI">Delhi (Burari)</option>
+            <option value="VARANASI">Varanasi Hub</option>
+            <option value="HALDWANI">Haldwani</option>
+            <option value="BANGALORE">Bangalore Hub</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="staffEmail">Staff Email</label>
+          <label class="form-label" for="staffEmail">Email</label>
           <input type="email" id="staffEmail" class="form-input" placeholder="egadgetworld@websirg.com" autocomplete="username" required>
         </div>
 
@@ -318,9 +318,9 @@
         <div class="form-options">
           <label class="checkbox-label">
             <input type="checkbox" id="rememberMe" checked>
-            Remember this terminal
+            Remember me
           </label>
-          <a href="../contact.html" style="color: #2563EB; text-decoration: none; font-size: 12.5px;">Need Help?</a>
+          <a href="../contact.html" style="color: #2563EB; text-decoration: none; font-size: 12.5px;">Help?</a>
         </div>
 
         <button type="submit" id="submitBtn" class="btn-admin-submit">
@@ -329,14 +329,14 @@
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
-          <span id="btnText">Sign In to Management Console</span>
+          <span id="btnText">Sign In</span>
         </button>
       </form>
     </div>
   </main>
 
   <footer class="admin-auth-footer">
-    Copyright &copy; 2026 E-Gadget World. Authorized Staff Access Only. All actions logged.
+    Copyright &copy; 2026 EGadget World. Authorized Access Only.
   </footer>
 
   <script>
@@ -449,7 +449,7 @@
           feedback.innerHTML = `<strong>Authentication Failed:</strong> ${data.message || 'Invalid credentials.'}`;
           submitBtn.disabled = false;
           if (lockIcon) lockIcon.style.display = 'inline-block';
-          btnText.textContent = 'Sign In to Management Console';
+          btnText.textContent = 'Sign In';
         }
       } catch (err) {
         console.error('Login connection error');
@@ -463,7 +463,7 @@
         }
         submitBtn.disabled = false;
         if (lockIcon) lockIcon.style.display = 'inline-block';
-        btnText.textContent = 'Sign In to Management Console';
+        btnText.textContent = 'Sign In';
       }
     }
   </script>

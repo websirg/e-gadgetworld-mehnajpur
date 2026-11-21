@@ -466,6 +466,108 @@
       }
     }
 
+    async syncWithBackend() {
+      const token = localStorage.getItem('egadget_admin_token');
+      if (!token) return false;
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      try {
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        };
+
+        // 1. Fetch Laptops from MySQL
+        const lpRes = await fetch(`${apiBase}/api/admin/laptops?per_page=100`, { headers });
+        if (lpRes.ok) {
+          const lpData = await lpRes.json();
+          if (lpData.success && Array.isArray(lpData.data)) {
+            this.state.laptops = lpData.data.map(l => ({
+              id: String(l.id),
+              lpNumber: String(l.lp_no),
+              brand: l.brand,
+              model: l.model,
+              processor: l.processor,
+              generation: l.generation,
+              ram: l.ram,
+              storage: l.storage,
+              quantity: typeof l.piece === 'number' ? l.piece : parseInt(l.piece, 10) || 0,
+              soldQuantity: 0,
+              price: Number(l.price),
+              image: l.pic || '../assets/images/placeholders/laptop-placeholder.svg',
+              gallery: l.gallery || [],
+              status: l.status || 'published',
+              warrantyDisplay: '6-12 Months Store Warranty',
+              description: l.desc || '',
+              badge: l.badge || ''
+            }));
+          }
+        }
+
+        // 2. Fetch Accessories from MySQL
+        const accRes = await fetch(`${apiBase}/api/admin/accessories?per_page=100`, { headers });
+        if (accRes.ok) {
+          const accData = await accRes.json();
+          if (accData.success && Array.isArray(accData.data)) {
+            this.state.accessories = accData.data.map(a => ({
+              id: String(a.id),
+              sku: a.sku,
+              name: a.name,
+              brand: a.brand,
+              type: a.type,
+              model: a.model || '',
+              compatibility: a.compatibility || '',
+              quantity: typeof a.piece === 'number' ? a.piece : parseInt(a.piece, 10) || 0,
+              soldQuantity: 0,
+              price: Number(a.price),
+              purchasePrice: Number(a.price) * 0.7,
+              image: a.pic || '../assets/images/placeholders/accessories-placeholder.svg',
+              gallery: [],
+              status: a.status || 'published',
+              warranty: '1 Year Replacement',
+              description: a.desc || ''
+            }));
+          }
+        }
+
+        // 3. Fetch Sales from MySQL
+        const salesRes = await fetch(`${apiBase}/api/admin/sales?per_page=50`, { headers });
+        if (salesRes.ok) {
+          const salesData = await salesRes.json();
+          if (salesData.success && Array.isArray(salesData.data)) {
+            this.state.sales = salesData.data.map(s => {
+              const item = (s.items && s.items[0]) ? s.items[0] : null;
+              return {
+                id: String(s.inv_no || s.id),
+                date: (s.created_at || '').split('T')[0] || new Date().toISOString().split('T')[0],
+                productId: item ? String(item.item_id) : '',
+                productName: item ? item.title : 'Inventory Item',
+                lpNumber: item ? (item.sku_lp || '') : '',
+                category: (item && item.item_type === 'laptop') ? 'Commercial Laptops' : 'Laptop Accessories',
+                quantity: item ? item.qty : 1,
+                unitPrice: item ? Number(item.price) : Number(s.total),
+                totalAmount: Number(s.total),
+                paymentMethod: s.payment || 'Cash',
+                customerName: s.customer || 'Walk-in Guest',
+                customerPhone: s.phone || '',
+                notes: s.notes || '',
+                status: 'Completed',
+                isLive: true
+              };
+            });
+          }
+        }
+
+        this.state.demoModeActive = false;
+        this.updateCategoryCounts();
+        this.saveState();
+        return true;
+      } catch (err) {
+        console.warn('Backend sync failed, continuing with current state:', err);
+        return false;
+      }
+    }
+
     resetDemoState() {
       localStorage.removeItem(this.STORAGE_KEY);
       this.state = this.loadState();
@@ -636,6 +738,40 @@
 
       this.state.sales.unshift(saleRecord);
       this.saveState();
+
+      // If authenticated admin, dispatch real MySQL transaction with row-locking
+      const token = localStorage.getItem('egadget_admin_token');
+      if (token) {
+        const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+        fetch(`${apiBase}/api/admin/sales`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            item_type: category,
+            item_id: product.id || (category === 'laptop' ? product.lpNumber : product.sku),
+            qty: qtyToSell,
+            price: Number(unitPrice) || product.price,
+            customer: customerName || 'Walk-in Guest',
+            phone: customerPhone || '',
+            payment: (paymentMethod || 'cash').toLowerCase(),
+            notes: notes || ''
+          })
+        }).then(r => r.json()).then(data => {
+          if (data && data.success) {
+            console.log('Sale saved to MySQL. Invoice:', data.invoice);
+            this.syncWithBackend().then(() => {
+              if (window.adminController && typeof window.adminController.renderCurrentView === 'function') {
+                window.adminController.renderCurrentView();
+              }
+            });
+          }
+        }).catch(err => console.warn('Could not post sale to MySQL backend:', err));
+      }
+
       return saleRecord;
     }
 

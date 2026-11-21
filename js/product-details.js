@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initProductDetailsPage();
 });
 
+window.addEventListener('egadget:inventory-synced', () => {
+  initProductDetailsPage();
+});
+
 function initProductDetailsPage() {
   const container = document.getElementById('productDetailContainer');
   if (!container) return;

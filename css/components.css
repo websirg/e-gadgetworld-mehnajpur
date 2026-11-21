@@ -11,7 +11,7 @@
   position: relative;
   background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
   color: var(--text-primary);
-  padding: 72px 0 80px 0;
+  padding: 38px 0 42px 0;
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
 }
@@ -44,7 +44,7 @@
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
-  gap: 52px;
+  gap: 32px;
   position: relative;
   z-index: 2;
 }
@@ -53,7 +53,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 16px;
+  padding: 5px 14px;
   background-color: var(--color-primary-light);
   border: 1px solid var(--color-primary-border);
   border-radius: var(--radius-full);
@@ -62,7 +62,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
 }
 
 .hero-title {
@@ -70,7 +70,7 @@
   font-weight: 900;
   line-height: 1.15;
   color: var(--color-secondary);
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   letter-spacing: -0.03em;
 }
 
@@ -81,24 +81,24 @@
 .hero-desc {
   font-size: var(--fs-body);
   color: var(--text-secondary);
-  line-height: 1.65;
-  margin-bottom: 36px;
+  line-height: 1.6;
+  margin-bottom: 22px;
   max-width: 600px;
 }
 
 .hero-cta-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .hero-stats {
   display: flex;
   align-items: center;
-  gap: 36px;
-  padding-top: 28px;
+  gap: 24px;
+  padding-top: 20px;
   border-top: 1px solid var(--color-border);
 }
 
@@ -298,15 +298,15 @@
    ========================================================================== */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
 }
 
 .category-card {
   background-color: var(--color-bg-white);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 20px;
   transition: all var(--transition-normal);
   display: flex;
   flex-direction: column;
@@ -406,8 +406,8 @@
    ========================================================================== */
 .laptops-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
 }
 
 .laptop-card {
@@ -431,11 +431,11 @@
 .laptop-card-image-wrap {
   position: relative;
   background-color: var(--color-bg-soft);
-  padding: 20px;
+  padding: 12px;
   text-align: center;
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
-  height: 210px;
+  height: 185px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -451,8 +451,8 @@
 }
 
 .laptop-card-img {
-  width: 240px !important;
-  height: 165px !important;
+  width: 220px !important;
+  height: 145px !important;
   max-width: 100% !important;
   max-height: 100% !important;
   object-fit: contain;
@@ -562,7 +562,7 @@
 }
 
 .laptop-card-body {
-  padding: 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -574,17 +574,17 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-primary);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .laptop-card-title {
-  font-size: var(--fs-card-title);
+  font-size: 1.125rem;
   font-weight: 800;
   color: var(--text-primary);
-  line-height: 1.35;
-  margin-bottom: 14px;
+  line-height: 1.3;
+  margin-bottom: 8px;
   letter-spacing: -0.015em;
-  min-height: 2.7em;
+  min-height: 2.5em;
 }
 
 .laptop-card-title a {
@@ -596,20 +596,20 @@
 }
 
 .laptop-spec-line {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .laptop-spec-line-sub {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 8px;
 }
 
 .spec-divider {
@@ -620,8 +620,8 @@
 .laptop-spec-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 14px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .laptop-spec-chip {
@@ -630,11 +630,11 @@
   color: var(--text-secondary);
   font-size: var(--fs-badge);
   font-weight: 600;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--radius-xs);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .laptop-spec-chip.highlight {
@@ -649,14 +649,14 @@
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 5px;
+  margin-bottom: 10px;
   font-weight: 500;
 }
 
 .laptop-warranty-notice svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   stroke: var(--color-primary);
   flex-shrink: 0;
 }
@@ -665,12 +665,12 @@
   font-size: var(--fs-badge);
   background-color: #FEF3C7;
   color: #92400E;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: var(--radius-xs);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   border: 1px solid #FDE68A;
 }
 
@@ -679,13 +679,13 @@
   align-items: baseline;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid var(--color-border);
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .laptop-price-value {
-  font-size: var(--fs-price);
+  font-size: 1.5rem;
   font-weight: 900;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -706,12 +706,13 @@
 .laptop-card-actions {
   display: grid;
   grid-template-columns: 1fr 1.25fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .laptop-card-actions .btn {
-  min-height: 44px;
-  font-size: var(--fs-btn);
+  min-height: 38px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
 }
 
 .laptop-card-compare-checkbox {

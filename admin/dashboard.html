@@ -1274,6 +1274,15 @@
           updateProfileDisplay(data.user);
           const overlay = document.getElementById('authGuardOverlay');
           if (overlay) overlay.style.display = 'none';
+
+          // Sync live MySQL inventory and sales data
+          if (window.adminState && typeof window.adminState.syncWithBackend === 'function') {
+            window.adminState.syncWithBackend().then(() => {
+              if (window.adminController && typeof window.adminController.renderCurrentView === 'function') {
+                window.adminController.renderCurrentView();
+              }
+            });
+          }
         } else {
           window.location.replace('login.html?unauthorized=1');
         }
