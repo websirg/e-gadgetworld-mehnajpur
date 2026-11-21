@@ -98,8 +98,9 @@
   // 4. Central Admin State Manager
   class AdminStateManager {
     constructor() {
-      this.STORAGE_KEY = 'egadget_admin_clean_v1';
+      this.STORAGE_KEY = 'egadget_admin_v4_production';
       try {
+        localStorage.removeItem('egadget_admin_clean_v1');
         localStorage.removeItem('egadget_admin_prod_v1');
         localStorage.removeItem('egadget_admin_prod_v2');
         localStorage.removeItem('egadget_admin_prod_v3');
@@ -108,6 +109,8 @@
         localStorage.removeItem('egadget_admin_prod_v6');
         localStorage.removeItem('egadget_admin_state');
         localStorage.removeItem('egadget_catalog_cache');
+        localStorage.removeItem('egadget_products_cache');
+        localStorage.removeItem('egadget_inventory_cache');
       } catch (e) {}
       this.state = this.loadState();
     }
@@ -165,86 +168,123 @@
         }
 
         // 1. Fetch Laptops from MySQL (admin or public fallback)
-        const lpUrl = token ? `${apiBase}/api/admin/laptops?per_page=100` : `${apiBase}/api/public/laptops`;
-        const lpRes = await fetch(lpUrl, { headers });
-        if (lpRes.ok) {
-          const lpData = await lpRes.json();
-          if (lpData.success && Array.isArray(lpData.data)) {
-            this.state.laptops = lpData.data.map(l => ({
-              id: String(l.id),
-              lpNumber: String(l.lp_no),
-              brand: l.brand,
-              model: l.model,
-              processor: l.processor,
-              generation: l.generation,
-              ram: l.ram,
-              storage: l.storage,
-              quantity: typeof l.piece === 'number' ? l.piece : parseInt(l.piece, 10) || 0,
-              soldQuantity: 0,
-              price: Number(l.price),
-              image: l.pic || '../assets/images/placeholders/laptop-placeholder.svg',
-              gallery: l.gallery || [],
-              status: l.status || 'published',
-              warrantyDisplay: '6-12 Months Store Warranty',
-              description: l.desc || '',
-              badge: l.badge || ''
-            }));
+        let lpData = null;
+        try {
+          const lpUrl = token ? `${apiBase}/api/admin/laptops?per_page=100` : `${apiBase}/api/public/laptops`;
+          let lpRes = await fetch(lpUrl, { headers });
+          if (!lpRes.ok && token) {
+            lpRes = await fetch(`${apiBase}/api/public/laptops`, { headers: { 'Accept': 'application/json' } });
           }
+          if (lpRes.ok) {
+            lpData = await lpRes.json();
+          }
+        } catch (e) {
+          console.warn('Laptops fetch failed:', e);
+        }
+
+        if (lpData && lpData.success && Array.isArray(lpData.data)) {
+          this.state.laptops = lpData.data.map(l => ({
+            id: String(l.id),
+            lpNumber: String(l.lp_no),
+            brand: l.brand,
+            model: l.model,
+            processor: l.processor,
+            generation: l.generation,
+            ram: l.ram,
+            storage: l.storage,
+            quantity: typeof l.piece === 'number' ? l.piece : parseInt(l.piece, 10) || 0,
+            soldQuantity: 0,
+            price: Number(l.price),
+            image: l.pic || '../assets/images/placeholders/laptop-placeholder.svg',
+            gallery: l.gallery || [],
+            status: l.status || 'published',
+            warrantyDisplay: '6-12 Months Store Warranty',
+            description: l.desc || '',
+            badge: l.badge || ''
+          }));
         }
 
         // 2. Fetch Accessories from MySQL (admin or public fallback)
-        const accUrl = token ? `${apiBase}/api/admin/accessories?per_page=100` : `${apiBase}/api/public/accessories`;
-        const accRes = await fetch(accUrl, { headers });
-        if (accRes.ok) {
-          const accData = await accRes.json();
-          if (accData.success && Array.isArray(accData.data)) {
-            this.state.accessories = accData.data.map(a => ({
-              id: String(a.id),
-              sku: a.sku,
-              name: a.name,
-              brand: a.brand,
-              type: a.type,
-              model: a.model || '',
-              compatibility: a.compatibility || '',
-              quantity: typeof a.piece === 'number' ? a.piece : parseInt(a.piece, 10) || 0,
-              soldQuantity: 0,
-              price: Number(a.price),
-              purchasePrice: Number(a.price) * 0.7,
-              image: a.pic || '../assets/images/placeholders/accessories-placeholder.svg',
-              gallery: [],
-              status: a.status || 'published',
-              warranty: '1 Year Replacement',
-              description: a.desc || ''
-            }));
+        let accData = null;
+        try {
+          const accUrl = token ? `${apiBase}/api/admin/accessories?per_page=100` : `${apiBase}/api/public/accessories`;
+          let accRes = await fetch(accUrl, { headers });
+          if (!accRes.ok && token) {
+            accRes = await fetch(`${apiBase}/api/public/accessories`, { headers: { 'Accept': 'application/json' } });
           }
+          if (accRes.ok) {
+            accData = await accRes.json();
+          }
+        } catch (e) {
+          console.warn('Accessories fetch failed:', e);
+        }
+
+        if (accData && accData.success && Array.isArray(accData.data)) {
+          this.state.accessories = accData.data.map(a => ({
+            id: String(a.id),
+            sku: a.sku,
+            name: a.name,
+            brand: a.brand,
+            type: a.type,
+            model: a.model || '',
+            compatibility: a.compatibility || '',
+            quantity: typeof a.piece === 'number' ? a.piece : parseInt(a.piece, 10) || 0,
+            soldQuantity: 0,
+            price: Number(a.price),
+            purchasePrice: Number(a.price) * 0.7,
+            image: a.pic || '../assets/images/placeholders/accessories-placeholder.svg',
+            gallery: [],
+            status: a.status || 'published',
+            warranty: '1 Year Replacement',
+            description: a.desc || ''
+          }));
         }
 
         // 3. Fetch Sales from MySQL
-        const salesRes = await fetch(`${apiBase}/api/admin/sales?per_page=50`, { headers });
-        if (salesRes.ok) {
-          const salesData = await salesRes.json();
-          if (salesData.success && Array.isArray(salesData.data)) {
-            this.state.sales = salesData.data.map(s => {
-              const item = (s.items && s.items[0]) ? s.items[0] : null;
-              return {
-                id: String(s.inv_no || s.id),
-                date: (s.created_at || '').split('T')[0] || new Date().toISOString().split('T')[0],
-                productId: item ? String(item.item_id) : '',
-                productName: item ? item.title : 'Inventory Item',
-                lpNumber: item ? (item.sku_lp || '') : '',
-                category: (item && item.item_type === 'laptop') ? 'Commercial Laptops' : 'Laptop Accessories',
-                quantity: item ? item.qty : 1,
-                unitPrice: item ? Number(item.price) : Number(s.total),
-                totalAmount: Number(s.total),
-                paymentMethod: s.payment || 'Cash',
-                customerName: s.customer || 'Walk-in Guest',
-                customerPhone: s.phone || '',
-                notes: s.notes || '',
-                status: 'Completed',
-                isLive: true
-              };
-            });
+        if (token) {
+          try {
+            const salesRes = await fetch(`${apiBase}/api/admin/sales?per_page=50`, { headers });
+            if (salesRes.ok) {
+              const salesData = await salesRes.json();
+              if (salesData.success && Array.isArray(salesData.data)) {
+                this.state.sales = salesData.data.map(s => {
+                  const item = (s.items && s.items[0]) ? s.items[0] : null;
+                  return {
+                    id: String(s.inv_no || s.id),
+                    date: (s.created_at || '').split('T')[0] || new Date().toISOString().split('T')[0],
+                    productId: item ? String(item.item_id) : '',
+                    productName: item ? item.title : 'Inventory Item',
+                    lpNumber: item ? (item.sku_lp || '') : '',
+                    category: (item && item.item_type === 'laptop') ? 'Commercial Laptops' : 'Laptop Accessories',
+                    quantity: item ? item.qty : 1,
+                    unitPrice: item ? Number(item.price) : Number(s.total),
+                    totalAmount: Number(s.total),
+                    paymentMethod: s.payment || 'Cash',
+                    customerName: s.customer || 'Walk-in Guest',
+                    customerPhone: s.phone || '',
+                    notes: s.notes || '',
+                    status: 'Completed',
+                    isLive: true
+                  };
+                });
+              }
+            }
+          } catch (e) {
+            console.warn('Sales fetch failed:', e);
           }
+        }
+
+        // 4. Fetch Categories from MySQL
+        try {
+          const catRes = await fetch(`${apiBase}/api/public/categories`, { headers: { 'Accept': 'application/json' } });
+          if (catRes.ok) {
+            const catData = await catRes.json();
+            if (catData.success && Array.isArray(catData.data)) {
+              this.state.categories = catData.data;
+            }
+          }
+        } catch (e) {
+          console.warn('Categories fetch failed:', e);
         }
 
         this.state.demoModeActive = false;

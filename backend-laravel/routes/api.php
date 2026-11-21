@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaptopController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicApiController;
 use App\Http\Controllers\SaleController;
 use App\Http\Middleware\AdminAuthenticate;
@@ -17,6 +18,7 @@ $registerRoutes = function () {
         Route::get('/laptops/{lpNo}', [PublicApiController::class, 'laptopDetail']);
         Route::get('/accessories', [PublicApiController::class, 'accessories']);
         Route::get('/categories', [PublicApiController::class, 'categories']);
+        Route::get('/settings', [ProfileController::class, 'getSettings']);
     });
 
     // Admin Auth
@@ -55,6 +57,13 @@ $registerRoutes = function () {
         Route::get('/sales', [SaleController::class, 'index']);
         Route::post('/sales', [SaleController::class, 'store']);
         Route::get('/sales/{id}', [SaleController::class, 'show']);
+
+        // Profile & Settings Management
+        Route::get('/profile', [ProfileController::class, 'getProfile']);
+        Route::post('/profile', [ProfileController::class, 'updateProfile']);
+        Route::put('/profile', [ProfileController::class, 'updateProfile']);
+        Route::post('/change-password', [ProfileController::class, 'changePassword']);
+        Route::get('/settings', [ProfileController::class, 'getSettings']);
     });
 };
 

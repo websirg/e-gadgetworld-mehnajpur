@@ -5,8 +5,8 @@
    ========================================================================== */
 
 :root {
-  --admin-sidebar-width: 275px;
-  --admin-sidebar-collapsed: 74px;
+  --admin-sidebar-width: 248px;
+  --admin-sidebar-collapsed: 68px;
   --admin-header-height: 64px;
   --admin-bg: #F8FAFC;
   --admin-card-bg: #FFFFFF;
@@ -556,9 +556,8 @@ body.sidebar-collapsed .admin-main-wrap {
 .admin-content {
   flex: 1;
   padding: 24px;
-  max-width: 1400px;
   width: 100%;
-  margin: 0 auto;
+  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -2052,4 +2051,67 @@ body.sidebar-collapsed .admin-main-wrap {
   .laptop-stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==========================================================================
+   SETTINGS 5-TAB ARCHITECTURE & PROFILE UPLOADER
+   ========================================================================== */
+.settings-tabs-nav {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--admin-border);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.settings-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--admin-text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  border-radius: 6px 6px 0 0;
+}
+
+.settings-tab-btn:hover {
+  color: var(--admin-primary);
+  background: #F1F5F9;
+}
+
+.settings-tab-btn.active {
+  color: var(--admin-primary);
+  border-bottom-color: var(--admin-primary);
+  background: #EFF6FF;
+}
+
+.settings-tab-pane {
+  display: none;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.settings-tab-pane.active {
+  display: block;
+}
+
+/* Empty State Box Styling */
+.empty-state-box {
+  background: #FFFFFF;
+  border: 1px dashed var(--admin-border);
+  border-radius: var(--admin-radius);
+}
+
+/* Ensure no horizontal flex clipping */
+.table-responsive-box {
+  min-width: 0;
+  width: 100%;
 }

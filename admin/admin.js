@@ -656,55 +656,81 @@
   // ==========================================================================
   function renderAllInventoryTable() {
     const tbody = document.getElementById('allInventoryTableBody');
-    if (!tbody) return;
+    const emptyState = document.getElementById('allInventoryEmptyState');
+    const tableWrap = document.getElementById('allInventoryTableWrap');
 
-    const laptops = window.adminState.state.laptops.map(l => ({
+    const laptops = (window.adminState.state.laptops || []).map(l => ({
       category: 'Commercial Laptop',
       catCode: 'laptop',
       id: l.id,
       code: `LP #${l.lpNumber}`,
       name: `${l.brand} ${l.model}`,
       specs: `${l.processor} | ${l.ram} | ${l.storage}`,
-      quantity: l.quantity,
+      quantity: Number(l.quantity) || 0,
       price: l.price,
       status: l.status,
       image: l.image
     }));
 
-    const accessories = window.adminState.state.accessories.map(a => ({
+    const accessories = (window.adminState.state.accessories || []).map(a => ({
       category: 'Laptop Accessory',
       catCode: 'accessories',
       id: a.id,
       code: a.sku,
       name: a.name,
       specs: `${a.brand} ${a.type} | ${a.compatibility}`,
-      quantity: a.quantity,
+      quantity: Number(a.quantity) || 0,
       price: a.price,
       status: a.status,
       image: a.image
     }));
 
     const combined = [...laptops, ...accessories];
+    let totalPieces = 0;
+    combined.forEach(item => totalPieces += item.quantity);
 
-    tbody.innerHTML = combined.map(item => {
-      const stockPres = window.AdminStateManager.getPublicStockPresentation(item.quantity);
-      return `
-        <tr>
-          <td><span class="badge-brand-pill">${item.category}</span></td>
-          <td><span class="cell-lp-badge">${item.code}</span></td>
-          <td><strong>${item.name}</strong></td>
-          <td style="font-size: 12.5px; color: #475569;">${item.specs}</td>
-          <td><strong>${item.quantity}</strong> pcs</td>
-          <td><strong>₹${Number(item.price).toLocaleString('en-IN')}</strong></td>
-          <td><span class="stock-badge-tag ${stockPres.badgeClass}">${stockPres.label}</span></td>
-          <td>
-            <button class="btn-table-action btn-table-sold" onclick="window.adminController.openSoldModal('${item.catCode}', '${item.id}')" ${item.quantity <= 0 ? 'disabled' : ''}>
-              Sold
-            </button>
-          </td>
-        </tr>
-      `;
-    }).join('');
+    // Update 4 KPI Summary Cards
+    const elTotal = document.getElementById('invCardTotal');
+    const elLaptops = document.getElementById('invCardLaptops');
+    const elAcc = document.getElementById('invCardAcc');
+    const elStock = document.getElementById('invCardStock');
+
+    if (elTotal) elTotal.textContent = combined.length;
+    if (elLaptops) elLaptops.textContent = laptops.length;
+    if (elAcc) elAcc.textContent = accessories.length;
+    if (elStock) elStock.textContent = totalPieces;
+
+    if (combined.length === 0) {
+      if (emptyState) emptyState.style.display = 'block';
+      if (tableWrap) tableWrap.style.display = 'none';
+      if (tbody) tbody.innerHTML = '';
+      return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+    if (tableWrap) tableWrap.style.display = 'block';
+
+    if (tbody) {
+      tbody.innerHTML = combined.map(item => {
+        const stockPres = window.AdminStateManager.getPublicStockPresentation(item.quantity);
+        return `
+          <tr>
+            <td><span class="badge-brand-pill">${item.category}</span></td>
+            <td><span class="cell-lp-badge">${item.code}</span></td>
+            <td><strong>${item.name}</strong></td>
+            <td style="font-size: 12.5px; color: #475569;">${item.specs}</td>
+            <td><strong>${item.quantity}</strong> pcs</td>
+            <td><strong>₹${Number(item.price).toLocaleString('en-IN')}</strong></td>
+            <td><span class="stock-badge-tag ${stockPres.badgeClass}">${stockPres.label}</span></td>
+            <td>
+              <button class="btn-table-action btn-table-sold" onclick="window.adminController.openSoldModal('${item.catCode}', '${item.id}')" ${item.quantity <= 0 ? 'disabled' : ''}>
+                Sold
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
   }
 
   // ==========================================================================
@@ -1335,56 +1361,92 @@
     const fileInfoBox = document.getElementById('excelFileInfo');
     if (fileInfoBox) {
       fileInfoBox.innerHTML = `
-        <strong>Selected File:</strong> ${file.name} (${(file.size / 1024).toFixed(1)} KB) • Reading file contents...
+        <strong>Selected File:</strong> ${file.name} (${(file.size / 1024).toFixed(1)} KB) • Reading spreadsheet...
       `;
       fileInfoBox.style.display = 'block';
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target.result;
-      parseAndPreviewCSV(text, file.name);
-    };
-    reader.readAsText(file);
+    const isBinary = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+
+    if (isBinary && typeof XLSX !== 'undefined') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '', raw: false });
+          processSpreadsheetRows(rawRows, file.name);
+        } catch (err) {
+          console.error('SheetJS parse error:', err);
+          showToast('Failed to parse Excel file: ' + err.message, 'error');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      // CSV or fallback reader
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        if (typeof XLSX !== 'undefined') {
+          try {
+            const workbook = XLSX.read(text, { type: 'string' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const rawRows = XLSX.utils.sheet_to_json(worksheet, { defval: '', raw: false });
+            processSpreadsheetRows(rawRows, file.name);
+            return;
+          } catch (err) {}
+        }
+        parseAndPreviewCSVText(text, file.name);
+      };
+      reader.readAsText(file);
+    }
   }
 
   let stagedImportData = null;
 
-  function parseAndPreviewCSV(csvText, fileName) {
-    const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
-    if (lines.length < 2) {
-      showToast('CSV file is empty or missing headers.', 'error');
+  function processSpreadsheetRows(rows, fileName) {
+    if (!rows || rows.length === 0) {
+      showToast('Spreadsheet contains no data rows.', 'error');
       return;
     }
 
-    const rawHeaders = lines[0].split(',').map(h => h.replace(/^["']|["']$/g, '').trim());
-    const upperHeaders = rawHeaders.map(h => h.toUpperCase());
+    const targetRadio = document.querySelector('input[name="excelTargetType"]:checked');
+    let targetType = targetRadio ? targetRadio.value : 'laptop';
 
-    const rows = lines.slice(1).map(l => {
-      const matches = l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || l.split(',');
-      return matches.map(c => c.replace(/^["']|["']$/g, '').trim());
-    });
+    // Auto-detect if user left default
+    const firstRowKeys = Object.keys(rows[0] || {}).map(k => k.trim().toUpperCase());
+    const hasLaptopHeader = firstRowKeys.some(k => k.includes('LP') || k.includes('PROCESSOR') || k.includes('GENERATION') || k.includes('STORAE'));
+    if (hasLaptopHeader) targetType = 'laptop';
 
-    const isLaptop = upperHeaders.some(h => h.includes('LP') || h.includes('PROCESSOR') || h.includes('GENERATION') || h.includes('RAM'));
-
-    function getVal(row, aliases, fallbackIdx) {
+    function getRowVal(row, aliases) {
+      const keys = Object.keys(row);
       for (const alias of aliases) {
-        const idx = upperHeaders.findIndex(h => h.includes(alias.toUpperCase()));
-        if (idx !== -1 && row[idx] !== undefined && row[idx].trim() !== '') {
-          return row[idx].trim();
+        const found = keys.find(k => k.trim().toUpperCase() === alias.toUpperCase());
+        if (found && row[found] !== undefined && String(row[found]).trim() !== '') {
+          return String(row[found]).trim();
         }
       }
-      return fallbackIdx !== undefined && row[fallbackIdx] !== undefined ? row[fallbackIdx].trim() : '';
+      for (const alias of aliases) {
+        const found = keys.find(k => k.trim().toUpperCase().includes(alias.toUpperCase()));
+        if (found && row[found] !== undefined && String(row[found]).trim() !== '') {
+          return String(row[found]).trim();
+        }
+      }
+      return '';
     }
 
     let parsedItems = [];
     let validCount = 0;
-    let warningCount = 0;
+    let invalidCount = 0;
+    let totalPieces = 0;
 
-    if (isLaptop) {
+    if (targetType === 'laptop') {
       parsedItems = rows.map((row, idx) => {
-        const lpNumber = getVal(row, ['LP NO', 'LP NUMBER', 'LP', 'ID'], 0) || String(4000 + idx);
-        const modelBrand = getVal(row, ['MODEL & BRAND', 'MODEL', 'BRAND'], 1) || 'Commercial Laptop';
+        const lpNumber = getRowVal(row, ['LP NO.', 'LP NUMBER', 'LP NO', 'LP', 'ID']) || String(3900 + idx);
+        const modelBrand = getRowVal(row, ['MODEL & BRAND', 'MODEL', 'BRAND']) || 'Commercial Laptop';
         
         let brand = 'HP';
         let model = modelBrand;
@@ -1394,20 +1456,19 @@
           model = modelBrand.slice(brandMatch[0].length).trim() || 'Commercial Laptop';
         }
 
-        const processor = getVal(row, ['PROCESSOR', 'CPU'], 2) || 'Intel Core i5';
-        const generation = getVal(row, ['GENERATION', 'GEN'], 3) || '8th Gen';
-        const ram = getVal(row, ['RAM', 'MEMORY'], 4) || '8GB';
-        const storage = getVal(row, ['STORAGE', 'SSD', 'HDD'], 5) || '256GB SSD';
-        const piece = parseInt(getVal(row, ['PIECE', 'QUANTITY', 'QTY', 'PIECES'], 6), 10) || 1;
-        const rawPrice = getVal(row, ['PRICE', 'SELLING PRICE', 'RATE', 'MRP'], 7);
-        const price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 22000;
-        const pic = getVal(row, ['PIC', 'IMAGE', 'PHOTO'], 8) || '../assets/images/placeholders/laptop-placeholder.svg';
+        const processor = getRowVal(row, ['PROCESSOR', 'CPU']) || 'Intel Core i5';
+        const generation = getRowVal(row, ['GENERATION', 'GEN']) || '8th Gen';
+        const ram = getRowVal(row, ['RAM', 'MEMORY']) || '8GB';
+        // Support STORAE alias (from real owner spreadsheet)
+        const storage = getRowVal(row, ['STORAE', 'STORAGE', 'SSD', 'HDD']) || '256GB SSD';
+        const piece = parseInt(getRowVal(row, ['PIECE', 'QUANTITY', 'QTY', 'PIECES']), 10) || 1;
+        const rawPrice = getRowVal(row, ['PRICE', 'SELLING PRICE', 'RATE', 'MRP']);
+        const price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 24000;
+        const pic = getRowVal(row, ['PIC', 'IMAGE', 'PHOTO']) || '../assets/images/placeholders/laptop-placeholder.svg';
 
-        if (pic && !pic.includes('placeholder')) {
-          validCount++;
-        } else {
-          warningCount++;
-        }
+        const isValid = Boolean(lpNumber && price > 0);
+        if (isValid) validCount++; else invalidCount++;
+        totalPieces += piece;
 
         return {
           id: `lp-imp-${Date.now()}-${idx}`,
@@ -1422,32 +1483,30 @@
           price,
           image: pic,
           status: 'published',
+          isValid,
           warrantyDisplay: '6-12 Months Store Warranty',
-          description: `${brand} ${model} Commercial Business Laptop • ${processor} • ${ram} • ${storage}`
+          description: `${brand} ${model} Commercial Laptop • ${processor} • ${ram} • ${storage}`
         };
       });
     } else {
       // Accessories
       parsedItems = rows.map((row, idx) => {
-        const sku = getVal(row, ['SKU', 'CODE', 'ID'], 0) || `ACC-${Date.now()}-${idx + 1}`;
-        const name = getVal(row, ['PRODUCT NAME', 'NAME', 'TITLE'], 1) || 'Laptop Accessory';
-        const brand = getVal(row, ['BRAND', 'MAKE'], 2) || 'Generic';
-        const type = getVal(row, ['ACCESSORY TYPE', 'TYPE', 'CATEGORY'], 3) || 'Charger';
-        const model = getVal(row, ['MODEL', 'PART NO'], 4) || '';
-        const compatibility = getVal(row, ['COMPATIBILITY', 'COMPATIBLE'], 5) || 'Universal';
-        const color = getVal(row, ['COLOR', 'COLOUR'], 6) || 'Black';
-        const warranty = getVal(row, ['WARRANTY'], 7) || '1 Year Replacement';
-        const piece = parseInt(getVal(row, ['PIECE', 'QUANTITY', 'QTY'], 8), 10) || 1;
-        const rawPrice = getVal(row, ['SELLING PRICE', 'PRICE', 'RATE'], 9);
+        const sku = getRowVal(row, ['SKU', 'ITEM CODE', 'CODE', 'ID']) || `ACC-${Date.now()}-${idx + 1}`;
+        const name = getRowVal(row, ['PRODUCT NAME', 'NAME', 'TITLE']) || 'Laptop Accessory';
+        const brand = getRowVal(row, ['BRAND', 'MAKE']) || 'Generic';
+        const type = getRowVal(row, ['ACCESSORY TYPE', 'TYPE', 'CATEGORY']) || 'Charger';
+        const model = getRowVal(row, ['MODEL', 'PART NO']) || '';
+        const compatibility = getRowVal(row, ['COMPATIBILITY', 'COMPATIBLE']) || 'Universal';
+        const color = getRowVal(row, ['COLOR', 'COLOUR']) || 'Black';
+        const warranty = getRowVal(row, ['WARRANTY']) || '1 Year Replacement';
+        const piece = parseInt(getRowVal(row, ['PIECE', 'QUANTITY', 'QTY']), 10) || 1;
+        const rawPrice = getRowVal(row, ['SELLING PRICE', 'PRICE', 'RATE']);
         const price = parseFloat(rawPrice.replace(/[^0-9.]/g, '')) || 1000;
-        const pic = getVal(row, ['PIC', 'IMAGE', 'PHOTO'], 10) || '../assets/images/placeholders/accessories-placeholder.svg';
-        const desc = getVal(row, ['DESCRIPTION', 'DESC'], 11) || '';
+        const pic = getRowVal(row, ['PIC', 'IMAGE', 'PHOTO']) || '../assets/images/placeholders/accessories-placeholder.svg';
 
-        if (pic && !pic.includes('placeholder')) {
-          validCount++;
-        } else {
-          warningCount++;
-        }
+        const isValid = Boolean(sku && price > 0);
+        if (isValid) validCount++; else invalidCount++;
+        totalPieces += piece;
 
         return {
           id: `acc-imp-${Date.now()}-${idx}`,
@@ -1464,26 +1523,66 @@
           purchasePrice: Math.round(price * 0.7),
           image: pic,
           status: 'published',
-          description: desc
+          isValid,
+          description: `${brand} ${name}`
         };
       });
     }
 
+    // STRICT PREVIEW ISOLATION: Staged in memory ONLY
     stagedImportData = {
-      type: isLaptop ? 'laptop' : 'accessories',
+      type: targetType,
       items: parsedItems
     };
 
+    renderExcelPreviewUI(parsedItems, targetType, validCount, invalidCount, totalPieces);
+  }
+
+  function parseAndPreviewCSVText(csvText, fileName) {
+    const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
+    if (lines.length < 2) {
+      showToast('CSV file is empty or missing headers.', 'error');
+      return;
+    }
+
+    const headers = lines[0].split(',').map(h => h.replace(/^["']|["']$/g, '').trim());
+    const rowObjs = lines.slice(1).map(l => {
+      const matches = l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || l.split(',');
+      const obj = {};
+      headers.forEach((h, i) => {
+        obj[h] = matches[i] ? matches[i].replace(/^["']|["']$/g, '').trim() : '';
+      });
+      return obj;
+    });
+
+    processSpreadsheetRows(rowObjs, fileName);
+  }
+
+  function renderExcelPreviewUI(items, targetType, validCount, invalidCount, totalPieces) {
     const previewContainer = document.getElementById('excelPreviewSection');
     const tableEl = document.getElementById('excelPreviewTable');
     if (!previewContainer || !tableEl) return;
     previewContainer.style.display = 'block';
 
-    const rowsHtml = parsedItems.map((item, idx) => {
+    // Summary numbers
+    const elTot = document.getElementById('excelSummaryTotal');
+    const elVal = document.getElementById('excelSummaryValid');
+    const elInv = document.getElementById('excelSummaryInvalid');
+    const elPcs = document.getElementById('excelSummaryPieces');
+    if (elTot) elTot.textContent = items.length;
+    if (elVal) elVal.textContent = validCount;
+    if (elInv) elInv.textContent = invalidCount;
+    if (elPcs) elPcs.textContent = totalPieces;
+
+    const isLaptop = targetType === 'laptop';
+
+    const rowsHtml = items.map((item, idx) => {
       const code = isLaptop ? `LP #${item.lpNumber}` : item.sku;
       const title = isLaptop ? `${item.brand} ${item.model}` : item.name;
       const specs = isLaptop ? `${item.processor} | ${item.ram} | ${item.storage}` : `${item.type} | ${item.compatibility}`;
-      const hasPic = item.image && !item.image.includes('placeholder');
+      const statusBadge = item.isValid
+        ? `<span class="stock-badge-tag stock-in">Valid</span>`
+        : `<span class="stock-badge-tag stock-soldout">Invalid Data</span>`;
 
       return `
         <tr>
@@ -1492,10 +1591,8 @@
           <td><strong>${title}</strong></td>
           <td>${specs}</td>
           <td><strong>${item.quantity}</strong> pcs</td>
-          <td>₹${item.price.toLocaleString('en-IN')}</td>
-          <td>
-            ${hasPic ? `<span class="stock-badge-tag stock-in">Valid Image</span>` : `<span class="stock-badge-tag stock-low">Default SVG</span>`}
-          </td>
+          <td>₹${Number(item.price).toLocaleString('en-IN')}</td>
+          <td>${statusBadge}</td>
         </tr>
       `;
     }).join('');
@@ -1520,19 +1617,32 @@
     const summaryEl = document.getElementById('excelImportSummary');
     if (summaryEl) {
       summaryEl.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <strong>${parsedItems.length} Products Detected (${isLaptop ? 'Commercial Laptops' : 'Laptop Accessories'}):</strong>
-            ${validCount} with custom images, ${warningCount} with default SVGs.
-            <div style="font-size: 12px; color: #1E40AF; margin-top: 2px;">Ready to import into live database & showroom inventory.</div>
-          </div>
-          <button class="btn-admin-primary" onclick="window.adminController.confirmImport()" style="background: #10B981; border-color: #10B981; display: inline-flex; align-items: center; gap: 6px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Confirm & Import ${parsedItems.length} ${isLaptop ? 'Laptops' : 'Accessories'}
-          </button>
+        <div style="font-size: 13px; color: #1E293B;">
+          <strong>Preview Staged:</strong> ${items.length} rows (${totalPieces} physical pieces) detected. 
+          Data is in temporary memory only and has NOT been committed to the database.
         </div>
       `;
     }
+
+    const confirmBtn = document.getElementById('btnConfirmExcelImport');
+    if (confirmBtn) {
+      confirmBtn.disabled = (invalidCount > 0 && validCount === 0);
+      confirmBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirm &amp; Import ${validCount} ${isLaptop ? 'Laptops' : 'Accessories'} to Database
+      `;
+    }
+  }
+
+  function cancelExcelPreview() {
+    stagedImportData = null;
+    const previewContainer = document.getElementById('excelPreviewSection');
+    if (previewContainer) previewContainer.style.display = 'none';
+    const fileInfo = document.getElementById('excelFileInfo');
+    if (fileInfo) fileInfo.style.display = 'none';
+    const fileInput = document.getElementById('excelFileInput');
+    if (fileInput) fileInput.value = '';
+    showToast('Spreadsheet preview discarded. Database unaffected.', 'info');
   }
 
   function downloadTemplate(type) {
@@ -1630,10 +1740,390 @@
   }
 
   // ==========================================================================
-  // 15. SETTINGS VIEW
+  // 15. SETTINGS MODULE & PROFILE SYNCHRONIZATION (SECTION 12 & 13)
   // ==========================================================================
+  let currentAvatarBase64 = null;
+
   function renderSettingsView() {
-    // Shows system settings and cache management
+    initSettingsTabs();
+    loadProfileAndSettingsData();
+  }
+
+  function initSettingsTabs() {
+    const tabs = document.querySelectorAll('.settings-tab-btn');
+    tabs.forEach(tab => {
+      tab.onclick = () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.settings-tab-pane').forEach(p => p.classList.remove('active'));
+
+        tab.classList.add('active');
+        const targetTab = tab.getAttribute('data-tab');
+        const targetPane = document.getElementById(`pane-${targetTab}`);
+        if (targetPane) targetPane.classList.add('active');
+      };
+    });
+  }
+
+  async function loadProfileAndSettingsData() {
+    const token = localStorage.getItem('egadget_admin_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+    // 1. Load User Profile
+    let user = null;
+    try {
+      if (token) {
+        const res = await fetch(`${apiBase}/api/admin/profile`, {
+          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            user = json.data;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Failed loading profile via API, fallback to localStorage:', e);
+    }
+
+    if (!user) {
+      try {
+        user = JSON.parse(localStorage.getItem('egadget_admin_user') || '{}');
+      } catch (e) {
+        user = {};
+      }
+    }
+
+    if (user) {
+      const elFull = document.getElementById('profFullName');
+      const elDisp = document.getElementById('profDisplayName');
+      const elEmail = document.getElementById('profEmail');
+      const elPhone = document.getElementById('profPhone');
+      const elDesig = document.getElementById('profDesignation');
+      const elBio = document.getElementById('profBio');
+      const avatarPreview = document.getElementById('profAvatarPreview');
+
+      if (elFull) elFull.value = user.name || '';
+      if (elDisp) elDisp.value = user.display_name || user.name || '';
+      if (elEmail) elEmail.value = user.email || '';
+      if (elPhone) elPhone.value = user.phone || '';
+      if (elDesig) elDesig.value = user.designation || 'Shop Owner / Administrator';
+      if (elBio) elBio.value = user.bio || '';
+
+      if (avatarPreview) {
+        if (user.avatar) {
+          currentAvatarBase64 = user.avatar;
+          avatarPreview.innerHTML = `<img src="${user.avatar}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">`;
+        } else {
+          const name = user.display_name || user.name || 'SK';
+          const parts = name.trim().split(' ');
+          const initials = (parts.length > 1) ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
+          avatarPreview.textContent = initials;
+        }
+      }
+    }
+
+    // 2. Load Settings (Shop Profile & Social Media)
+    try {
+      const setRes = await fetch(`${apiBase}/api/public/settings`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (setRes.ok) {
+        const setJson = await setRes.json();
+        if (setJson.success && setJson.data) {
+          const s = setJson.data;
+          if (document.getElementById('shopName') && s.shop_name) document.getElementById('shopName').value = s.shop_name;
+          if (document.getElementById('shopBranch') && s.branch_name) document.getElementById('shopBranch').value = s.branch_name;
+          if (document.getElementById('shopEmail') && s.shop_email) document.getElementById('shopEmail').value = s.shop_email;
+          if (document.getElementById('shopPhone') && s.shop_phone) document.getElementById('shopPhone').value = s.shop_phone;
+          if (document.getElementById('shopWhatsApp') && s.shop_whatsapp) document.getElementById('shopWhatsApp').value = s.shop_whatsapp;
+          if (document.getElementById('shopHours') && s.business_hours) document.getElementById('shopHours').value = s.business_hours;
+          if (document.getElementById('shopAddress') && s.shop_address) document.getElementById('shopAddress').value = s.shop_address;
+          if (document.getElementById('shopCity') && s.shop_city) document.getElementById('shopCity').value = s.shop_city;
+          if (document.getElementById('shopState') && s.shop_state) document.getElementById('shopState').value = s.shop_state;
+
+          if (document.getElementById('socInstagram') && s.instagram_url) document.getElementById('socInstagram').value = s.instagram_url;
+          if (document.getElementById('socFacebook') && s.facebook_url) document.getElementById('socFacebook').value = s.facebook_url;
+          if (document.getElementById('socYouTube') && s.youtube_url) document.getElementById('socYouTube').value = s.youtube_url;
+          if (document.getElementById('socLinkedIn') && s.linkedin_url) document.getElementById('socLinkedIn').value = s.linkedin_url;
+          if (document.getElementById('socWebsite') && s.website_url) document.getElementById('socWebsite').value = s.website_url;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed loading settings:', e);
+    }
+  }
+
+  function handleAvatarSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (JPG, PNG, WEBP).', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      currentAvatarBase64 = e.target.result;
+      const preview = document.getElementById('profAvatarPreview');
+      if (preview) {
+        preview.innerHTML = `<img src="${currentAvatarBase64}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">`;
+      }
+      showToast('Avatar preview updated! Click "Save Profile Changes" to persist.', 'info');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function handleSaveProfile(event) {
+    event.preventDefault();
+    const token = localStorage.getItem('egadget_admin_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+    const fullName = (document.getElementById('profFullName')?.value || '').trim();
+    const displayName = (document.getElementById('profDisplayName')?.value || '').trim();
+    const email = (document.getElementById('profEmail')?.value || '').trim();
+    const phone = (document.getElementById('profPhone')?.value || '').trim();
+    const designation = (document.getElementById('profDesignation')?.value || '').trim();
+    const bio = (document.getElementById('profBio')?.value || '').trim();
+
+    if (!fullName || !email) {
+      showToast('Full Name and Email Address are required.', 'error');
+      return;
+    }
+
+    const payload = {
+      name: fullName,
+      display_name: displayName || fullName,
+      email: email,
+      phone: phone,
+      designation: designation,
+      bio: bio
+    };
+    if (currentAvatarBase64) {
+      payload.avatar = currentAvatarBase64;
+    }
+
+    const saveBtn = document.getElementById('btnSaveProfile');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = 'Saving...';
+    }
+
+    try {
+      let savedUser = null;
+      if (token) {
+        const res = await fetch(`${apiBase}/api/admin/profile`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            savedUser = json.data;
+          }
+        }
+      }
+
+      if (!savedUser) {
+        let existing = {};
+        try { existing = JSON.parse(localStorage.getItem('egadget_admin_user') || '{}'); } catch(e) {}
+        savedUser = { ...existing, ...payload };
+      }
+
+      localStorage.setItem('egadget_admin_user', JSON.stringify(savedUser));
+      syncUserProfileUI(savedUser);
+      showToast('Profile updated and synchronized successfully!', 'success');
+    } catch (err) {
+      console.error('Error saving profile:', err);
+      showToast('Failed to save profile: ' + err.message, 'error');
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+          Save Profile Changes
+        `;
+      }
+    }
+  }
+
+  function syncUserProfileUI(user) {
+    if (!user) return;
+    const name = user.display_name || user.name || 'Administrator';
+    const designation = user.designation || 'Shop Owner / Administrator';
+    const branch = user.branch || 'Mehnajpur Showroom';
+
+    // 1. Welcome banner
+    const welcomeName = document.getElementById('welcomeName');
+    if (welcomeName) welcomeName.textContent = name;
+
+    // 2. Sidebar Footer
+    const curName = document.getElementById('currentUserName');
+    if (curName) curName.textContent = name;
+
+    const curRole = document.getElementById('currentUserRole');
+    if (curRole) curRole.textContent = `${designation} • ${branch}`;
+
+    // 3. Topbar Header
+    const topName = document.getElementById('topbarUserName');
+    if (topName) topName.textContent = name;
+
+    const topRole = document.getElementById('topbarUserRole');
+    if (topRole) topRole.textContent = designation;
+
+    // 4. Avatar Initials / Image
+    const parts = name.trim().split(' ');
+    const initials = (parts.length > 1) ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
+
+    const sidebarAvatar = document.getElementById('avatarInitial');
+    if (sidebarAvatar) {
+      if (user.avatar) {
+        sidebarAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+      } else {
+        sidebarAvatar.textContent = initials;
+      }
+    }
+
+    const topbarAvatar = document.getElementById('topbarAvatarInitial');
+    if (topbarAvatar) {
+      if (user.avatar) {
+        topbarAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+      } else {
+        topbarAvatar.textContent = initials;
+      }
+    }
+  }
+
+  async function handleSaveShopProfile(event) {
+    event.preventDefault();
+    const token = localStorage.getItem('egadget_admin_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+    const payload = {
+      shop_name: document.getElementById('shopName')?.value || '',
+      branch_name: document.getElementById('shopBranch')?.value || '',
+      shop_email: document.getElementById('shopEmail')?.value || '',
+      shop_phone: document.getElementById('shopPhone')?.value || '',
+      shop_whatsapp: document.getElementById('shopWhatsApp')?.value || '',
+      business_hours: document.getElementById('shopHours')?.value || '',
+      shop_address: document.getElementById('shopAddress')?.value || '',
+      shop_city: document.getElementById('shopCity')?.value || '',
+      shop_state: document.getElementById('shopState')?.value || ''
+    };
+
+    try {
+      if (token) {
+        await fetch(`${apiBase}/api/admin/profile`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
+      showToast('Showroom branch profile saved successfully!', 'success');
+    } catch (e) {
+      showToast('Saved locally. Backend response: ' + e.message, 'info');
+    }
+  }
+
+  async function handleSaveSocialMedia(event) {
+    event.preventDefault();
+    const token = localStorage.getItem('egadget_admin_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+    const payload = {
+      instagram_url: document.getElementById('socInstagram')?.value || '',
+      facebook_url: document.getElementById('socFacebook')?.value || '',
+      youtube_url: document.getElementById('socYouTube')?.value || '',
+      linkedin_url: document.getElementById('socLinkedIn')?.value || '',
+      website_url: document.getElementById('socWebsite')?.value || ''
+    };
+
+    try {
+      if (token) {
+        await fetch(`${apiBase}/api/admin/profile`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
+      showToast('Social media links updated successfully!', 'success');
+    } catch (e) {
+      showToast('Saved locally. Backend response: ' + e.message, 'info');
+    }
+  }
+
+  async function handleChangePassword(event) {
+    event.preventDefault();
+    const currentPass = document.getElementById('secCurrentPassword')?.value || '';
+    const newPass = document.getElementById('secNewPassword')?.value || '';
+    const confirmPass = document.getElementById('secConfirmPassword')?.value || '';
+    const msgBox = document.getElementById('securityMsgBox');
+
+    if (newPass !== confirmPass) {
+      if (msgBox) {
+        msgBox.textContent = 'New passwords do not match. Please re-enter.';
+        msgBox.style.background = '#FEF2F2';
+        msgBox.style.color = '#DC2626';
+        msgBox.style.display = 'block';
+      }
+      return;
+    }
+
+    if (newPass.length < 8) {
+      if (msgBox) {
+        msgBox.textContent = 'Password must be at least 8 characters long.';
+        msgBox.style.background = '#FEF2F2';
+        msgBox.style.color = '#DC2626';
+        msgBox.style.display = 'block';
+      }
+      return;
+    }
+
+    const token = localStorage.getItem('egadget_admin_token');
+    const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+    try {
+      const res = await fetch(`${apiBase}/api/admin/change-password`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          current_password: currentPass,
+          new_password: newPass,
+          new_password_confirmation: confirmPass
+        })
+      });
+
+      const json = await res.json();
+      if (res.ok && json.success) {
+        if (msgBox) {
+          msgBox.textContent = 'Password updated successfully! Next login will require your new password.';
+          msgBox.style.background = '#ECFDF5';
+          msgBox.style.color = '#059669';
+          msgBox.style.display = 'block';
+        }
+        document.getElementById('formAccountSecurity')?.reset();
+        showToast('Password updated successfully!', 'success');
+      } else {
+        if (msgBox) {
+          msgBox.textContent = json.message || 'Failed to update password. Verify current password.';
+          msgBox.style.background = '#FEF2F2';
+          msgBox.style.color = '#DC2626';
+          msgBox.style.display = 'block';
+        }
+      }
+    } catch (e) {
+      showToast('Password update error: ' + e.message, 'error');
+    }
   }
 
   // ==========================================================================
@@ -1692,6 +2182,16 @@
     handleSaveProductSubmit,
     showToast,
     closeModal,
+    handleSaveProfile,
+    handleSaveShopProfile,
+    handleSaveSocialMedia,
+    handleChangePassword,
+    handleAvatarSelect,
+    syncUserProfileUI,
+    cancelExcelPreview,
+    confirmExcelImport() {
+      return window.adminController.confirmImport();
+    },
 
     // Status toggle
     toggleStatus(category, id) {

@@ -50,7 +50,7 @@ function renderNotFound(container, message) {
       </div>
       <h2 class="catalog-empty-title">Product Not Found</h2>
       <p class="catalog-empty-desc">${message}</p>
-      <a href="laptops.html" class="btn btn-primary">Browse All 24 Commercial Laptops</a>
+      <a href="laptops.html" class="btn btn-primary">Browse Commercial Laptops</a>
     </div>
   `;
 }

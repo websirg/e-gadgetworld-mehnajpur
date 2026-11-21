@@ -322,9 +322,9 @@ class LaptopCatalog {
               <line x1="12" y1="17" x2="12" y2="21"></line>
             </svg>
           </div>
-          <h3 class="catalog-empty-title" style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">Showroom Inventory Update in Progress</h3>
+          <h3 class="catalog-empty-title" style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">No Laptops Available Right Now</h3>
           <p class="catalog-empty-desc" style="font-size: 14px; color: #64748B; max-width: 500px; margin: 0 auto 20px;">
-            Our Mehnajpur showroom inventory is currently being refreshed with newly tested commercial laptops. Please enquire directly on WhatsApp for live models and pricing.
+            Our laptop collection is currently being updated. Please check back soon.
           </p>
           <a href="https://wa.me/919451996328?text=Hello%20E-Gadget%20World%2C%20please%20share%20the%20currently%20available%20laptop%20models%20at%20Mehnajpur." target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="background: #25D366; border-color: #25D366; color: #FFFFFF; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;">
             Enquire on WhatsApp

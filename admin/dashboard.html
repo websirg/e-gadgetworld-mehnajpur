@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="admin.css">
+  <script src="xlsx.full.min.js"></script>
   <script>
     // Immediate Auth Guard in head
     (function() {
@@ -204,7 +205,7 @@
         <div class="sidebar-user-card">
           <div class="sidebar-user-avatar" id="avatarInitial">SK</div>
           <div class="sidebar-user-details">
-            <div class="sidebar-user-name" id="currentUserName">Sunil Kumar Maurya (Sonu)</div>
+            <div class="sidebar-user-name" id="currentUserName">Sunil Kumar Maurya</div>
             <div class="sidebar-user-role" id="currentUserRole">Shop Admin • Mehnajpur HQ</div>
           </div>
           <button type="button" class="sidebar-logout-btn" onclick="handleLogout()" title="Sign Out">
@@ -292,7 +293,7 @@
               </div>
               <h1 class="exec-header-title">Showroom Operations Dashboard</h1>
               <p class="exec-header-subtitle">
-                Welcome, <strong id="welcomeName">Sunil Kumar Maurya (Sonu)</strong> • Shop Admin Console
+                Welcome, <strong id="welcomeName">Sunil Kumar Maurya</strong> • Shop Admin Console
               </p>
             </div>
             <div class="exec-header-actions">
@@ -671,8 +672,8 @@
         <section class="admin-view" id="view-laptops">
           <div class="view-header">
             <div class="view-title-wrap">
-              <h1>Commercial Laptop Inventory (24 Models)</h1>
-              <p class="view-subtitle" id="laptopsCountInfo">Verified showroom stock (38 physical pieces total)</p>
+              <h1>Commercial Laptop Inventory</h1>
+              <p class="view-subtitle" id="laptopsCountInfo">Verified showroom stock</p>
             </div>
             <div class="view-actions">
               <a href="#inventory-add" class="btn-admin-primary">
@@ -750,7 +751,7 @@
         <section class="admin-view" id="view-accessories">
           <div class="view-header">
             <div class="view-title-wrap">
-              <h1>Accessories Inventory (12 Items)</h1>
+              <h1>Accessories Inventory</h1>
               <p class="view-subtitle" id="accCountInfo">Genuine chargers, RAM modules, SSDs &amp; laptop peripherals</p>
             </div>
             <div class="view-actions">
@@ -823,15 +824,96 @@
         <section class="admin-view" id="view-inventory-all">
           <div class="view-header">
             <div class="view-title-wrap">
-              <h1>All Inventory Items (Combined Showroom Catalog)</h1>
-              <p class="view-subtitle">Consolidated view of all physical stock in Mehnajpur branch</p>
+              <h1>All Inventory Items</h1>
+              <p class="view-subtitle">Manage your showroom products, quantities and availability</p>
             </div>
-            <div>
-              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('all')">Export Complete Catalog</button>
+            <div class="view-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <a href="#inventory-add" class="btn-admin-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Product
+              </a>
+              <a href="#excel" class="btn-admin-secondary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Import Excel
+              </a>
+              <button class="btn-admin-secondary" onclick="window.adminController.exportInventory('all')">Export Catalog</button>
             </div>
           </div>
 
-          <div class="table-responsive-box">
+          <!-- 4 KPI Summary Cards for All Inventory -->
+          <div class="inventory-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-bottom: 24px;">
+            <div class="inv-stat-card stat-accent-blue">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">TOTAL PRODUCTS</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line></svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="invCardTotal">0</div>
+              <div class="inv-stat-desc">Distinct catalog variants</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">LAPTOPS</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="invCardLaptops">0</div>
+              <div class="inv-stat-desc">Commercial laptop models</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-teal">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">ACCESSORIES</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="invCardAcc">0</div>
+              <div class="inv-stat-desc">Chargers, RAM, SSD &amp; parts</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-green">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">AVAILABLE STOCK</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="invCardStock">0</div>
+              <div class="inv-stat-desc">Total showroom physical pieces</div>
+            </div>
+          </div>
+
+          <!-- Empty State Container -->
+          <div id="allInventoryEmptyState" class="admin-panel empty-state-box" style="text-align: center; padding: 56px 24px; display: none;">
+            <div style="width: 64px; height: 64px; margin: 0 auto 16px; background: #EFF6FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">No Products Added Yet</h3>
+            <p style="font-size: 14px; color: #64748B; max-width: 480px; margin: 0 auto 24px; line-height: 1.5;">
+              Your showroom inventory is currently empty. Add your first product or import a spreadsheet to get started.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+              <a href="#inventory-add" class="btn-admin-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                + Add First Product
+              </a>
+              <a href="#excel" class="btn-admin-secondary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Import Excel
+              </a>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-responsive-box" id="allInventoryTableWrap">
             <table class="admin-data-table">
               <thead>
                 <tr>
@@ -1148,8 +1230,22 @@
           <!-- Drag and Drop Import Area -->
           <div class="admin-panel">
             <h3 class="panel-title-text" style="margin-bottom: 12px;">Upload Spreadsheet (.xlsx, .csv)</h3>
+            
+            <!-- Step 1: Target Selector -->
+            <div class="excel-target-selector" style="margin-bottom: 16px; display: flex; gap: 20px; align-items: center; background: #F8FAFC; padding: 12px 16px; border-radius: 8px; border: 1px solid #E2E8F0;">
+              <span style="font-weight: 700; font-size: 13.5px; color: #0F172A;">Target Catalog:</span>
+              <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; color: #1E293B;">
+                <input type="radio" name="excelTargetType" value="laptop" checked id="excelTargetLaptop">
+                Commercial Laptops (LP NO., Processor, RAM, Storage, Piece, Price)
+              </label>
+              <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; color: #1E293B;">
+                <input type="radio" name="excelTargetType" value="accessories" id="excelTargetAccessories">
+                Laptop Accessories (SKU, Name, Brand, Type, Piece, Price)
+              </label>
+            </div>
+
             <div class="image-upload-dropzone" id="excelDropzone" style="padding: 36px 20px;">
-              <input type="file" id="excelFileInput" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display: none;">
+              <input type="file" id="excelFileInput" accept=".csv, .xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display: none;">
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" style="margin-bottom: 10px;">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -1157,18 +1253,36 @@
                 <line x1="9" y1="15" x2="15" y2="15"></line>
               </svg>
               <div style="font-size: 15px; font-weight: 800; color: #0F172A;">Drop Excel / CSV spreadsheet here or click to browse</div>
-              <div style="font-size: 12.5px; color: #64748B; margin-top: 4px;">Supports Laptop &amp; Accessories formatted files • Live Database &amp; Showroom Sync</div>
+              <div style="font-size: 12.5px; color: #64748B; margin-top: 4px;">Supports native .xlsx &amp; .csv files • Strict in-memory preview isolation</div>
             </div>
 
             <div id="excelFileInfo" style="display: none; margin-top: 12px; font-size: 13px; color: #1E40AF; background: #EFF6FF; padding: 10px 14px; border-radius: 6px;"></div>
 
             <!-- Preview Section -->
             <div id="excelPreviewSection" style="display: none; margin-top: 24px;">
-              <h4 style="font-size: 14px; font-weight: 800; color: #0F172A; margin-bottom: 10px;">Spreadsheet Preview &amp; Validation Table</h4>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <h4 style="font-size: 14px; font-weight: 800; color: #0F172A; margin: 0;">Spreadsheet Preview &amp; Validation (Memory Only)</h4>
+                <div style="display: flex; gap: 12px; font-size: 12.5px;">
+                  <span>Total Rows: <strong id="excelSummaryTotal">0</strong></span>
+                  <span style="color: #16A34A;">Valid: <strong id="excelSummaryValid">0</strong></span>
+                  <span style="color: #DC2626;">Invalid: <strong id="excelSummaryInvalid">0</strong></span>
+                  <span style="color: #2563EB;">Total Pieces: <strong id="excelSummaryPieces">0</strong></span>
+                </div>
+              </div>
+
               <div class="table-responsive-box">
                 <table class="admin-data-table" id="excelPreviewTable"></table>
               </div>
               <div class="import-summary-banner" id="excelImportSummary"></div>
+
+              <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button type="button" class="btn-admin-secondary" id="btnCancelExcelPreview" onclick="window.adminController.cancelExcelPreview()">
+                  Cancel / Discard Preview
+                </button>
+                <button type="button" class="btn-admin-primary" id="btnConfirmExcelImport" onclick="window.adminController.confirmExcelImport()">
+                  Confirm &amp; Commit to Database
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1275,35 +1389,252 @@
         </section>
 
         <!-- ====================================================================
-             VIEW N: SETTINGS & OPERATIONS CONFIG
+             VIEW N: SETTINGS & OPERATIONS CONFIG (5-TAB ARCHITECTURE)
              ==================================================================== -->
         <section class="admin-view" id="view-settings">
           <div class="view-header">
             <div class="view-title-wrap">
-              <h1>Operations Settings</h1>
-              <p class="view-subtitle">Branch profile, operations &amp; cache management</p>
+              <h1>Settings &amp; Store Configuration</h1>
+              <p class="view-subtitle">Manage personal profile, showroom branch details, social accounts and security</p>
             </div>
           </div>
 
-          <div class="admin-panel" style="max-width: 800px;">
-            <h3 class="panel-title-text" style="margin-bottom: 12px;">Mehnajpur Showroom Branch Profile</h3>
-            <div style="font-size: 13.5px; line-height: 1.8; color: #334155;">
-              <div><strong>Owner / Operator:</strong> Sunil Kumar Maurya (Sonu)</div>
-              <div><strong>Primary WhatsApp / Helpline:</strong> +91 9984359860</div>
-              <div><strong>Address:</strong> Near Mehnajpur Thana, Mehnajpur, Azamgarh, UP – 276203</div>
-              <div><strong>Business Hours:</strong> 8:00 AM – 9:00 PM (Monday to Sunday)</div>
-              <div><strong>Database Connection:</strong> <span style="font-family: monospace; color: #16A34A; font-weight: 700;">e_gadget_world (Verified Active)</span></div>
-            </div>
-          </div>
-
-          <div class="admin-panel" style="max-width: 800px; border-color: #FECACA;">
-            <h3 class="panel-title-text" style="color: #DC2626; margin-bottom: 8px;">System Cache &amp; State Reset</h3>
-            <p style="font-size: 13.5px; color: #64748B; margin-bottom: 16px;">
-              Clear local cached session state and restore catalog data from master database records.
-            </p>
-            <button class="btn-admin-secondary" style="color: #DC2626; border-color: #FCA5A5; background: #FEF2F2;" onclick="window.adminController.resetLocalCache()">
-              Clear Local Cache
+          <!-- Settings Tabs Navigation -->
+          <div class="settings-tabs-nav" id="settingsTabsNav">
+            <button type="button" class="settings-tab-btn active" data-tab="tab-profile">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My Profile
             </button>
+            <button type="button" class="settings-tab-btn" data-tab="tab-shop">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Shop / Branch Profile
+            </button>
+            <button type="button" class="settings-tab-btn" data-tab="tab-social">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Social Media Accounts
+            </button>
+            <button type="button" class="settings-tab-btn" data-tab="tab-security">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Account Security
+            </button>
+            <button type="button" class="settings-tab-btn" data-tab="tab-system">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              System Settings
+            </button>
+          </div>
+
+          <!-- TAB 1: MY PROFILE -->
+          <div class="settings-tab-pane active" id="pane-tab-profile">
+            <div class="admin-panel" style="max-width: 820px;">
+              <h3 class="panel-title-text" style="margin-bottom: 20px;">Administrator Profile Details</h3>
+              
+              <form id="formUserProfile" onsubmit="window.adminController.handleSaveProfile(event)">
+                <!-- Avatar Section -->
+                <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #E2E8F0;">
+                  <div style="position: relative;">
+                    <div id="profAvatarPreview" class="user-avatar-initial" style="width: 72px; height: 72px; font-size: 26px; border-radius: 50%; background: #2563EB; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800; overflow: hidden;">
+                      SK
+                    </div>
+                  </div>
+                  <div>
+                    <label class="btn-admin-secondary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 13px;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      Change Photo
+                      <input type="file" id="profAvatarInput" accept="image/*" style="display: none;" onchange="window.adminController.handleAvatarSelect(event)">
+                    </label>
+                    <div style="font-size: 12px; color: #64748B; margin-top: 6px;">Recommended: Square JPG or PNG. Syncs across Admin Header &amp; Sidebar.</div>
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label" for="profFullName">Full Name <span class="required-star">*</span></label>
+                    <input type="text" id="profFullName" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="profDisplayName">Display Name <span class="required-star">*</span></label>
+                    <input type="text" id="profDisplayName" class="form-input" required placeholder="Name shown in topbar &amp; sidebar">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="profEmail">Email Address (Login ID) <span class="required-star">*</span></label>
+                    <input type="email" id="profEmail" class="form-input" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="profPhone">Mobile / Phone Number</label>
+                    <input type="tel" id="profPhone" class="form-input" placeholder="+91 9984359860">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="profDesignation">Designation / Role Title</label>
+                    <input type="text" id="profDesignation" class="form-input" placeholder="e.g. Shop Owner / Administrator">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="profBranch">Assigned Branch</label>
+                    <input type="text" id="profBranch" class="form-input" readonly value="Mehnajpur Showroom HQ" style="background: #F1F5F9; color: #64748B;">
+                  </div>
+                  <div class="form-group col-full">
+                    <label class="form-label" for="profBio">Showroom Bio / Staff Note</label>
+                    <textarea id="profBio" class="form-textarea" rows="3" placeholder="Brief note about role or showroom responsibility..."></textarea>
+                  </div>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn-admin-primary" id="btnSaveProfile">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                    Save Profile Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- TAB 2: SHOP / BRANCH PROFILE -->
+          <div class="settings-tab-pane" id="pane-tab-shop">
+            <div class="admin-panel" style="max-width: 820px;">
+              <h3 class="panel-title-text" style="margin-bottom: 20px;">Showroom &amp; Branch Profile</h3>
+              
+              <form id="formShopProfile" onsubmit="window.adminController.handleSaveShopProfile(event)">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label" for="shopName">Business / Brand Name <span class="required-star">*</span></label>
+                    <input type="text" id="shopName" class="form-input" required value="E-Gadget World">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopBranch">Branch Name <span class="required-star">*</span></label>
+                    <input type="text" id="shopBranch" class="form-input" required value="Mehnajpur Showroom HQ">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopEmail">Official Showroom Email</label>
+                    <input type="email" id="shopEmail" class="form-input" value="egadgetworld@websirg.com">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopPhone">Showroom Helpline Phone</label>
+                    <input type="tel" id="shopPhone" class="form-input" value="+91 9984359860">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopWhatsApp">Official WhatsApp Number <span class="required-star">*</span></label>
+                    <input type="tel" id="shopWhatsApp" class="form-input" required value="+91 9984359860">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopHours">Working Hours</label>
+                    <input type="text" id="shopHours" class="form-input" value="8:00 AM – 9:00 PM (Monday to Sunday)">
+                  </div>
+                  <div class="form-group col-full">
+                    <label class="form-label" for="shopAddress">Physical Showroom Address <span class="required-star">*</span></label>
+                    <input type="text" id="shopAddress" class="form-input" required value="Near Mehnajpur Thana, Mehnajpur, Azamgarh, UP – 276203">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopCity">City</label>
+                    <input type="text" id="shopCity" class="form-input" value="Azamgarh">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="shopState">State &amp; PIN Code</label>
+                    <input type="text" id="shopState" class="form-input" value="Uttar Pradesh – 276203">
+                  </div>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn-admin-primary" id="btnSaveShop">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                    Save Branch Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- TAB 3: SOCIAL MEDIA -->
+          <div class="settings-tab-pane" id="pane-tab-social">
+            <div class="admin-panel" style="max-width: 820px;">
+              <h3 class="panel-title-text" style="margin-bottom: 20px;">Showroom Social Presence</h3>
+              
+              <form id="formSocialProfile" onsubmit="window.adminController.handleSaveSocialMedia(event)">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label" for="socInstagram">Instagram URL</label>
+                    <input type="url" id="socInstagram" class="form-input" placeholder="https://instagram.com/egadgetworld">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="socFacebook">Facebook Page URL</label>
+                    <input type="url" id="socFacebook" class="form-input" placeholder="https://facebook.com/egadgetworld">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="socYouTube">YouTube Channel URL</label>
+                    <input type="url" id="socYouTube" class="form-input" placeholder="https://youtube.com/@egadgetworld">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="socLinkedIn">LinkedIn Page URL</label>
+                    <input type="url" id="socLinkedIn" class="form-input" placeholder="https://linkedin.com/company/egadgetworld">
+                  </div>
+                  <div class="form-group col-full">
+                    <label class="form-label" for="socWebsite">Main Showroom Website URL</label>
+                    <input type="url" id="socWebsite" class="form-input" placeholder="https://websirg.com">
+                  </div>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn-admin-primary" id="btnSaveSocial">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                    Save Social Links
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- TAB 4: ACCOUNT SECURITY -->
+          <div class="settings-tab-pane" id="pane-tab-security">
+            <div class="admin-panel" style="max-width: 640px;">
+              <h3 class="panel-title-text" style="margin-bottom: 8px;">Change Admin Password</h3>
+              <p class="panel-subtext" style="margin-bottom: 20px;">Use a strong password of at least 8 characters with numbers and letters.</p>
+              
+              <form id="formAccountSecurity" onsubmit="window.adminController.handleChangePassword(event)">
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" for="secCurrentPassword">Current Password <span class="required-star">*</span></label>
+                  <input type="password" id="secCurrentPassword" class="form-input" required placeholder="Enter current password">
+                </div>
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" for="secNewPassword">New Password <span class="required-star">*</span></label>
+                  <input type="password" id="secNewPassword" class="form-input" required minlength="8" placeholder="At least 8 characters">
+                </div>
+                <div class="form-group" style="margin-bottom: 24px;">
+                  <label class="form-label" for="secConfirmPassword">Confirm New Password <span class="required-star">*</span></label>
+                  <input type="password" id="secConfirmPassword" class="form-input" required minlength="8" placeholder="Re-type new password">
+                </div>
+
+                <div id="securityMsgBox" style="display: none; margin-bottom: 16px; padding: 10px 14px; border-radius: 6px; font-size: 13px;"></div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn-admin-primary" id="btnUpdatePassword">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- TAB 5: SYSTEM SETTINGS & CACHE -->
+          <div class="settings-tab-pane" id="pane-tab-system">
+            <div class="admin-panel" style="max-width: 820px; margin-bottom: 24px;">
+              <h3 class="panel-title-text" style="margin-bottom: 12px;">Database &amp; Engine Environment</h3>
+              <div style="font-size: 13.5px; line-height: 1.9; color: #334155;">
+                <div><strong>Database Connection:</strong> <span style="font-family: monospace; color: #16A34A; font-weight: 700;">MySQL 8.x • e_gadget_world (Active)</span></div>
+                <div><strong>Backend API:</strong> <span style="font-family: monospace; color: #2563EB;">Laravel 11 REST API</span></div>
+                <div><strong>Spreadsheet Engine:</strong> <span style="font-family: monospace; color: #0D9488;">SheetJS (xlsx.full.min.js v0.18.5 Offline)</span></div>
+                <div><strong>Showroom Branch ID:</strong> <span style="font-family: monospace; color: #475569;">mehnajpur</span></div>
+              </div>
+            </div>
+
+            <div class="admin-panel" style="max-width: 820px; border-color: #FECACA;">
+              <h3 class="panel-title-text" style="color: #DC2626; margin-bottom: 8px;">System Cache &amp; Local Storage Reset</h3>
+              <p style="font-size: 13.5px; color: #64748B; margin-bottom: 16px;">
+                Clear local cached session state, purge legacy localStorage keys, and synchronize directly with live MySQL database records.
+              </p>
+              <button type="button" class="btn-admin-secondary" style="color: #DC2626; border-color: #FCA5A5; background: #FEF2F2;" onclick="window.adminController.resetLocalCache()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Clear Local Cache &amp; Re-sync
+              </button>
+            </div>
           </div>
         </section>
 
@@ -1490,9 +1821,9 @@
     }
 
     function updateProfileDisplay(user) {
-      const roleName = user.role ? (user.role === 'super_admin' ? 'Super Admin' : user.role === 'admin' ? 'Store Admin' : user.role) : 'Administrator';
+      const adminName = user.display_name || user.name || 'Administrator';
+      const designation = user.designation || (user.role === 'super_admin' ? 'Super Admin' : user.role === 'admin' ? 'Store Admin' : 'Administrator');
       const branchName = user.branch || 'Mehnajpur Showroom';
-      const adminName = user.name || 'Administrator';
 
       const welcomeName = document.getElementById('welcomeName');
       if (welcomeName) welcomeName.textContent = adminName;
@@ -1501,25 +1832,37 @@
       if (curName) curName.textContent = adminName;
 
       const curRole = document.getElementById('currentUserRole');
-      if (curRole) curRole.textContent = roleName + ' • ' + branchName;
+      if (curRole) curRole.textContent = designation + ' • ' + branchName;
 
       const branchBadge = document.getElementById('branchBadge');
-      if (branchBadge) branchBadge.textContent = branchName.toUpperCase() + ' • ' + roleName.toUpperCase();
+      if (branchBadge) branchBadge.textContent = branchName.toUpperCase() + ' • ' + designation.toUpperCase();
 
       const nameParts = adminName.trim().split(' ');
       const initials = (nameParts.length > 1) ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : nameParts[0].slice(0, 2).toUpperCase();
 
       const initial = document.getElementById('avatarInitial');
-      if (initial) initial.textContent = initials;
+      if (initial) {
+        if (user.avatar) {
+          initial.innerHTML = `<img src="${user.avatar}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        } else {
+          initial.textContent = initials;
+        }
+      }
 
       const topbarAvatar = document.getElementById('topbarAvatarInitial');
-      if (topbarAvatar) topbarAvatar.textContent = initials;
+      if (topbarAvatar) {
+        if (user.avatar) {
+          topbarAvatar.innerHTML = `<img src="${user.avatar}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        } else {
+          topbarAvatar.textContent = initials;
+        }
+      }
 
       const topbarUser = document.getElementById('topbarUserName');
       if (topbarUser) topbarUser.textContent = adminName;
 
       const topbarRole = document.getElementById('topbarUserRole');
-      if (topbarRole) topbarRole.textContent = roleName;
+      if (topbarRole) topbarRole.textContent = designation;
     }
 
     // 2. Logout Handler (Retained 100%)
