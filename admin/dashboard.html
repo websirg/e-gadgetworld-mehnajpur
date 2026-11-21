@@ -118,7 +118,7 @@
             <a href="#laptops" class="subnav-item" data-view="laptops">
               <span class="subnav-bullet">&bull;</span>
               <span>Laptops</span>
-              <span class="nav-badge-count" id="navBadgeLaptops">24</span>
+              <span class="nav-badge-count" id="navBadgeLaptops">25</span>
             </a>
             <a href="#accessories" class="subnav-item" data-view="accessories">
               <span class="subnav-bullet">&bull;</span>
@@ -169,7 +169,7 @@
             </svg>
           </span>
           <span class="nav-label">Stock Management</span>
-          <span class="nav-badge-count" id="navBadgeStock">38 pcs</span>
+          <span class="nav-badge-count" id="navBadgeStock">39 pcs</span>
         </a>
 
         <a href="#excel" class="nav-item" data-view="excel">
@@ -209,10 +209,10 @@
       <!-- Sidebar User Footer -->
       <div class="sidebar-footer">
         <div class="sidebar-user-card">
-          <div class="sidebar-user-avatar" id="avatarInitial">A</div>
+          <div class="sidebar-user-avatar" id="avatarInitial">SK</div>
           <div class="sidebar-user-details">
-            <div class="sidebar-user-name" id="currentUserName">Administrator</div>
-            <div class="sidebar-user-role" id="currentUserRole">Operations • Mehnajpur</div>
+            <div class="sidebar-user-name" id="currentUserName">Sunil Kumar Maurya (Sonu)</div>
+            <div class="sidebar-user-role" id="currentUserRole">Super Admin • Mehnajpur HQ</div>
           </div>
           <button type="button" class="sidebar-logout-btn" onclick="handleLogout()" title="Sign Out">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -290,15 +290,32 @@
              VIEW A: DASHBOARD OVERVIEW
              ==================================================================== -->
         <section class="admin-view active" id="view-dashboard">
-          <!-- Welcome Banner -->
-          <div class="admin-welcome-banner">
-            <div>
-              <h1 style="font-size: 22px; font-weight: 800; margin: 0 0 6px 0;">Welcome back, <span id="welcomeName">Administrator</span>!</h1>
-              <p style="font-size: 13.5px; color: #DBEAFE; margin: 0;">
-                E-Gadget World Operations Hub • Showroom Branch: <strong id="branchBadge">MEHNAJPUR HQ</strong>
+          <!-- Executive Header (Modern Enterprise SaaS aesthetic) -->
+          <div class="admin-executive-header">
+            <div class="exec-header-left">
+              <div class="exec-branch-badge">
+                <span class="pulse-dot"></span>
+                <span class="exec-branch-text">Mehnajpur HQ • Live MySQL Connected</span>
+              </div>
+              <h1 class="exec-header-title">Showroom Operations Dashboard</h1>
+              <p class="exec-header-subtitle">
+                Welcome, <strong id="welcomeName">Sunil Kumar Maurya (Sonu)</strong> • Super Admin Console
               </p>
             </div>
-            <div class="welcome-decor-circle"></div>
+            <div class="exec-header-actions">
+              <a href="#inventory-add" class="btn-exec-action btn-exec-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Product</span>
+              </a>
+              <button type="button" class="btn-exec-action btn-exec-secondary" onclick="window.adminController.openSoldModal('laptop', '')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span>POS / New Sale</span>
+              </button>
+              <a href="#excel" class="btn-exec-action btn-exec-secondary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                <span>Excel Import</span>
+              </a>
+            </div>
           </div>
 
           <!-- Section 8: Sales Dashboard (Matching Reference Screenshot) -->
@@ -349,60 +366,75 @@
             </div>
           </div>
 
-          <!-- Section 9: Inventory Statistics Cards (6-Grid) -->
-          <div class="inventory-stats-grid">
+          <!-- Section 9A: Commercial Laptop Inventory (Dedicated Showroom Analytics) -->
+          <div class="dashboard-section-divider">
+            <div class="section-divider-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+              <span>Commercial Laptop Inventory</span>
+            </div>
+            <span class="section-divider-tag">Verified Authoritative Catalog</span>
+          </div>
+
+          <div class="laptop-stats-grid">
+            <!-- Available Laptop Stock -->
             <div class="inv-stat-card stat-accent-blue">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Total Units</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+                <span class="inv-stat-label">Available Laptop Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
               </div>
-              <div class="inv-stat-num" id="statTotalUnits">143</div>
+              <div class="inv-stat-num" id="statLaptopUnits">39</div>
               <div class="inv-stat-desc">Showroom physical pieces</div>
             </div>
 
-            <div class="inv-stat-card stat-accent-green">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">Total Sold Units</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-              </div>
-              <div class="inv-stat-num" id="statSoldUnits">0</div>
-              <div class="inv-stat-desc">Delivered to customers</div>
-            </div>
-
-            <div class="inv-stat-card stat-accent-indigo">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">Remaining Stock</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
-              </div>
-              <div class="inv-stat-num" id="statRemainingStock">143</div>
-              <div class="inv-stat-desc">Available for immediate sale</div>
-            </div>
-
+            <!-- Laptop Models -->
             <div class="inv-stat-card stat-accent-teal">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Total Models</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+                <span class="inv-stat-label">Laptop Models</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
               </div>
-              <div class="inv-stat-num" id="statTotalProducts">36</div>
-              <div class="inv-stat-desc">Distinct catalog variants</div>
+              <div class="inv-stat-num" id="statLaptopModels">25</div>
+              <div class="inv-stat-desc">Distinct commercial models</div>
             </div>
 
+            <!-- Low Stock Laptops -->
             <div class="inv-stat-card stat-accent-amber">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Low Stock Items</span>
+                <span class="inv-stat-label">Low Stock Laptops</span>
                 <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
               </div>
-              <div class="inv-stat-num" id="statLowStock">21</div>
+              <div class="inv-stat-num" id="statLowStockLaptops">22</div>
               <div class="inv-stat-desc">&le; 2 pieces remaining</div>
             </div>
 
+            <!-- Out of Stock Laptops -->
             <div class="inv-stat-card stat-accent-rose">
               <div class="inv-stat-header">
                 <span class="inv-stat-label">Out of Stock</span>
                 <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></div>
               </div>
-              <div class="inv-stat-num" id="statOutOfStock">0</div>
+              <div class="inv-stat-num" id="statOutOfStockLaptops">0</div>
               <div class="inv-stat-desc">0 pieces available</div>
+            </div>
+          </div>
+
+          <!-- Section 9B: Accessories & Store Overview (Separately Classified) -->
+          <div class="overview-stats-grid">
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Showroom Accessories</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statAccessoryUnits">105</div>
+              <div class="inv-stat-desc"><span id="statAccessoryModels">12</span> verified accessory SKUs (Classified separately)</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-slate">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Total Combined Inventory</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statCombinedUnits">144</div>
+              <div class="inv-stat-desc">39 laptops + 105 accessories across 37 total catalog SKUs</div>
             </div>
           </div>
 
@@ -411,10 +443,10 @@
             <div class="panel-header-row">
               <div>
                 <h2 class="panel-title-text">Recent Showroom Stock (Top Models)</h2>
-                <p class="panel-subtext">Click "Sold" on any row to test live sales deduction in preview mode</p>
+                <p class="panel-subtext">Real-time showroom laptop catalog. Click "Sell / POS" to generate customer invoice.</p>
               </div>
               <div>
-                <a href="#laptops" class="btn-admin-secondary">View All 24 Laptops &rarr;</a>
+                <a href="#laptops" class="btn-admin-secondary">View All 25 Laptops &rarr;</a>
               </div>
             </div>
 
