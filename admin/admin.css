@@ -811,6 +811,140 @@ body.sidebar-collapsed .admin-main-wrap {
 .stat-accent-amber .inv-stat-icon { background: #FFFBEB; color: #D97706; }
 .stat-accent-rose .inv-stat-icon { background: #FEF2F2; color: #DC2626; }
 
+/* Onboarding Guide Panel (Clean Slate Setup) */
+.admin-onboarding-panel {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-left: 5px solid #2563EB;
+  border-radius: var(--admin-radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.onboarding-panel-header {
+  margin-bottom: 16px;
+}
+
+.onboarding-badge {
+  display: inline-block;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #DBEAFE;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.onboarding-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 4px 0;
+}
+
+.onboarding-desc {
+  font-size: 13px;
+  color: #64748B;
+  margin: 0;
+}
+
+.onboarding-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.onboarding-step-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--admin-radius-sm);
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: var(--transition-smooth);
+}
+
+.onboarding-step-card:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transform: translateY(-2px);
+}
+
+.step-card-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-card-content {
+  flex: 1;
+}
+
+.step-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 4px;
+}
+
+.step-card-desc {
+  font-size: 12px;
+  color: #64748B;
+  line-height: 1.45;
+  margin: 0 0 12px 0;
+}
+
+.step-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563EB;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  padding: 5px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+.step-card-btn:hover {
+  background: #2563EB;
+  color: #FFFFFF;
+  border-color: #2563EB;
+}
+
+@media (max-width: 900px) {
+  .onboarding-steps-grid {
+    grid-template-columns: 1fr;
+  }
+  .inventory-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .inventory-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* ==========================================================================
    6. PANELS, CARDS & TOOLBARS
    ========================================================================== */

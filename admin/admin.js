@@ -310,6 +310,11 @@
 
     const elOutOfStock = document.getElementById('statOutOfStock');
     if (elOutOfStock) elOutOfStock.textContent = stats.outOfStockItems;
+
+    const onboardingPanel = document.getElementById('dashboardOnboardingPanel');
+    if (onboardingPanel) {
+      onboardingPanel.style.display = (stats.totalItemsUnits === 0) ? 'block' : 'none';
+    }
   }
 
   function renderDashboardQuickTable() {
@@ -317,6 +322,27 @@
     if (!tbody) return;
 
     const laptops = window.adminState.state.laptops.slice(0, 5);
+    if (laptops.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 40px 16px;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+            </div>
+            <div style="font-size: 14.5px; font-weight: 700; color: #0F172A; margin-bottom: 4px;">No Recent Showroom Stock Available</div>
+            <div style="font-size: 12.5px; color: #64748B; margin-bottom: 16px; max-width: 380px; margin-left: auto; margin-right: auto;">
+              Your database has been cleanly reset. Add your first showroom laptop or upload an Excel spreadsheet.
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: center;">
+              <a href="#inventory-add" class="btn-admin-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">+ Add Product</a>
+              <a href="#excel" class="btn-admin-secondary" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">Import Excel</a>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     tbody.innerHTML = laptops.map(laptop => {
       const stockPres = window.AdminStateManager.getPublicStockPresentation(laptop.quantity);
       return `
@@ -691,6 +717,25 @@
     window.adminState.updateCategoryCounts();
     const categories = window.adminState.state.categories;
 
+    if (categories.length === 0) {
+      gridEl.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 56px 20px; background: #FFFFFF; border: 1px dashed #CBD5E1; border-radius: 12px;">
+          <div style="width: 52px; height: 52px; border-radius: 50%; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3 style="font-size: 17px; font-weight: 800; color: #0F172A; margin: 0 0 6px 0;">No Categories Created Yet</h3>
+          <p style="font-size: 13.5px; color: #64748B; margin: 0 0 20px 0; max-width: 440px; margin-left: auto; margin-right: auto;">
+            The store category list is clean. Create your first category (such as Commercial Laptops, Laptop Accessories, Computer Peripherals) to organize your products.
+          </p>
+          <a href="#categories-add" class="btn-admin-primary" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add First Category
+          </a>
+        </div>
+      `;
+      return;
+    }
+
     gridEl.innerHTML = categories.map(cat => {
       const isActive = cat.status === 'active';
       return `
@@ -825,6 +870,16 @@
       if (previewBox) previewBox.innerHTML = '';
 
       files.forEach(file => {
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+          showToast(`Unsupported format (${file.name}). Please upload JPG, PNG or WebP.`, 'error');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          showToast(`File too large (${file.name}). Maximum allowed size is 5MB.`, 'error');
+          return;
+        }
+
         const reader = new FileReader();
         reader.onload = (loadEvent) => {
           const dataUrl = loadEvent.target.result;
@@ -849,6 +904,43 @@
         reader.readAsDataURL(file);
       });
     };
+  }
+
+  function handleSaveCategorySubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const nameInput = document.getElementById('catNameInput');
+    const slugInput = document.getElementById('catSlugInput');
+    const descInput = document.getElementById('catDescInput');
+    const statusSelect = document.getElementById('catStatusSelect');
+    const orderInput = document.getElementById('catOrderInput');
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    if (!name) {
+      showToast('Please enter a category name.', 'error');
+      return;
+    }
+
+    const slug = slugInput ? slugInput.value.trim() : '';
+    const desc = descInput ? descInput.value.trim() : '';
+    const status = statusSelect ? statusSelect.value : 'active';
+    const displayOrder = orderInput ? parseInt(orderInput.value, 10) || 1 : 1;
+
+    try {
+      const cat = window.adminState.addCategory({
+        name,
+        slug,
+        description: desc,
+        status,
+        displayOrder
+      });
+      showToast(`Category "${cat.name}" registered successfully!`, 'success');
+      if (nameInput) nameInput.value = '';
+      if (slugInput) slugInput.value = '';
+      if (descInput) descInput.value = '';
+      navigateTo('categories');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
   }
 
   function handleSaveProductSubmit(e) {
@@ -1003,8 +1095,30 @@
   // Columns: Sale ID | Date | Product | LP NO. / SKU | Category | Quantity | Unit Price | Total Amount | Payment Method | Status | Actions
   // ==========================================================================
   function renderSalesHistoryTable(todayOnly = false) {
-    const tbody = document.getElementById('salesHistoryTableBody');
-    if (!tbody) return;
+    const tbody1 = document.getElementById('salesHistoryTableBody');
+    const tbody2 = document.getElementById('salesHistoryTableBody2');
+    if (!tbody1 && !tbody2) return;
+
+    const stats = window.adminState.getStatistics();
+
+    // Populate Sales History KPI Summary Cards
+    const elTotRev = document.getElementById('cardHistTotalRevenue');
+    if (elTotRev) elTotRev.textContent = `₹${stats.allTimeRevenue.toLocaleString('en-IN')}`;
+
+    const elTotInv = document.getElementById('cardHistTotalInvoices');
+    if (elTotInv) elTotInv.textContent = `${stats.allTimeInvoices} Total Invoices`;
+
+    const elTodayRev = document.getElementById('cardHistTodayRevenue');
+    if (elTodayRev) elTodayRev.textContent = `₹${stats.todayRevenue.toLocaleString('en-IN')}`;
+
+    const elTodaySub = document.getElementById('cardHistTodaySubtitle');
+    if (elTodaySub) elTodaySub.textContent = stats.todayRevenue === 0 ? 'No sales today' : `${stats.todayCount} invoice(s) today`;
+
+    const elTotTx = document.getElementById('cardHistTotalTx');
+    if (elTotTx) elTotTx.textContent = stats.allTimeInvoices;
+
+    const elTotUnits = document.getElementById('cardHistTotalUnits');
+    if (elTotUnits) elTotUnits.textContent = stats.totalSoldUnits;
 
     let sales = [...window.adminState.state.sales];
 
@@ -1036,20 +1150,31 @@
       countInfo.innerHTML = `Showing <strong>${sales.length}</strong> recorded transactions`;
     }
 
+    const renderEmptyState = () => `
+      <tr>
+        <td colspan="11" style="text-align: center; padding: 56px 20px;">
+          <div style="max-width: 440px; margin: 0 auto;">
+            <div style="width: 52px; height: 52px; border-radius: 50%; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            </div>
+            <h4 style="font-size: 16px; font-weight: 800; color: #0F172A; margin: 0 0 6px 0;">No Sales Recorded Yet</h4>
+            <p style="font-size: 13px; color: #64748B; margin: 0 0 18px 0;">
+              Your showroom sales log is completely clean. Click "Sell / POS" on any inventory item to record a customer transaction.
+            </p>
+            <button type="button" class="btn-admin-primary" onclick="window.adminController.openSoldModal('laptop', '')">+ Create New Sale / POS</button>
+          </div>
+        </td>
+      </tr>
+    `;
+
     if (sales.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="11" style="text-align: center; padding: 40px 20px;">
-            <div style="font-size: 15px; font-weight: 700; color: #475569; margin-bottom: 6px;">No Sales Records Found</div>
-            <div style="font-size: 13px; color: #94A3B8; margin-bottom: 16px;">Click the "Sold" button on any laptop or accessory to record a sale.</div>
-            <button class="btn-admin-primary" onclick="window.adminController.navigateTo('laptops')">Go to Laptops Inventory</button>
-          </td>
-        </tr>
-      `;
+      const emptyHtml = renderEmptyState();
+      if (tbody1) tbody1.innerHTML = emptyHtml;
+      if (tbody2) tbody2.innerHTML = emptyHtml;
       return;
     }
 
-    tbody.innerHTML = sales.map(s => `
+    const rowsHtml = sales.map(s => `
       <tr>
         <td><strong style="color: #2563EB; font-family: monospace;">#${s.id}</strong></td>
         <td>${s.date}</td>
@@ -1069,6 +1194,9 @@
         </td>
       </tr>
     `).join('');
+
+    if (tbody1) tbody1.innerHTML = rowsHtml;
+    if (tbody2) tbody2.innerHTML = rowsHtml;
   }
 
   // ==========================================================================
@@ -1079,38 +1207,91 @@
     if (!tbody) return;
 
     const stats = window.adminState.getStatistics();
-    
+
+    // Update 5 KPI Summary Cards on Stock Management Page
+    const elTotProd = document.getElementById('statStockTotalProducts');
+    if (elTotProd) elTotProd.textContent = (stats.laptopModels || 0) + (stats.accessoriesModels || 0);
+
+    const elLpStock = document.getElementById('statStockLaptopUnits');
+    if (elLpStock) elLpStock.textContent = `${stats.laptopUnits || 0} pcs`;
+
+    const elAccStock = document.getElementById('statStockAccUnits');
+    if (elAccStock) elAccStock.textContent = `${stats.accessoriesUnits || 0} pcs`;
+
+    const elLowStock = document.getElementById('statStockLowStock');
+    if (elLowStock) elLowStock.textContent = (stats.lowStockLaptops || 0) + (stats.lowStockAccessories || 0);
+
+    const elOutOfStock = document.getElementById('statStockOutOfStock');
+    if (elOutOfStock) elOutOfStock.textContent = (stats.outOfStockLaptops || 0) + (stats.outOfStockAccessories || 0);
+
     const items = [
       ...window.adminState.state.laptops.map(l => ({
+        id: l.id,
+        categoryType: 'laptop',
         type: 'Commercial Laptop',
         code: `LP #${l.lpNumber}`,
         name: `${l.brand} ${l.model}`,
+        category: 'Laptops',
         availableQty: l.quantity,
         soldQty: l.soldQuantity || 0,
-        unitPrice: l.price
+        unitPrice: l.price,
+        image: l.image || 'assets/images/placeholders/laptop-placeholder.svg',
+        visibility: l.status === 'published' ? 'Visible (Catalog)' : 'Hidden (Draft)'
       })),
       ...window.adminState.state.accessories.map(a => ({
+        id: a.id,
+        categoryType: 'accessories',
         type: 'Accessory',
         code: a.sku,
         name: a.name,
+        category: a.type || 'Accessories',
         availableQty: a.quantity,
         soldQty: a.soldQuantity || 0,
-        unitPrice: a.price
+        unitPrice: a.price,
+        image: a.image || 'assets/images/placeholders/accessories-placeholder.svg',
+        visibility: a.status === 'published' ? 'Visible (Catalog)' : 'Hidden (Draft)'
       }))
     ];
+
+    if (items.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="9" style="text-align: center; padding: 56px 20px;">
+            <div style="max-width: 440px; margin: 0 auto;">
+              <div style="width: 52px; height: 52px; border-radius: 50%; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+              </div>
+              <h4 style="font-size: 16px; font-weight: 800; color: #0F172A; margin: 0 0 6px 0;">No Stock Items Found in Inventory</h4>
+              <p style="font-size: 13px; color: #64748B; margin: 0 0 18px 0;">
+                The inventory is currently clean. Add your first commercial laptop or accessory, or import from an Excel/CSV spreadsheet.
+              </p>
+              <div style="display: flex; gap: 10px; justify-content: center;">
+                <a href="#inventory-add" class="btn-admin-primary">+ Add Product</a>
+                <a href="#excel" class="btn-admin-secondary">Import Spreadsheet</a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
 
     tbody.innerHTML = items.map(item => {
       const stockPres = window.AdminStateManager.getPublicStockPresentation(item.availableQty);
       return `
         <tr>
+          <td><img src="${item.image}" alt="${item.name}" style="width: 36px; height: 36px; object-fit: contain; border-radius: 6px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 2px;"></td>
           <td><span class="cell-lp-badge">${item.code}</span></td>
           <td><strong>${item.name}</strong></td>
-          <td><span class="badge-brand-pill">${item.type}</span></td>
-          <td><strong style="font-size: 14px;">${item.availableQty}</strong> pcs</td>
+          <td><span class="badge-brand-pill">${item.category}</span></td>
+          <td><strong style="font-size: 14px; color: #0F172A;">${item.availableQty}</strong> pcs</td>
           <td>${item.soldQty} pcs</td>
           <td><span class="stock-badge-tag ${stockPres.badgeClass}">${stockPres.label}</span></td>
-          <td style="font-size: 12px; color: #475569;">
-            ${item.availableQty > 2 ? 'In Stock (Exact Qty Hidden on Website)' : item.availableQty > 0 ? 'Urgency Warning Displayed' : 'Sold Out / Unavailable'}
+          <td style="font-size: 12px; color: #475569;">${item.visibility}</td>
+          <td>
+            <div class="table-actions-cell">
+              <button class="btn-table-action" onclick="window.adminController.openAdjustStockModal('${item.categoryType}', '${item.id}')" title="Adjust stock">Adjust</button>
+            </div>
           </td>
         </tr>
       `;
@@ -1368,6 +1549,51 @@
     showToast(`Exported ${filename} successfully!`, 'success');
   }
 
+  function exportStockCSV() {
+    let csv = 'CATEGORY,CODE,NAME,PIECES_AVAILABLE,SOLD_PIECES,UNIT_PRICE,STOCK_STATUS,VISIBILITY\r\n';
+    window.adminState.state.laptops.forEach(l => {
+      const pres = window.AdminStateManager.getPublicStockPresentation(l.quantity);
+      csv += `"Commercial Laptop","LP #${l.lpNumber}","${l.brand} ${l.model}",${l.quantity},${l.soldQuantity || 0},${l.price},"${pres.label}","${l.status}"\r\n`;
+    });
+    window.adminState.state.accessories.forEach(a => {
+      const pres = window.AdminStateManager.getPublicStockPresentation(a.quantity);
+      csv += `"Accessory","${a.sku}","${a.name}",${a.quantity},${a.soldQuantity || 0},${a.price},"${pres.label}","${a.status}"\r\n`;
+    });
+    const filename = `egadget_stock_levels_${new Date().toISOString().split('T')[0]}.csv`;
+    triggerFileDownload(csv, filename, 'text/csv;charset=utf-8;');
+    showToast(`Exported ${filename} successfully!`, 'success');
+  }
+
+  function openAdjustStockModal(category = 'laptop', itemId = '') {
+    let target = null;
+    let list = category === 'accessories' ? window.adminState.state.accessories : window.adminState.state.laptops;
+    if (itemId) {
+      target = list.find(x => x.id === itemId || x.lpNumber === itemId || x.sku === itemId);
+    } else if (list.length > 0) {
+      target = list[0];
+    }
+
+    if (!target) {
+      showToast('No inventory items available to adjust stock.', 'error');
+      return;
+    }
+
+    const currentQty = target.quantity;
+    const name = target.model ? `${target.brand} ${target.model}` : target.name;
+    const newQtyStr = prompt(`Adjust Stock for "${name}"\nCurrent Quantity: ${currentQty} pieces\nEnter new physical showroom stock count:`, currentQty);
+    if (newQtyStr === null) return;
+
+    const newQty = parseInt(newQtyStr, 10);
+    if (isNaN(newQty) || newQty < 0) {
+      showToast('Please enter a valid non-negative number.', 'error');
+      return;
+    }
+
+    window.adminState.updateStockQuantity(category, target.id, newQty);
+    showToast(`Stock for "${name}" updated to ${newQty} pieces!`, 'success');
+    renderCurrentView(uiState.currentView);
+  }
+
   function triggerFileDownload(content, filename, mimeType) {
     const blob = new Blob([content], { type: mimeType });
     const link = document.createElement('a');
@@ -1460,6 +1686,10 @@
     handleConfirmSold,
     downloadTemplate,
     exportInventory,
+    exportStockCSV,
+    openAdjustStockModal,
+    handleSaveCategorySubmit,
+    handleSaveProductSubmit,
     showToast,
     closeModal,
 

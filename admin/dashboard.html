@@ -44,7 +44,7 @@
           <img src="../assets/images/logo-official.png" alt="E-Gadget World" class="sidebar-logo">
           <div class="sidebar-brand-text">
             <span class="sidebar-brand-name">E-Gadget World</span>
-            <span class="sidebar-brand-sub">Admin Console</span>
+            <span class="sidebar-brand-sub">Shop Admin</span>
           </div>
         </a>
         <button type="button" class="sidebar-toggle-btn" id="btnSidebarToggle" title="Collapse / Expand Sidebar">
@@ -56,8 +56,7 @@
 
       <!-- Navigation Links -->
       <div class="sidebar-nav-wrap">
-        <!-- Main Menu -->
-        <div class="nav-section-title">Main Menu</div>
+        <!-- Main Navigation -->
         <a href="#dashboard" class="nav-item active" data-view="dashboard">
           <span class="nav-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -83,11 +82,10 @@
           </a>
           <div class="nav-submenu">
             <a href="#categories" class="subnav-item" data-view="categories">
-              <span class="subnav-bullet">&bull;</span>
               <span>All Categories</span>
+              <span class="nav-badge-count" id="navBadgeCategories">0</span>
             </a>
             <a href="#categories-add" class="subnav-item" data-view="categories-add">
-              <span class="subnav-bullet">&bull;</span>
               <span>Add Category</span>
             </a>
           </div>
@@ -95,7 +93,7 @@
 
         <!-- Inventory Group -->
         <div class="nav-group is-open" id="navGroupInventory">
-          <a href="#laptops" class="nav-item nav-group-toggle" data-view="laptops">
+          <a href="#inventory-all" class="nav-item nav-group-toggle" data-view="inventory-all">
             <span class="nav-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
@@ -108,22 +106,18 @@
           </a>
           <div class="nav-submenu">
             <a href="#inventory-all" class="subnav-item" data-view="inventory-all">
-              <span class="subnav-bullet">&bull;</span>
-              <span>All Items</span>
+              <span>All Products</span>
             </a>
             <a href="#inventory-add" class="subnav-item" data-view="inventory-add">
-              <span class="subnav-bullet">&bull;</span>
-              <span>Add Item</span>
+              <span>Add Product</span>
             </a>
             <a href="#laptops" class="subnav-item" data-view="laptops">
-              <span class="subnav-bullet">&bull;</span>
               <span>Laptops</span>
-              <span class="nav-badge-count" id="navBadgeLaptops">25</span>
+              <span class="nav-badge-count" id="navBadgeLaptops">0</span>
             </a>
             <a href="#accessories" class="subnav-item" data-view="accessories">
-              <span class="subnav-bullet">&bull;</span>
               <span>Accessories</span>
-              <span class="nav-badge-count" id="navBadgeAcc">12</span>
+              <span class="nav-badge-count" id="navBadgeAcc">0</span>
             </a>
           </div>
         </div>
@@ -142,18 +136,18 @@
             <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
           </a>
           <div class="nav-submenu">
+            <a href="#sales-new" class="subnav-item" onclick="window.adminController.openSoldModal('laptop', ''); return false;" data-view="sales-new">
+              <span>New Sale / POS</span>
+            </a>
             <a href="#sales-all" class="subnav-item" data-view="sales-all">
-              <span class="subnav-bullet">&bull;</span>
               <span>All Sales</span>
             </a>
             <a href="#sales-today" class="subnav-item" data-view="sales-today">
-              <span class="subnav-bullet">&bull;</span>
               <span>Today's Sales</span>
             </a>
             <a href="#sales-history" class="subnav-item" data-view="sales-history">
-              <span class="subnav-bullet">&bull;</span>
               <span>Sales History</span>
-              <span class="nav-badge-count" id="navBadgeSales">1</span>
+              <span class="nav-badge-count" id="navBadgeSales">0</span>
             </a>
           </div>
         </div>
@@ -169,7 +163,7 @@
             </svg>
           </span>
           <span class="nav-label">Stock Management</span>
-          <span class="nav-badge-count" id="navBadgeStock">39 pcs</span>
+          <span class="nav-badge-count" id="navBadgeStock">0 pcs</span>
         </a>
 
         <a href="#excel" class="nav-item" data-view="excel">
@@ -205,14 +199,13 @@
           <span class="nav-label">Settings</span>
         </a>
       </div>
-
       <!-- Sidebar User Footer -->
       <div class="sidebar-footer">
         <div class="sidebar-user-card">
           <div class="sidebar-user-avatar" id="avatarInitial">SK</div>
           <div class="sidebar-user-details">
             <div class="sidebar-user-name" id="currentUserName">Sunil Kumar Maurya (Sonu)</div>
-            <div class="sidebar-user-role" id="currentUserRole">Super Admin • Mehnajpur HQ</div>
+            <div class="sidebar-user-role" id="currentUserRole">Shop Admin • Mehnajpur HQ</div>
           </div>
           <button type="button" class="sidebar-logout-btn" onclick="handleLogout()" title="Sign Out">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -241,7 +234,7 @@
           </button>
 
           <nav class="topbar-breadcrumbs">
-            <a href="#dashboard">Admin</a>
+            <a href="#dashboard">Shop Admin</a>
             <span>&rsaquo;</span>
             <span class="current-crumb" id="crumbCurrent">Operations Dashboard</span>
           </nav>
@@ -257,7 +250,7 @@
             <div class="topbar-user-avatar" id="topbarAvatarInitial">A</div>
             <div class="topbar-user-meta">
               <span class="topbar-user-name" id="topbarUserName">Administrator</span>
-              <span class="topbar-user-role" id="topbarUserRole">Staff Console</span>
+              <span class="topbar-user-role" id="topbarUserRole">Shop Admin</span>
             </div>
           </div>
 
@@ -299,7 +292,7 @@
               </div>
               <h1 class="exec-header-title">Showroom Operations Dashboard</h1>
               <p class="exec-header-subtitle">
-                Welcome, <strong id="welcomeName">Sunil Kumar Maurya (Sonu)</strong> • Super Admin Console
+                Welcome, <strong id="welcomeName">Sunil Kumar Maurya (Sonu)</strong> • Shop Admin Console
               </p>
             </div>
             <div class="exec-header-actions">
@@ -366,75 +359,137 @@
             </div>
           </div>
 
-          <!-- Section 9A: Commercial Laptop Inventory (Dedicated Showroom Analytics) -->
-          <div class="dashboard-section-divider">
-            <div class="section-divider-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
-              <span>Commercial Laptop Inventory</span>
-            </div>
-            <span class="section-divider-tag">Verified Authoritative Catalog</span>
-          </div>
-
-          <div class="laptop-stats-grid">
-            <!-- Available Laptop Stock -->
+          <!-- Section 9: Live Inventory Analytics (Compact Executive 6-Grid matching Reference UI) -->
+          <div class="inventory-stats-grid">
+            <!-- Card 1: Total Units -->
             <div class="inv-stat-card stat-accent-blue">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Available Laptop Stock</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+                <span class="inv-stat-label">TOTAL UNITS</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                  </svg>
+                </div>
               </div>
-              <div class="inv-stat-num" id="statLaptopUnits">39</div>
+              <div class="inv-stat-num" id="statTotalUnits">0</div>
               <div class="inv-stat-desc">Showroom physical pieces</div>
             </div>
 
-            <!-- Laptop Models -->
-            <div class="inv-stat-card stat-accent-teal">
+            <!-- Card 2: Total Sold Units -->
+            <div class="inv-stat-card stat-accent-green">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Laptop Models</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                <span class="inv-stat-label">TOTAL SOLD UNITS</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                  </svg>
+                </div>
               </div>
-              <div class="inv-stat-num" id="statLaptopModels">25</div>
-              <div class="inv-stat-desc">Distinct commercial models</div>
+              <div class="inv-stat-num" id="statSoldUnits">0</div>
+              <div class="inv-stat-desc">Delivered to customers</div>
             </div>
 
-            <!-- Low Stock Laptops -->
+            <!-- Card 3: Remaining Stock -->
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">REMAINING STOCK</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="statRemainingStock">0</div>
+              <div class="inv-stat-desc">Available for immediate sale</div>
+            </div>
+
+            <!-- Card 4: Total Models -->
+            <div class="inv-stat-card stat-accent-teal">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">TOTAL MODELS</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect width="18" height="12" x="3" y="4" rx="2"></rect>
+                    <line x1="2" y1="20" x2="22" y2="20"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="statTotalProducts">0</div>
+              <div class="inv-stat-desc">Distinct catalog variants</div>
+            </div>
+
+            <!-- Card 5: Low Stock Items -->
             <div class="inv-stat-card stat-accent-amber">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Low Stock Laptops</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                <span class="inv-stat-label">LOW STOCK ITEMS</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
               </div>
-              <div class="inv-stat-num" id="statLowStockLaptops">22</div>
+              <div class="inv-stat-num" id="statLowStock">0</div>
               <div class="inv-stat-desc">&le; 2 pieces remaining</div>
             </div>
 
-            <!-- Out of Stock Laptops -->
+            <!-- Card 6: Out of Stock -->
             <div class="inv-stat-card stat-accent-rose">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">Out of Stock</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></div>
+                <span class="inv-stat-label">OUT OF STOCK</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="m4.9 4.9 14.2 14.2"></path>
+                  </svg>
+                </div>
               </div>
-              <div class="inv-stat-num" id="statOutOfStockLaptops">0</div>
+              <div class="inv-stat-num" id="statOutOfStock">0</div>
               <div class="inv-stat-desc">0 pieces available</div>
             </div>
           </div>
 
-          <!-- Section 9B: Accessories & Store Overview (Separately Classified) -->
-          <div class="overview-stats-grid">
-            <div class="inv-stat-card stat-accent-indigo">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">Showroom Accessories</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>
+          <!-- Onboarding Guide for Fresh Database Setup (Clean slate 0 records) -->
+          <div class="admin-onboarding-panel" id="dashboardOnboardingPanel">
+            <div class="onboarding-panel-header">
+              <div class="onboarding-title-wrap">
+                <span class="onboarding-badge">Clean Database Initialized</span>
+                <h3 class="onboarding-title">Showroom Catalog Setup Guide</h3>
+                <p class="onboarding-desc">Your database is completely fresh (0 products). Set up your showroom in 3 simple steps:</p>
               </div>
-              <div class="inv-stat-num" id="statAccessoryUnits">105</div>
-              <div class="inv-stat-desc"><span id="statAccessoryModels">12</span> verified accessory SKUs (Classified separately)</div>
             </div>
-
-            <div class="inv-stat-card stat-accent-slate">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">Total Combined Inventory</span>
-                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+            <div class="onboarding-steps-grid">
+              <div class="onboarding-step-card">
+                <div class="step-card-num">1</div>
+                <div class="step-card-content">
+                  <div class="step-card-title">Add First Category</div>
+                  <p class="step-card-desc">Define categories such as Commercial Laptops, Accessories, or Peripherals.</p>
+                  <a href="#categories-add" class="step-card-btn">+ Add Category</a>
+                </div>
               </div>
-              <div class="inv-stat-num" id="statCombinedUnits">144</div>
-              <div class="inv-stat-desc">39 laptops + 105 accessories across 37 total catalog SKUs</div>
+              <div class="onboarding-step-card">
+                <div class="step-card-num">2</div>
+                <div class="step-card-content">
+                  <div class="step-card-title">Add Showroom Product</div>
+                  <p class="step-card-desc">Enter LP No, brand, specs, stock quantity and upload product photos.</p>
+                  <a href="#inventory-add" class="step-card-btn">+ Add Product</a>
+                </div>
+              </div>
+              <div class="onboarding-step-card">
+                <div class="step-card-num">3</div>
+                <div class="step-card-content">
+                  <div class="step-card-title">Bulk Import via Excel</div>
+                  <p class="step-card-desc">Download CSV templates and import your complete stock in one click.</p>
+                  <a href="#excel" class="step-card-btn">Import Excel</a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -446,7 +501,7 @@
                 <p class="panel-subtext">Real-time showroom laptop catalog. Click "Sell / POS" to generate customer invoice.</p>
               </div>
               <div>
-                <a href="#laptops" class="btn-admin-secondary">View All 25 Laptops &rarr;</a>
+                <a href="#laptops" class="btn-admin-secondary">View All Laptops &rarr;</a>
               </div>
             </div>
 
@@ -509,7 +564,7 @@
           </div>
 
           <div class="admin-form-card" style="max-width: 780px;">
-            <form id="addCategoryForm" onsubmit="event.preventDefault(); window.adminController.showToast('New category registered in preview state!', 'success'); window.adminController.navigateTo('categories');">
+            <form id="addCategoryForm" onsubmit="window.adminController.handleSaveCategorySubmit(event)">
               <div class="form-grid-2">
                 <div class="form-group">
                   <label class="form-label" for="catNameInput">Category Name <span class="required-star">*</span></label>
@@ -893,32 +948,76 @@
         <section class="admin-view" id="view-sales-history">
           <div class="view-header">
             <div class="view-title-wrap">
-              <h1>Sales History &amp; Transaction Logs</h1>
-              <p class="view-subtitle" id="salesHistoryCountInfo">Audit trail of completed customer sales</p>
+              <h1>Sales History &amp; Transactions</h1>
+              <p class="view-subtitle" id="salesHistoryCountInfo">Track completed sales, payment records and transaction history</p>
+            </div>
+            <div class="view-actions">
+              <button type="button" class="btn-admin-primary" onclick="window.adminController.openSoldModal('laptop', '')">+ New Sale / POS</button>
             </div>
           </div>
 
-          <div class="table-responsive-box">
-            <table class="admin-data-table">
-              <thead>
-                <tr>
-                  <th>Sale ID</th>
-                  <th>Date</th>
-                  <th>Product</th>
-                  <th>LP NO. / SKU</th>
-                  <th>Category</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Total Amount</th>
-                  <th>Payment Method</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="salesHistoryTableBody2">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
+          <!-- Sales Summary Cards (4-Grid) -->
+          <div class="sales-cards-row" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+            <div class="sales-card card-alltime">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Total Sales</span>
+                <div class="sales-card-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+              </div>
+              <div class="sales-card-amount" id="cardHistTotalRevenue">₹0</div>
+              <div class="sales-card-subtitle" id="cardHistTotalInvoices">0 Total Invoices</div>
+            </div>
+
+            <div class="sales-card card-today">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Today's Revenue</span>
+                <div class="sales-card-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+              </div>
+              <div class="sales-card-amount" id="cardHistTodayRevenue">₹0</div>
+              <div class="sales-card-subtitle" id="cardHistTodaySubtitle">No sales today</div>
+            </div>
+
+            <div class="sales-card card-yesterday">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Total Transactions</span>
+                <div class="sales-card-icon-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+              </div>
+              <div class="sales-card-amount" id="cardHistTotalTx">0</div>
+              <div class="sales-card-subtitle">Completed orders</div>
+            </div>
+
+            <div class="sales-card" style="border-left: 5px solid #0D9488;">
+              <div class="sales-card-top">
+                <span class="sales-card-title">Units Sold</span>
+                <div class="sales-card-icon-wrap" style="background: #CCFBF1; color: #0D9488;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+              </div>
+              <div class="sales-card-amount" id="cardHistTotalUnits">0</div>
+              <div class="sales-card-subtitle">Delivered to buyers</div>
+            </div>
+          </div>
+
+          <!-- Professional Empty State & Table -->
+          <div class="admin-panel" id="salesHistoryPanelWrap">
+            <div class="table-responsive-box">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>Sale ID</th>
+                    <th>Date &amp; Time</th>
+                    <th>Product</th>
+                    <th>LP NO. / SKU</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Amount</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="salesHistoryTableBody2">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
@@ -929,46 +1028,97 @@
           <div class="view-header">
             <div class="view-title-wrap">
               <h1>Stock &amp; Quantity Management</h1>
-              <p class="view-subtitle">Review available quantity, sold units, and public website display rules</p>
+              <p class="view-subtitle">Manage product availability, stock movements and website visibility</p>
+            </div>
+            <div class="view-actions">
+              <a href="#inventory-add" class="btn-admin-primary">+ Add Product</a>
+              <button type="button" class="btn-admin-secondary" onclick="window.adminController.openAdjustStockModal()">Adjust Stock</button>
+              <button type="button" class="btn-admin-secondary" onclick="window.adminController.exportStockCSV()">Export Stock</button>
             </div>
           </div>
 
-          <!-- Public Stock Display Rules Card -->
-          <div class="admin-panel" style="background: #F0FDF4; border-color: #BBF7D0;">
-            <h3 style="font-size: 15px; font-weight: 800; color: #166534; margin: 0 0 8px 0;">
-              Public Website Display Rules (Strictly Applied)
-            </h3>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: #166534; line-height: 1.6;">
-              <li><strong>Quantity &gt; 2:</strong> Displayed as <span class="stock-badge-tag stock-in">In Stock</span> (Exact quantity is NEVER exposed to customers).</li>
-              <li><strong>Quantity == 2:</strong> Displayed as <span class="stock-badge-tag stock-low">Only 2 Left</span> (Prompts urgency).</li>
-              <li><strong>Quantity == 1:</strong> Displayed as <span class="stock-badge-tag stock-critical">Only 1 Left</span> (Prompts urgency).</li>
-              <li><strong>Quantity == 0:</strong> Displayed as <span class="stock-badge-tag stock-soldout">Sold Out</span> (Disables enquiry CTA).</li>
-            </ul>
+          <!-- Stock Summary KPI Cards (5-Grid) -->
+          <div class="inventory-stats-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 16px;">
+            <div class="inv-stat-card stat-accent-blue">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Total Products</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statStockTotalProducts">0</div>
+              <div class="inv-stat-desc">Distinct catalog SKUs</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Laptop Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="12" x="3" y="4" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statStockLaptopUnits">0</div>
+              <div class="inv-stat-desc">Physical showroom units</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-teal">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Accessories Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statStockAccUnits">0</div>
+              <div class="inv-stat-desc">Peripherals &amp; spares</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-amber">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Low Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statStockLowStock">0</div>
+              <div class="inv-stat-desc">&le; 2 pieces remaining</div>
+            </div>
+
+            <div class="inv-stat-card stat-accent-rose">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">Out of Stock</span>
+                <div class="inv-stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg></div>
+              </div>
+              <div class="inv-stat-num" id="statStockOutOfStock">0</div>
+              <div class="inv-stat-desc">0 pieces available</div>
+            </div>
           </div>
 
-          <div class="table-responsive-box">
-            <table class="admin-data-table">
-              <thead>
-                <tr>
-                  <th>Code / LP</th>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Available Quantity</th>
-                  <th>Sold Units</th>
-                  <th>Public Badge Display</th>
-                  <th>Customer View Status</th>
-                </tr>
-              </thead>
-              <tbody id="stockTableBody">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
+          <!-- Compact Public Stock Rules Info Panel (Replacing Oversized Green Banner) -->
+          <div class="stock-rules-panel">
+            <div class="stock-rules-left">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span class="rules-tag">Public Display Rules</span>
+              <span class="rules-text">Qty &ge; 3 shows <strong>In Stock</strong> • Qty 2 shows <strong>Only 2 Left</strong> • Qty 1 shows <strong>Only 1 Left</strong> • Qty 0 shows <strong>Sold Out</strong>. <em>Exact counts are protected and visible only in Shop Admin.</em></span>
+            </div>
+          </div>
+
+          <!-- Stock Table with Search & Filter -->
+          <div class="admin-panel" style="margin-top: 16px;">
+            <div class="table-responsive-box">
+              <table class="admin-data-table">
+                <thead>
+                  <tr>
+                    <th>Product Image</th>
+                    <th>LP No. / SKU</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Available Quantity</th>
+                    <th>Sold Units</th>
+                    <th>Stock Status</th>
+                    <th>Website Visibility</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="stockTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
-        <!-- ====================================================================
-             VIEW L: EXCEL IMPORT & EXPORT (SECTION 11)
-             ==================================================================== -->
         <section class="admin-view" id="view-excel">
           <div class="view-header">
             <div class="view-title-wrap">
