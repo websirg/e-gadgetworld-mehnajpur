@@ -55,32 +55,3 @@ jobs:
             echo "SSH port unreachable"
             exit 1
           fi
-
-      - name: Test Hostinger SSH connection
-        env:
-          SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
-          SSH_USER: ${{ secrets.HOSTINGER_USER }}
-        run: |
-          ssh \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            -o IdentitiesOnly=yes \
-            -o ConnectTimeout=15 \
-            -i "$HOME/.ssh/id_ed25519" \
-            -p 65002 \
-            "$SSH_USER@$SSH_HOST" \
-            'echo "SSH authentication successful"; test -d "$HOME/egadgetworld-repo"; test -d "$HOME/domains/websirgmobix.com/public_html/egadgetworld"'
-
-      - name: Deploy frontend to Hostinger
-        env:
-          SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
-          SSH_USER: ${{ secrets.HOSTINGER_USER }}
-        run: |
-          ssh \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
-            -o IdentitiesOnly=yes \
-            -i "$HOME/.ssh/id_ed25519" \
-            -p 65002 \
-            "$SSH_USER@$SSH_HOST" \
-            'cd "$HOME/egadgetworld-repo" && git clean -fd -- .github deploy.sh && git pull --ff-only origin main && bash deploy.sh'
