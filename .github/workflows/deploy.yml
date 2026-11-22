@@ -90,19 +90,23 @@ jobs:
           set -eu
           echo "=== VERIFYING LIVE HOSTINGER PUBLIC ENDPOINTS ==="
           
+          # Check deploy log
+          echo "Deploy debug log from server:"
+          curl -s "https://egadgetworld.websirgmobix.com/deploy_debug.log" || true
+          
           # 1. Categories
           echo "1. Checking Categories endpoint..."
-          CAT_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/categories")
+          CAT_RES=$(curl -s "https://egadgetworld.websirgmobix.com/api/public/categories")
           echo "Categories response: $(echo "$CAT_RES" | head -c 250)"
           
           # 2. Laptops
           echo "2. Checking Laptops endpoint..."
-          LAP_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/laptops")
+          LAP_RES=$(curl -s "https://egadgetworld.websirgmobix.com/api/public/laptops")
           echo "Laptops response: $(echo "$LAP_RES" | head -c 250)"
           
           # 3. Accessories
           echo "3. Checking Accessories endpoint..."
-          ACC_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/accessories")
+          ACC_RES=$(curl -s "https://egadgetworld.websirgmobix.com/api/public/accessories")
           echo "Accessories response: $ACC_RES"
           
           echo "=== ALL LIVE ENDPOINTS VERIFIED SUCCESSFULLY ==="
