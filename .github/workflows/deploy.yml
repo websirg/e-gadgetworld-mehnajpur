@@ -55,3 +55,32 @@ jobs:
             echo "SSH port unreachable"
             exit 1
           fi
+
+      - name: Deploy frontend to Hostinger
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_USER }}
+        run: |
+          set -eu
+          SUCCESS=0
+          for attempt in 1 2 3; do
+            echo "Attempt $attempt: Connecting to Hostinger via SSH..."
+            if ssh \
+              -o BatchMode=yes \
+              -o StrictHostKeyChecking=accept-new \
+              -o IdentitiesOnly=yes \
+              -o ConnectTimeout=30 \
+              -o ServerAliveInterval=15 \
+              -i "$HOME/.ssh/id_ed25519" \
+              -p 65002 \
+              "$SSH_USER@$SSH_HOST" \
+              'cd "$HOME/egadgetworld-repo" && git clean -fd -- .github deploy.sh && git pull --ff-only origin main && bash deploy.sh'; then
+              echo "Deployment completed successfully on attempt $attempt"
+              SUCCESS=1
+              break
+            else
+              echo "Attempt $attempt failed. Waiting 5 seconds..."
+              sleep 5
+            fi
+          done
+          test $SUCCESS -eq 1
