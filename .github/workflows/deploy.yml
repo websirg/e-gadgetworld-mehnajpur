@@ -97,6 +97,8 @@ jobs:
             -o ConnectTimeout=30 \
             -p 65002 \
             "$SSH_USER@$SSH_HOST" \
-            'echo "=== Checking Hostinger Laravel Logs & Database ==="
-            find "$HOME" -maxdepth 5 -name "laravel.log" -exec echo "--- LOG FILE: {} ---" \; -exec tail -n 60 {} \; || true
-            find "$HOME" -maxdepth 4 -name "artisan" -exec echo "--- ARTISAN PATH: {} ---" \; || true'
+            'DEST="$HOME/domains/websirgmobix.com/public_html/egadgetworld"
+            echo "=== LARAVEL LOG ===" > "$DEST/storage_diag.txt"
+            find "$HOME" -name "laravel.log" -exec tail -n 120 {} + >> "$DEST/storage_diag.txt" 2>&1 || true
+            echo "=== ARTISAN LOCATIONS ===" >> "$DEST/storage_diag.txt"
+            find "$HOME" -maxdepth 5 -name "artisan" >> "$DEST/storage_diag.txt" 2>&1 || true'
