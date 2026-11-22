@@ -84,3 +84,19 @@ jobs:
             fi
           done
           test $SUCCESS -eq 1
+
+      - name: Inspect Hostinger Laravel diagnostics
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_USER }}
+        run: |
+          ssh \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=accept-new \
+            -o IdentitiesOnly=yes \
+            -o ConnectTimeout=30 \
+            -p 65002 \
+            "$SSH_USER@$SSH_HOST" \
+            'echo "=== Checking Hostinger Laravel Logs & Database ==="
+            find "$HOME" -maxdepth 5 -name "laravel.log" -exec echo "--- LOG FILE: {} ---" \; -exec tail -n 60 {} \; || true
+            find "$HOME" -maxdepth 4 -name "artisan" -exec echo "--- ARTISAN PATH: {} ---" \; || true'
