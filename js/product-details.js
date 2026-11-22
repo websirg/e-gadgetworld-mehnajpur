@@ -12,7 +12,7 @@ window.addEventListener('egadget:inventory-synced', () => {
   initProductDetailsPage();
 });
 
-function initProductDetailsPage() {
+async function initProductDetailsPage() {
   const container = document.getElementById('productDetailContainer');
   if (!container) return;
 
@@ -28,7 +28,50 @@ function initProductDetailsPage() {
     return;
   }
 
-  const laptop = LaptopService.getById(lpParam);
+  let laptop = typeof LaptopService !== 'undefined' ? LaptopService.getById(lpParam) : null;
+
+  if (!laptop) {
+    // Show loading state while querying live Laravel API
+    container.innerHTML = `
+      <div style="padding: 60px 20px; text-align: center;">
+        <div style="width: 36px; height: 36px; border: 3px solid #E2E8F0; border-top-color: #2563EB; border-radius: 50%; margin: 0 auto 16px; animation: spin 0.8s linear infinite;"></div>
+        <p style="font-size: 14px; color: #64748B; font-weight: 600;">Loading laptop specifications...</p>
+      </div>
+    `;
+
+    const apiBase = (typeof LaptopService !== 'undefined' && LaptopService.getApiBase) ? LaptopService.getApiBase() : '';
+    try {
+      const res = await fetch(`${apiBase}/api/public/laptops/${encodeURIComponent(lpParam)}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          const dbItem = json.data;
+          laptop = {
+            id: String(dbItem.id),
+            lpNumber: String(dbItem.lp_no),
+            brand: dbItem.brand,
+            model: dbItem.model,
+            processor: dbItem.processor,
+            generation: dbItem.generation,
+            ram: dbItem.ram,
+            storage: dbItem.storage,
+            price: Number(dbItem.price),
+            quantity: typeof dbItem.piece === 'number' ? dbItem.piece : parseInt(dbItem.piece, 10) || 0,
+            condition: 'Refurbished / Tested',
+            warrantyMonths: 12,
+            warrantyDisplay: '6-12 Months Store Warranty',
+            images: dbItem.pic ? [dbItem.pic] : ['assets/images/placeholders/laptop-placeholder.svg'],
+            featured: Boolean(dbItem.featured),
+            badge: dbItem.badge || '',
+            description: dbItem.desc || `${dbItem.brand} ${dbItem.model} commercial laptop with ${dbItem.processor}, ${dbItem.ram} RAM and ${dbItem.storage}. Tested in Mehnajpur showroom.`
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('Direct laptop detail fetch warning:', e);
+    }
+  }
+
   if (!laptop) {
     renderNotFound(container, `Laptop with LP #${lpParam} was not found in our Mehnajpur catalog.`);
     return;
@@ -40,17 +83,17 @@ function initProductDetailsPage() {
 
 function renderNotFound(container, message) {
   container.innerHTML = `
-    <div class="catalog-empty-state" style="margin: 40px 0;">
-      <div class="catalog-empty-icon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="catalog-empty-state" style="margin: 40px 0; padding: 48px 24px; text-align: center; background: #FFFFFF; border-radius: 12px; border: 1px solid #E2E8F0;">
+      <div class="catalog-empty-icon" style="margin-bottom: 16px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" style="margin: 0 auto; display: block;">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
       </div>
-      <h2 class="catalog-empty-title">Product Not Found</h2>
-      <p class="catalog-empty-desc">${message}</p>
-      <a href="laptops.html" class="btn btn-primary">Browse Commercial Laptops</a>
+      <h2 class="catalog-empty-title" style="font-size: 20px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">Product Not Found</h2>
+      <p class="catalog-empty-desc" style="font-size: 14px; color: #64748B; max-width: 480px; margin: 0 auto 20px;">${message}</p>
+      <a href="laptops.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700; border-radius: 8px;">Browse Commercial Laptops</a>
     </div>
   `;
 }
@@ -65,7 +108,7 @@ function renderProductDetails(container, laptop) {
   const stock = LaptopService.getStockStatus ? LaptopService.getStockStatus(laptop.quantity) : { label: 'In Stock', badgeClass: 'badge-stock-in' };
   const mainImg = (laptop.images && laptop.images.length > 0 && laptop.images[0])
     ? laptop.images[0]
-    : (typeof ImageFallbackHelper !== 'undefined' ? ImageFallbackHelper.getLaptopFallback() : 'assets/images/placeholders/laptop-placeholder.svg');
+    : ImageFallbackHelper.getLaptopFallback();
 
   container.innerHTML = `
     <!-- Breadcrumb -->
@@ -127,19 +170,6 @@ function renderProductDetails(container, laptop) {
           </div>
         </div>
 
-        ${laptop.reviewFlag ? `
-          <div class="laptop-review-flag" style="margin-bottom: 24px; padding: 12px 16px; font-size: 0.875rem;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="flex-shrink: 0;">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <div>
-              <strong>Physical Verification Note:</strong> ${laptop.reviewFlag}.
-            </div>
-          </div>
-        ` : ''}
-
         <!-- Actions -->
         <div class="detail-cta-box">
           <a href="${waEnquiryUrl}" target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg btn-full" title="Enquire on WhatsApp">
@@ -149,7 +179,7 @@ function renderProductDetails(container, laptop) {
             Enquire on WhatsApp
           </a>
           
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
             <a href="tel:+919984359860" class="btn btn-outline">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
@@ -224,8 +254,7 @@ function renderRelatedLaptops(currentLaptop) {
   const relatedContainer = document.getElementById('relatedLaptopsGrid');
   if (!relatedContainer) return;
 
-  const allLaptops = LaptopService.getAll();
-  // Filter other laptops from same brand or similar price range
+  const allLaptops = (typeof LaptopService !== 'undefined') ? LaptopService.getAll() : [];
   let related = allLaptops.filter(l => l.lpNumber !== currentLaptop.lpNumber && l.brand === currentLaptop.brand);
   if (related.length < 3) {
     const additional = allLaptops.filter(l => l.lpNumber !== currentLaptop.lpNumber && !related.includes(l));
@@ -233,5 +262,9 @@ function renderRelatedLaptops(currentLaptop) {
   }
 
   related = related.slice(0, 3);
+  if (related.length === 0) {
+    relatedContainer.innerHTML = `<p style="color: #64748B; font-size: 14px; grid-column: 1 / -1; text-align: center;">More models arriving soon in showroom.</p>`;
+    return;
+  }
   relatedContainer.innerHTML = related.map(laptop => LaptopService.createCardHtml(laptop, { showCompare: false })).join('');
 }

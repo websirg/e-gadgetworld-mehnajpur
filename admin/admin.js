@@ -293,23 +293,30 @@
   function renderInventoryStatsCards() {
     const stats = window.adminState.getStatistics();
 
-    const elTotalUnits = document.getElementById('statTotalUnits');
-    if (elTotalUnits) elTotalUnits.textContent = stats.totalItemsUnits;
-
-    const elSoldUnits = document.getElementById('statSoldUnits');
-    if (elSoldUnits) elSoldUnits.textContent = stats.totalSoldUnits;
-
-    const elRemainingStock = document.getElementById('statRemainingStock');
-    if (elRemainingStock) elRemainingStock.textContent = stats.remainingStock;
-
     const elTotalProducts = document.getElementById('statTotalProducts');
-    if (elTotalProducts) elTotalProducts.textContent = stats.totalProductsModels;
+    if (elTotalProducts) elTotalProducts.textContent = (stats.laptopModels || 0) + (stats.accessoriesModels || 0);
+
+    const elLaptopStock = document.getElementById('statLaptopStock');
+    if (elLaptopStock) elLaptopStock.textContent = `${stats.laptopUnits || 0} pcs`;
+
+    const elAccessoriesStock = document.getElementById('statAccessoriesStock');
+    if (elAccessoriesStock) elAccessoriesStock.textContent = `${stats.accessoriesUnits || 0} pcs`;
 
     const elLowStock = document.getElementById('statLowStock');
-    if (elLowStock) elLowStock.textContent = stats.lowStockItems;
+    if (elLowStock) elLowStock.textContent = (stats.lowStockLaptops || 0) + (stats.lowStockAccessories || 0);
 
     const elOutOfStock = document.getElementById('statOutOfStock');
-    if (elOutOfStock) elOutOfStock.textContent = stats.outOfStockItems;
+    if (elOutOfStock) elOutOfStock.textContent = (stats.outOfStockLaptops || 0) + (stats.outOfStockAccessories || 0);
+
+    // Backward-compatibility elements if present
+    const elTotalUnits = document.getElementById('statTotalUnits');
+    if (elTotalUnits) elTotalUnits.textContent = stats.totalItemsUnits || 0;
+
+    const elSoldUnits = document.getElementById('statSoldUnits');
+    if (elSoldUnits) elSoldUnits.textContent = stats.totalSoldUnits || 0;
+
+    const elRemainingStock = document.getElementById('statRemainingStock');
+    if (elRemainingStock) elRemainingStock.textContent = stats.remainingStock || 0;
 
     const onboardingPanel = document.getElementById('dashboardOnboardingPanel');
     if (onboardingPanel) {
@@ -712,20 +719,33 @@
 
     if (tbody) {
       tbody.innerHTML = combined.map(item => {
-        const stockPres = window.AdminStateManager.getPublicStockPresentation(item.quantity);
+        const isPublished = item.status === 'published';
+        const fallbackImg = item.catCode === 'laptop' ? '../assets/images/placeholders/laptop-placeholder.svg' : '../assets/images/placeholders/accessories-placeholder.svg';
+        const imgSrc = item.image || fallbackImg;
         return `
-          <tr>
-            <td><span class="badge-brand-pill">${item.category}</span></td>
+          <tr data-id="${item.id}">
+            <td>
+              <img src="${imgSrc}" alt="${item.name}" class="cell-img-thumb" onerror="this.src='${fallbackImg}'">
+            </td>
             <td><span class="cell-lp-badge">${item.code}</span></td>
             <td><strong>${item.name}</strong></td>
+            <td><span class="badge-brand-pill">${item.category}</span></td>
             <td style="font-size: 12.5px; color: #475569;">${item.specs}</td>
             <td><strong>${item.quantity}</strong> pcs</td>
             <td><strong>₹${Number(item.price).toLocaleString('en-IN')}</strong></td>
-            <td><span class="stock-badge-tag ${stockPres.badgeClass}">${stockPres.label}</span></td>
             <td>
-              <button class="btn-table-action btn-table-sold" onclick="window.adminController.openSoldModal('${item.catCode}', '${item.id}')" ${item.quantity <= 0 ? 'disabled' : ''}>
-                Sold
+              <button class="status-badge ${isPublished ? 'status-published' : 'status-draft'}" style="cursor: pointer; border: none;" onclick="window.adminController.toggleStatus('${item.catCode}', '${item.id}')" title="Click to toggle status">
+                ${isPublished ? 'Published' : 'Draft'}
               </button>
+            </td>
+            <td>
+              <div class="table-actions-cell">
+                <button class="btn-table-action" onclick="window.adminController.viewItemDetail('${item.catCode}', '${item.id}')" title="View details">View</button>
+                <button class="btn-table-action" onclick="window.adminController.editItem('${item.catCode}', '${item.id}')" title="Edit product">Edit</button>
+                <button class="btn-table-action" onclick="window.adminController.openAdjustStockModal('${item.catCode}', '${item.id}')" title="Adjust stock">Stock</button>
+                <button class="btn-table-action btn-table-sold" onclick="window.adminController.openSoldModal('${item.catCode}', '${item.id}')" ${item.quantity <= 0 ? 'disabled' : ''} title="Record Sale">Sold</button>
+                <button class="btn-table-action btn-table-delete" onclick="window.adminController.confirmDeleteItem('${item.catCode}', '${item.id}')" title="Delete record">Delete</button>
+              </div>
             </td>
           </tr>
         `;
@@ -932,7 +952,7 @@
     };
   }
 
-  function handleSaveCategorySubmit(e) {
+  async function handleSaveCategorySubmit(e) {
     if (e && e.preventDefault) e.preventDefault();
     const nameInput = document.getElementById('catNameInput');
     const slugInput = document.getElementById('catSlugInput');
@@ -952,7 +972,7 @@
     const displayOrder = orderInput ? parseInt(orderInput.value, 10) || 1 : 1;
 
     try {
-      const cat = window.adminState.addCategory({
+      const cat = await window.adminState.addCategory({
         name,
         slug,
         description: desc,
@@ -964,12 +984,13 @@
       if (slugInput) slugInput.value = '';
       if (descInput) descInput.value = '';
       navigateTo('categories');
+      renderCategoriesView();
     } catch (err) {
       showToast(err.message, 'error');
     }
   }
 
-  function handleSaveProductSubmit(e) {
+  async function handleSaveProductSubmit(e) {
     e.preventDefault();
     const catSelect = document.getElementById('addItemCategorySelect');
     const catCode = catSelect ? catSelect.value : 'laptop';
@@ -994,18 +1015,34 @@
       formData.gallery = [...uiState.previewUploadedImages];
     }
 
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving to Database...';
+    }
+
     try {
       if (catCode === 'laptop') {
-        const item = window.adminState.addLaptop(formData);
+        const item = await window.adminState.addLaptop(formData);
         showToast(`Laptop LP #${item.lpNumber} added successfully to Showroom inventory!`, 'success');
         navigateTo('laptops');
+        renderCurrentView('laptops');
       } else {
-        const item = window.adminState.addAccessory(formData);
+        const item = await window.adminState.addAccessory(formData);
         showToast(`Accessory ${item.sku} added successfully to inventory!`, 'success');
         navigateTo('accessories');
+        renderCurrentView('accessories');
       }
     } catch (err) {
       showToast(err.message, 'error');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Save to Inventory
+        `;
+      }
     }
   }
 
@@ -1078,7 +1115,7 @@
     if (totalEl) totalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
   }
 
-  function handleConfirmSold() {
+  async function handleConfirmSold() {
     if (!uiState.activeSoldTarget) return;
 
     const { category, itemId, item } = uiState.activeSoldTarget;
@@ -1093,8 +1130,14 @@
     const qty = parseInt(qtyInput.value, 10);
     const unitPrice = parseFloat(priceInput.value);
 
+    const btn = document.querySelector('#soldModalOverlay .btn-admin-primary');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Recording Sale...';
+    }
+
     try {
-      const sale = window.adminState.recordSale({
+      const sale = await window.adminState.recordSale({
         category,
         itemId,
         quantity: qty,
@@ -1107,12 +1150,20 @@
       });
 
       closeModal('soldModalOverlay');
-      showToast(`Sale #${sale.id} recorded! Total: ₹${sale.totalAmount.toLocaleString('en-IN')}`, 'success');
+      showToast(`Sale recorded successfully! Total: ₹${Number(sale.totalAmount).toLocaleString('en-IN')}`, 'success');
       
       // Refresh current view & counts
       renderCurrentView(uiState.currentView);
     } catch (err) {
       showToast(err.message, 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Confirm Sale
+        `;
+      }
     }
   }
 
@@ -1675,10 +1726,11 @@
   }
 
   function openAdjustStockModal(category = 'laptop', itemId = '') {
+    const isAcc = category === 'accessories';
+    const list = isAcc ? window.adminState.state.accessories : window.adminState.state.laptops;
     let target = null;
-    let list = category === 'accessories' ? window.adminState.state.accessories : window.adminState.state.laptops;
     if (itemId) {
-      target = list.find(x => x.id === itemId || x.lpNumber === itemId || x.sku === itemId);
+      target = list.find(x => x.id === String(itemId) || x.lpNumber === String(itemId) || x.sku === String(itemId));
     } else if (list.length > 0) {
       target = list[0];
     }
@@ -1688,20 +1740,67 @@
       return;
     }
 
-    const currentQty = target.quantity;
-    const name = target.model ? `${target.brand} ${target.model}` : target.name;
-    const newQtyStr = prompt(`Adjust Stock for "${name}"\nCurrent Quantity: ${currentQty} pieces\nEnter new physical showroom stock count:`, currentQty);
-    if (newQtyStr === null) return;
+    const modal = document.getElementById('adjustStockModalOverlay');
+    if (modal) {
+      document.getElementById('adjustStockCategory').value = isAcc ? 'accessories' : 'laptop';
+      document.getElementById('adjustStockItemId').value = target.id;
+      document.getElementById('adjustStockItemName').textContent = target.model ? `${target.brand} ${target.model}` : target.name;
+      document.getElementById('adjustStockItemCode').textContent = target.lpNumber ? `LP #${target.lpNumber}` : target.sku;
+      document.getElementById('adjustStockCurrentQty').textContent = `${target.quantity} pcs`;
+      document.getElementById('adjustStockNewQty').value = target.quantity;
+      openModal('adjustStockModalOverlay');
+    } else {
+      const currentQty = target.quantity;
+      const name = target.model ? `${target.brand} ${target.model}` : target.name;
+      const newQtyStr = prompt(`Adjust Stock for "${name}"\nCurrent Quantity: ${currentQty} pieces\nEnter new physical showroom stock count:`, currentQty);
+      if (newQtyStr === null) return;
 
-    const newQty = parseInt(newQtyStr, 10);
+      const newQty = parseInt(newQtyStr, 10);
+      if (isNaN(newQty) || newQty < 0) {
+        showToast('Please enter a valid non-negative number.', 'error');
+        return;
+      }
+
+      window.adminState.updateStockQuantity(category, target.id, newQty).then(() => {
+        showToast(`Stock for "${name}" updated to ${newQty} pieces!`, 'success');
+        renderCurrentView(uiState.currentView);
+      });
+    }
+  }
+
+  async function handleSaveStockAdjustmentSubmit(event) {
+    if (event && event.preventDefault) event.preventDefault();
+    const category = document.getElementById('adjustStockCategory').value;
+    const itemId = document.getElementById('adjustStockItemId').value;
+    const newQty = parseInt(document.getElementById('adjustStockNewQty').value, 10);
+
     if (isNaN(newQty) || newQty < 0) {
-      showToast('Please enter a valid non-negative number.', 'error');
+      showToast('Please enter a valid non-negative stock count.', 'error');
       return;
     }
 
-    window.adminState.updateStockQuantity(category, target.id, newQty);
-    showToast(`Stock for "${name}" updated to ${newQty} pieces!`, 'success');
-    renderCurrentView(uiState.currentView);
+    const saveBtn = document.getElementById('btnSaveStockAdjustment');
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Updating Stock...';
+    }
+
+    try {
+      await window.adminState.updateStockQuantity(category, itemId, newQty);
+      closeModal('adjustStockModalOverlay');
+      showToast(`Stock updated to ${newQty} pieces in MySQL database!`, 'success');
+      renderCurrentView(uiState.currentView);
+    } catch (err) {
+      showToast('Stock update failed: ' + err.message, 'error');
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Update Stock Quantity
+        `;
+      }
+    }
   }
 
   function triggerFileDownload(content, filename, mimeType) {
@@ -1924,8 +2023,8 @@
         });
         if (res.ok) {
           const json = await res.json();
-          if (json.success && json.data) {
-            savedUser = json.data;
+          if (json.success && (json.data || json.user)) {
+            savedUser = json.data || json.user;
           }
         }
       }
@@ -2178,9 +2277,11 @@
     exportInventory,
     exportStockCSV,
     openAdjustStockModal,
+    handleSaveStockAdjustmentSubmit,
     handleSaveCategorySubmit,
     handleSaveProductSubmit,
     showToast,
+    openModal,
     closeModal,
     handleSaveProfile,
     handleSaveShopProfile,
@@ -2193,38 +2294,54 @@
       return window.adminController.confirmImport();
     },
 
-    // Status toggle
-    toggleStatus(category, id) {
-      const newStatus = window.adminState.toggleItemStatus(category, id);
-      if (newStatus) {
-        showToast(`Item status changed to ${newStatus.toUpperCase()}`, 'success');
-        renderCurrentView(uiState.currentView);
+    // Status toggle (Awaited with MySQL sync)
+    async toggleStatus(category, id) {
+      try {
+        const newStatus = await window.adminState.toggleItemStatus(category, id);
+        if (newStatus) {
+          showToast(`Item status changed to ${newStatus.toUpperCase()}`, 'success');
+          renderCurrentView(uiState.currentView);
+        }
+      } catch (err) {
+        showToast('Failed to toggle status: ' + err.message, 'error');
       }
     },
 
-    // Delete item
-    confirmDeleteItem(category, id) {
-      if (confirm(`Are you sure you want to delete this ${category} record?`)) {
-        window.adminState.deleteItem(category, id);
-        showToast('Item deleted successfully.', 'success');
-        renderCurrentView(uiState.currentView);
+    // Delete item (Awaited with MySQL sync)
+    async confirmDeleteItem(category, id) {
+      if (confirm(`Are you sure you want to delete this ${category} record from MySQL inventory?`)) {
+        try {
+          await window.adminState.deleteItem(category, id);
+          showToast('Item deleted successfully from database.', 'success');
+          renderCurrentView(uiState.currentView);
+        } catch (err) {
+          showToast('Failed to delete item: ' + err.message, 'error');
+        }
       }
     },
 
-    // Category actions
-    toggleCategoryStatus(catId) {
-      const st = window.adminState.toggleCategoryStatus(catId);
-      if (st) {
-        showToast(`Category status updated to ${st.toUpperCase()}`, 'success');
-        renderCategoriesView();
+    // Category actions (Awaited with MySQL sync)
+    async toggleCategoryStatus(catId) {
+      try {
+        const st = await window.adminState.toggleCategoryStatus(catId);
+        if (st) {
+          showToast(`Category status updated to ${st.toUpperCase()}`, 'success');
+          renderCategoriesView();
+        }
+      } catch (err) {
+        showToast('Failed to toggle category: ' + err.message, 'error');
       }
     },
 
-    confirmDeleteCategory(catId) {
-      if (confirm('Delete this category?')) {
-        window.adminState.deleteCategory(catId);
-        showToast('Category deleted successfully.', 'success');
-        renderCategoriesView();
+    async confirmDeleteCategory(catId) {
+      if (confirm('Delete this category from database?')) {
+        try {
+          await window.adminState.deleteCategory(catId);
+          showToast('Category deleted successfully.', 'success');
+          renderCategoriesView();
+        } catch (err) {
+          showToast('Failed to delete category: ' + err.message, 'error');
+        }
       }
     },
 
@@ -2235,7 +2352,7 @@
     // View Item Detail Modal
     viewItemDetail(category, id) {
       const list = category === 'laptop' ? window.adminState.state.laptops : window.adminState.state.accessories;
-      const item = list.find(x => x.id === id || x.lpNumber === id || x.sku === id);
+      const item = list.find(x => x.id === String(id) || x.lpNumber === String(id) || x.sku === String(id));
       if (!item) return;
 
       const body = document.getElementById('viewDetailModalBody');
@@ -2245,7 +2362,7 @@
       if (body) {
         body.innerHTML = `
           <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-            <img src="${item.image}" alt="${item.model || item.name}" style="width: 140px; height: 110px; object-fit: contain; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <img src="${item.image || (category === 'laptop' ? '../assets/images/placeholders/laptop-placeholder.svg' : '../assets/images/placeholders/accessories-placeholder.svg')}" alt="${item.model || item.name}" style="width: 140px; height: 110px; object-fit: contain; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
             <div style="flex: 1;">
               <div style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">${item.brand} ${item.model || item.name}</div>
               <div style="font-size: 13px; color: #2563EB; font-weight: 700; margin-bottom: 12px;">Showroom Stock: ${item.quantity} piece(s) available</div>
@@ -2258,9 +2375,125 @@
       openModal('viewDetailModalOverlay');
     },
 
-    // Edit Item Simulation
+    // Edit Item Modal & Submit (Syncs MySQL and UI State)
     editItem(category, id) {
-      showToast(`Edit item modal for #${id} opened. Modify fields and click update to simulate.`, 'success');
+      const isLaptop = category === 'laptop';
+      const list = isLaptop ? window.adminState.state.laptops : window.adminState.state.accessories;
+      const item = list.find(x => x.id === String(id) || x.lpNumber === String(id) || x.sku === String(id));
+      if (!item) {
+        showToast('Product record not found.', 'error');
+        return;
+      }
+
+      document.getElementById('editItemCategory').value = isLaptop ? 'laptop' : 'accessories';
+      document.getElementById('editItemId').value = item.id;
+
+      const titleEl = document.getElementById('editProductModalTitle');
+      if (titleEl) {
+        titleEl.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit ${isLaptop ? 'Laptop LP #' + item.lpNumber : 'Accessory ' + item.sku}
+        `;
+      }
+
+      const lpGroup = document.getElementById('editLaptopFieldsGroup');
+      const accGroup = document.getElementById('editAccessoryFieldsGroup');
+
+      if (isLaptop) {
+        if (lpGroup) lpGroup.style.display = 'block';
+        if (accGroup) accGroup.style.display = 'none';
+
+        document.getElementById('editLpNumber').value = item.lpNumber || '';
+        document.getElementById('editBrand').value = item.brand || '';
+        document.getElementById('editModel').value = item.model || '';
+        document.getElementById('editProcessor').value = item.processor || '';
+        document.getElementById('editGeneration').value = item.generation || '';
+        document.getElementById('editRam').value = item.ram || '';
+        document.getElementById('editStorage').value = item.storage || '';
+        document.getElementById('editQuantity').value = item.quantity;
+        document.getElementById('editPrice').value = item.price;
+        document.getElementById('editStatus').value = item.status || 'published';
+        document.getElementById('editImage').value = item.image || '';
+        document.getElementById('editDescription').value = item.description || '';
+      } else {
+        if (lpGroup) lpGroup.style.display = 'none';
+        if (accGroup) accGroup.style.display = 'block';
+
+        document.getElementById('editAccSku').value = item.sku || '';
+        document.getElementById('editAccBrand').value = item.brand || '';
+        document.getElementById('editAccName').value = item.name || '';
+        document.getElementById('editAccType').value = item.type || '';
+        document.getElementById('editAccCompatibility').value = item.compatibility || '';
+        document.getElementById('editAccQuantity').value = item.quantity;
+        document.getElementById('editAccPrice').value = item.price;
+        document.getElementById('editAccStatus').value = item.status || 'published';
+        document.getElementById('editAccImage').value = item.image || '';
+      }
+
+      openModal('editProductModalOverlay');
+    },
+
+    async handleUpdateProductSubmit(event) {
+      event.preventDefault();
+      const category = document.getElementById('editItemCategory').value;
+      const id = document.getElementById('editItemId').value;
+      const isLaptop = category === 'laptop';
+
+      const saveBtn = document.getElementById('btnSaveEditProduct');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Updating Database...';
+      }
+
+      try {
+        if (isLaptop) {
+          const payload = {
+            lpNumber: document.getElementById('editLpNumber').value.trim(),
+            brand: document.getElementById('editBrand').value.trim(),
+            model: document.getElementById('editModel').value.trim(),
+            processor: document.getElementById('editProcessor').value.trim(),
+            generation: document.getElementById('editGeneration').value.trim(),
+            ram: document.getElementById('editRam').value.trim(),
+            storage: document.getElementById('editStorage').value.trim(),
+            quantity: parseInt(document.getElementById('editQuantity').value, 10) || 0,
+            price: parseFloat(document.getElementById('editPrice').value) || 0,
+            status: document.getElementById('editStatus').value,
+            image: document.getElementById('editImage').value.trim(),
+            description: document.getElementById('editDescription').value.trim()
+          };
+
+          await window.adminState.updateLaptop(id, payload);
+          showToast(`Laptop LP #${payload.lpNumber} updated successfully in MySQL!`, 'success');
+        } else {
+          const payload = {
+            sku: document.getElementById('editAccSku').value.trim(),
+            brand: document.getElementById('editAccBrand').value.trim(),
+            name: document.getElementById('editAccName').value.trim(),
+            type: document.getElementById('editAccType').value.trim(),
+            compatibility: document.getElementById('editAccCompatibility').value.trim(),
+            quantity: parseInt(document.getElementById('editAccQuantity').value, 10) || 0,
+            price: parseFloat(document.getElementById('editAccPrice').value) || 0,
+            status: document.getElementById('editAccStatus').value,
+            image: document.getElementById('editAccImage').value.trim()
+          };
+
+          await window.adminState.updateAccessory(id, payload);
+          showToast(`Accessory ${payload.sku} updated successfully in MySQL!`, 'success');
+        }
+
+        closeModal('editProductModalOverlay');
+        renderCurrentView(uiState.currentView);
+      } catch (err) {
+        showToast('Update failed: ' + err.message, 'error');
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Changes to Database
+          `;
+        }
+      }
     },
 
     // Sale detail modal

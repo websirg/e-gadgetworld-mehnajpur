@@ -413,8 +413,8 @@
       };
     }
 
-    // Record Sold Item (Section 7 — UI ONLY)
-    recordSale(saleParams) {
+    // Record Sold Item (Syncs with MySQL backend & UI State)
+    async recordSale(saleParams) {
       const {
         category,
         itemId,
@@ -456,13 +456,51 @@
 
       const totalAmount = qtyToSell * (Number(unitPrice) || product.price);
 
+      // If authenticated admin, dispatch real MySQL transaction with row-locking
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+      let dbSale = null;
+
+      if (token) {
+        try {
+          const res = await fetch(`${apiBase}/api/admin/sales`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              item_type: category === 'laptop' ? 'laptop' : 'accessory',
+              item_id: product.id || (category === 'laptop' ? product.lpNumber : product.sku),
+              qty: qtyToSell,
+              price: Number(unitPrice) || product.price,
+              customer: customerName || 'Walk-in Guest',
+              phone: customerPhone || '',
+              payment: (paymentMethod || 'cash').toLowerCase(),
+              notes: notes || ''
+            })
+          });
+          const json = await res.json();
+          if (!res.ok || !json.success) {
+            throw new Error(json.message || 'Failed to record sale in MySQL.');
+          }
+          dbSale = json;
+        } catch (err) {
+          console.error('MySQL sale record error:', err);
+          throw err;
+        }
+      }
+
       // 1. Update product demo stock
-      product.quantity -= qtyToSell;
+      product.quantity = Math.max(0, product.quantity - qtyToSell);
       product.soldQuantity = (product.soldQuantity || 0) + qtyToSell;
 
       // 2. Create sale record
+      const invoiceNo = (dbSale && dbSale.invoice) || `SALE-${Date.now().toString().slice(-5)}`;
       const saleRecord = {
-        id: `SALE-${Date.now().toString().slice(-5)}`,
+        id: invoiceNo,
+        invoice: invoiceNo,
         date: saleDate || new Date().toISOString().split('T')[0],
         productId: product.id,
         productName: category === 'laptop' ? `${product.brand} ${product.model} (${lpOrSku})` : product.name,
@@ -475,43 +513,15 @@
         customerName: customerName ? customerName.trim() : 'Walk-in Showroom Guest',
         customerPhone: customerPhone ? customerPhone.trim() : 'N/A',
         notes: notes ? notes.trim() : '',
-        status: 'Completed'
+        status: 'Completed',
+        isLive: Boolean(token)
       };
 
       this.state.sales.unshift(saleRecord);
       this.saveState();
 
-      // If authenticated admin, dispatch real MySQL transaction with row-locking
-      const token = localStorage.getItem('egadget_admin_token');
       if (token) {
-        const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
-        fetch(`${apiBase}/api/admin/sales`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            item_type: category,
-            item_id: product.id || (category === 'laptop' ? product.lpNumber : product.sku),
-            qty: qtyToSell,
-            price: Number(unitPrice) || product.price,
-            customer: customerName || 'Walk-in Guest',
-            phone: customerPhone || '',
-            payment: (paymentMethod || 'cash').toLowerCase(),
-            notes: notes || ''
-          })
-        }).then(r => r.json()).then(data => {
-          if (data && data.success) {
-            console.log('Sale saved to MySQL. Invoice:', data.invoice);
-            this.syncWithBackend().then(() => {
-              if (window.adminController && typeof window.adminController.renderCurrentView === 'function') {
-                window.adminController.renderCurrentView();
-              }
-            });
-          }
-        }).catch(err => console.warn('Could not post sale to MySQL backend:', err));
+        await this.syncWithBackend();
       }
 
       return saleRecord;
@@ -545,9 +555,9 @@
       return true;
     }
 
-    // Add Laptop
-    addLaptop(data) {
-      const lpNum = String(data.lpNumber).trim();
+    // Add Laptop (Persists directly to live MySQL backend & UI State)
+    async addLaptop(data) {
+      const lpNum = String(data.lpNumber || data.lp_no || '').trim();
       if (!lpNum) throw new Error('LP NO. is required.');
 
       const exists = this.state.laptops.some(l => l.lpNumber.toLowerCase() === lpNum.toLowerCase());
@@ -555,23 +565,91 @@
         throw new Error(`LP #${lpNum} already exists in laptop inventory.`);
       }
 
+      // Parse brand & model if combined
+      let brand = (data.brand || '').trim();
+      let model = (data.model || '').trim();
+      const combined = (data.modelBrand || '').trim();
+      if (!brand && combined) {
+        const brandMatch = combined.match(/^(HP|Dell|Lenovo|Apple|Asus|Acer|MSI|Toshiba|Samsung|Microsoft)\b/i);
+        if (brandMatch) {
+          brand = brandMatch[1];
+          model = combined.slice(brandMatch[0].length).trim() || 'Commercial Laptop';
+        } else {
+          brand = 'Commercial';
+          model = combined;
+        }
+      }
+      if (!brand) brand = 'Commercial';
+      if (!model) model = combined || 'Business Laptop';
+
+      const processor = (data.processor || 'Intel Core i5').trim();
+      const generation = (data.generation || '8th Gen').trim();
+      const ram = (data.ram || '8GB').trim();
+      const storage = (data.storage || '256GB SSD').trim();
+      const piece = parseInt(data.quantity || data.piece, 10) || 1;
+      const price = Number(data.price) || 20000;
+      const status = data.status || 'published';
+      const pic = data.image || data.pic || 'assets/images/placeholders/laptop-placeholder.svg';
+      const desc = (data.description || data.desc || '').trim();
+
+      // 1. Persist to MySQL via Laravel API
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+      let dbRecord = null;
+
+      try {
+        const res = await fetch(`${apiBase}/api/admin/laptops`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            lp_no: lpNum,
+            brand,
+            model,
+            processor,
+            generation,
+            ram,
+            storage,
+            piece,
+            price,
+            pic,
+            status,
+            desc
+          })
+        });
+
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          const errMsg = json.message || (json.errors ? Object.values(json.errors).flat().join(' ') : 'Failed to save laptop to database.');
+          throw new Error(errMsg);
+        }
+        dbRecord = json.data;
+      } catch (err) {
+        console.error('MySQL laptop persistence error:', err);
+        throw err;
+      }
+
+      // 2. Commit to local memory with MySQL id
       const newLaptop = {
-        id: `lp-${Date.now()}`,
-        lpNumber: lpNum,
-        brand: data.brand || 'Commercial',
-        model: data.model || 'Business Laptop',
-        processor: data.processor || 'Intel Core i5',
-        generation: data.generation || '8th Gen',
-        ram: data.ram || '8GB',
-        storage: data.storage || '256GB SSD',
-        quantity: parseInt(data.quantity, 10) || 1,
+        id: String(dbRecord.id),
+        lpNumber: String(dbRecord.lp_no),
+        brand: dbRecord.brand,
+        model: dbRecord.model,
+        processor: dbRecord.processor,
+        generation: dbRecord.generation,
+        ram: dbRecord.ram,
+        storage: dbRecord.storage,
+        quantity: typeof dbRecord.piece === 'number' ? dbRecord.piece : parseInt(dbRecord.piece, 10) || 0,
         soldQuantity: 0,
-        price: Number(data.price) || 20000,
-        image: data.image || '../assets/images/placeholders/laptop-placeholder.svg',
-        gallery: data.gallery || [],
-        status: data.status || 'published',
+        price: Number(dbRecord.price),
+        image: dbRecord.pic || pic,
+        gallery: dbRecord.gallery || [],
+        status: dbRecord.status || status,
         warrantyDisplay: data.warrantyDisplay || '6-12 Months Store Warranty',
-        description: data.description || 'Commercial tested laptop.'
+        description: dbRecord.desc || desc
       };
 
       this.state.laptops.unshift(newLaptop);
@@ -580,9 +658,9 @@
       return newLaptop;
     }
 
-    // Add Accessory
-    addAccessory(data) {
-      const sku = String(data.sku).trim();
+    // Add Accessory (Persists directly to live MySQL backend & UI State)
+    async addAccessory(data) {
+      const sku = String(data.sku || '').trim();
       if (!sku) throw new Error('SKU / Item Code is required.');
 
       const exists = this.state.accessories.some(a => a.sku.toLowerCase() === sku.toLowerCase());
@@ -590,25 +668,74 @@
         throw new Error(`SKU ${sku} already exists in accessories inventory.`);
       }
 
+      const name = (data.name || 'Laptop Accessory').trim();
+      const brand = (data.brand || 'Generic').trim();
+      const type = (data.type || 'Charger').trim();
+      const model = (data.model || '').trim();
+      const compatibility = (data.compatibility || 'Universal').trim();
+      const piece = parseInt(data.quantity || data.piece, 10) || 1;
+      const price = Number(data.price) || 999;
+      const purchasePrice = Number(data.purchasePrice) || (price * 0.7);
+      const status = data.status || 'published';
+      const pic = data.image || data.pic || 'assets/images/placeholders/accessories-placeholder.svg';
+      const desc = (data.description || data.desc || '').trim();
+
+      // 1. Persist to MySQL via Laravel API
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+      let dbRecord = null;
+
+      try {
+        const res = await fetch(`${apiBase}/api/admin/accessories`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            sku,
+            name,
+            brand,
+            type,
+            model,
+            compatibility,
+            piece,
+            price,
+            pic,
+            status,
+            desc
+          })
+        });
+
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          const errMsg = json.message || (json.errors ? Object.values(json.errors).flat().join(' ') : 'Failed to save accessory to database.');
+          throw new Error(errMsg);
+        }
+        dbRecord = json.data;
+      } catch (err) {
+        console.error('MySQL accessory persistence error:', err);
+        throw err;
+      }
+
       const newAcc = {
-        id: `acc-${Date.now()}`,
-        sku,
-        name: data.name || 'Laptop Accessory',
-        brand: data.brand || 'Generic',
-        type: data.type || 'Charger',
-        model: data.model || '',
-        compatibility: data.compatibility || 'Universal',
-        connectivity: data.connectivity || '',
-        color: data.color || 'Black',
-        warranty: data.warranty || '1 Year Replacement',
-        description: data.description || '',
-        quantity: parseInt(data.quantity, 10) || 1,
+        id: String(dbRecord.id),
+        sku: dbRecord.sku,
+        name: dbRecord.name,
+        brand: dbRecord.brand,
+        type: dbRecord.type,
+        model: dbRecord.model || model,
+        compatibility: dbRecord.compatibility || compatibility,
+        quantity: typeof dbRecord.piece === 'number' ? dbRecord.piece : parseInt(dbRecord.piece, 10) || 0,
         soldQuantity: 0,
-        purchasePrice: Number(data.purchasePrice) || 500,
-        price: Number(data.price) || 999,
-        image: data.image || '../assets/images/placeholders/accessories-placeholder.svg',
-        gallery: data.gallery || [],
-        status: data.status || 'published'
+        purchasePrice: purchasePrice,
+        price: Number(dbRecord.price),
+        image: dbRecord.pic || pic,
+        gallery: dbRecord.gallery || [],
+        status: dbRecord.status || status,
+        warranty: data.warranty || '1 Year Replacement',
+        description: dbRecord.desc || desc
       };
 
       this.state.accessories.unshift(newAcc);
@@ -617,57 +744,272 @@
       return newAcc;
     }
 
-    // Stock Adjustment
-    updateStockQuantity(category, id, newQty) {
-      const list = category === 'laptop' ? this.state.laptops : this.state.accessories;
-      const item = list.find(x => x.id === id || x.lpNumber === id || x.sku === id);
-      if (item) {
-        item.quantity = Math.max(0, parseInt(newQty, 10) || 0);
-        this.saveState();
-        return item;
+    // Update Laptop in MySQL & Local State
+    async updateLaptop(id, data) {
+      const existing = this.state.laptops.find(l => l.id === String(id) || l.lpNumber === String(id));
+      if (!existing) throw new Error('Laptop record not found.');
+
+      const targetId = existing.id;
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      const payload = {};
+      if (data.lpNumber !== undefined) payload.lp_no = data.lpNumber;
+      if (data.brand !== undefined) payload.brand = data.brand;
+      if (data.model !== undefined) payload.model = data.model;
+      if (data.processor !== undefined) payload.processor = data.processor;
+      if (data.generation !== undefined) payload.generation = data.generation;
+      if (data.ram !== undefined) payload.ram = data.ram;
+      if (data.storage !== undefined) payload.storage = data.storage;
+      if (data.quantity !== undefined || data.piece !== undefined) payload.piece = parseInt(data.quantity || data.piece, 10);
+      if (data.price !== undefined) payload.price = Number(data.price);
+      if (data.status !== undefined) payload.status = data.status;
+      if (data.image !== undefined || data.pic !== undefined) payload.pic = data.image || data.pic;
+      if (data.description !== undefined || data.desc !== undefined) payload.desc = data.description || data.desc;
+
+      try {
+        const res = await fetch(`${apiBase}/api/admin/laptops/${targetId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          throw new Error(json.message || 'Failed to update laptop in database.');
+        }
+      } catch (err) {
+        console.error('MySQL laptop update error:', err);
+        throw err;
       }
-      return null;
-    }
 
-    // Toggle status (Published <-> Draft)
-    toggleItemStatus(category, id) {
-      const list = category === 'laptop' ? this.state.laptops : this.state.accessories;
-      const item = list.find(x => x.id === id || x.lpNumber === id || x.sku === id);
-      if (!item) return false;
-      item.status = item.status === 'published' ? 'draft' : 'published';
+      Object.assign(existing, {
+        ...(payload.lp_no && { lpNumber: payload.lp_no }),
+        ...(payload.brand && { brand: payload.brand }),
+        ...(payload.model && { model: payload.model }),
+        ...(payload.processor && { processor: payload.processor }),
+        ...(payload.generation && { generation: payload.generation }),
+        ...(payload.ram && { ram: payload.ram }),
+        ...(payload.storage && { storage: payload.storage }),
+        ...(payload.piece !== undefined && { quantity: payload.piece }),
+        ...(payload.price !== undefined && { price: payload.price }),
+        ...(payload.status && { status: payload.status }),
+        ...(payload.pic && { image: payload.pic }),
+        ...(payload.desc !== undefined && { description: payload.desc })
+      });
+
       this.saveState();
-      return item.status;
+      return existing;
     }
 
-    // Delete Item
-    deleteItem(category, id) {
-      if (category === 'laptop') {
-        this.state.laptops = this.state.laptops.filter(l => l.id !== id && l.lpNumber !== id);
+    // Update Accessory in MySQL & Local State
+    async updateAccessory(id, data) {
+      const existing = this.state.accessories.find(a => a.id === String(id) || a.sku === String(id));
+      if (!existing) throw new Error('Accessory record not found.');
+
+      const targetId = existing.id;
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      const payload = {};
+      if (data.sku !== undefined) payload.sku = data.sku;
+      if (data.name !== undefined) payload.name = data.name;
+      if (data.brand !== undefined) payload.brand = data.brand;
+      if (data.type !== undefined) payload.type = data.type;
+      if (data.model !== undefined) payload.model = data.model;
+      if (data.compatibility !== undefined) payload.compatibility = data.compatibility;
+      if (data.quantity !== undefined || data.piece !== undefined) payload.piece = parseInt(data.quantity || data.piece, 10);
+      if (data.price !== undefined) payload.price = Number(data.price);
+      if (data.status !== undefined) payload.status = data.status;
+      if (data.image !== undefined || data.pic !== undefined) payload.pic = data.image || data.pic;
+      if (data.description !== undefined || data.desc !== undefined) payload.desc = data.description || data.desc;
+
+      try {
+        const res = await fetch(`${apiBase}/api/admin/accessories/${targetId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          throw new Error(json.message || 'Failed to update accessory in database.');
+        }
+      } catch (err) {
+        console.error('MySQL accessory update error:', err);
+        throw err;
+      }
+
+      Object.assign(existing, {
+        ...(payload.sku && { sku: payload.sku }),
+        ...(payload.name && { name: payload.name }),
+        ...(payload.brand && { brand: payload.brand }),
+        ...(payload.type && { type: payload.type }),
+        ...(payload.model !== undefined && { model: payload.model }),
+        ...(payload.compatibility !== undefined && { compatibility: payload.compatibility }),
+        ...(payload.piece !== undefined && { quantity: payload.piece }),
+        ...(payload.price !== undefined && { price: payload.price }),
+        ...(payload.status && { status: payload.status }),
+        ...(payload.pic && { image: payload.pic }),
+        ...(payload.desc !== undefined && { description: payload.desc })
+      });
+
+      this.saveState();
+      return existing;
+    }
+
+    // Stock Adjustment (Syncs MySQL and State)
+    async updateStockQuantity(category, id, newQty) {
+      const isLaptop = category === 'laptop';
+      const list = isLaptop ? this.state.laptops : this.state.accessories;
+      const item = list.find(x => x.id === String(id) || x.lpNumber === String(id) || x.sku === String(id));
+      if (!item) return null;
+
+      const qty = Math.max(0, parseInt(newQty, 10) || 0);
+      const targetId = item.id;
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      try {
+        const endpoint = isLaptop ? `${apiBase}/api/admin/laptops/${targetId}` : `${apiBase}/api/admin/accessories/${targetId}`;
+        await fetch(endpoint, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ piece: qty })
+        });
+      } catch (err) {
+        console.warn('MySQL stock adjust warning:', err);
+      }
+
+      item.quantity = qty;
+      this.saveState();
+      return item;
+    }
+
+    // Toggle status (Published <-> Draft) (Syncs MySQL and State)
+    async toggleItemStatus(category, id) {
+      const isLaptop = category === 'laptop';
+      const list = isLaptop ? this.state.laptops : this.state.accessories;
+      const item = list.find(x => x.id === String(id) || x.lpNumber === String(id) || x.sku === String(id));
+      if (!item) return false;
+
+      const newStatus = item.status === 'published' ? 'draft' : 'published';
+      const targetId = item.id;
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      try {
+        const endpoint = isLaptop ? `${apiBase}/api/admin/laptops/${targetId}` : `${apiBase}/api/admin/accessories/${targetId}`;
+        await fetch(endpoint, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+      } catch (err) {
+        console.warn('MySQL status toggle warning:', err);
+      }
+
+      item.status = newStatus;
+      this.saveState();
+      return newStatus;
+    }
+
+    // Delete Item (Syncs MySQL and State)
+    async deleteItem(category, id) {
+      const isLaptop = category === 'laptop';
+      const list = isLaptop ? this.state.laptops : this.state.accessories;
+      const item = list.find(x => x.id === String(id) || x.lpNumber === String(id) || x.sku === String(id));
+      if (!item) return false;
+
+      const targetId = item.id;
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      try {
+        const endpoint = isLaptop ? `${apiBase}/api/admin/laptops/${targetId}` : `${apiBase}/api/admin/accessories/${targetId}`;
+        await fetch(endpoint, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          }
+        });
+      } catch (err) {
+        console.warn('MySQL delete warning:', err);
+      }
+
+      if (isLaptop) {
+        this.state.laptops = this.state.laptops.filter(l => l.id !== String(id) && l.lpNumber !== String(id));
       } else {
-        this.state.accessories = this.state.accessories.filter(a => a.id !== id && a.sku !== id);
+        this.state.accessories = this.state.accessories.filter(a => a.id !== String(id) && a.sku !== String(id));
       }
       this.updateCategoryCounts();
       this.saveState();
       return true;
     }
 
-    // Categories Methods (Section 2)
-    addCategory(catData) {
+    // Categories Methods (Syncs MySQL and State)
+    async addCategory(catData) {
       const name = (catData.name || '').trim();
       if (!name) throw new Error('Category Name is required.');
 
       const slug = (catData.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')).trim();
       const code = (catData.code || slug).trim();
+      const description = (catData.description || '').trim();
+      const status = catData.status || 'active';
+      const sort_order = parseInt(catData.displayOrder, 10) || 1;
+
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+      let dbCat = null;
+
+      try {
+        const res = await fetch(`${apiBase}/api/admin/categories`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({
+            name,
+            slug,
+            code,
+            description,
+            status,
+            sort_order
+          })
+        });
+        const json = await res.json();
+        if (res.ok && json.success && json.data) {
+          dbCat = json.data;
+        }
+      } catch (e) {
+        console.warn('MySQL addCategory warning:', e);
+      }
 
       const newCat = {
-        id: `cat-${Date.now()}`,
-        name,
-        slug,
-        code,
-        description: catData.description || '',
-        image: catData.image || '../assets/images/placeholders/product-placeholder.svg',
-        status: catData.status || 'active',
-        displayOrder: parseInt(catData.displayOrder, 10) || (this.state.categories.length + 1),
+        id: dbCat ? String(dbCat.id) : `cat-${Date.now()}`,
+        name: dbCat ? dbCat.name : name,
+        code: dbCat ? (dbCat.code || dbCat.slug) : code,
+        slug: dbCat ? dbCat.slug : slug,
+        description: dbCat ? dbCat.description : description,
+        status: dbCat ? dbCat.status : status,
+        displayOrder: sort_order,
         itemCount: 0
       };
 
@@ -676,20 +1018,50 @@
       return newCat;
     }
 
-    toggleCategoryStatus(catId) {
-      const cat = this.state.categories.find(c => c.id === catId);
+    async deleteCategory(catId) {
+      const token = localStorage.getItem('egadget_admin_token');
+      const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+
+      try {
+        await fetch(`${apiBase}/api/admin/categories/${catId}`, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          }
+        });
+      } catch (e) {
+        console.warn('MySQL deleteCategory warning:', e);
+      }
+
+      this.state.categories = this.state.categories.filter(c => c.id !== String(catId));
+      this.saveState();
+      return true;
+    }
+
+    async toggleCategoryStatus(catId) {
+      const cat = this.state.categories.find(c => c.id === String(catId));
       if (cat) {
         cat.status = cat.status === 'active' ? 'inactive' : 'active';
+        const token = localStorage.getItem('egadget_admin_token');
+        const apiBase = (typeof getApiBase === 'function') ? getApiBase() : (window.location.port === '8000' ? '' : 'http://127.0.0.1:8000');
+        try {
+          await fetch(`${apiBase}/api/admin/categories/${catId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({ status: cat.status })
+          });
+        } catch (e) {
+          console.warn('MySQL toggleCategoryStatus warning:', e);
+        }
         this.saveState();
         return cat.status;
       }
       return null;
-    }
-
-    deleteCategory(catId) {
-      this.state.categories = this.state.categories.filter(c => c.id !== catId);
-      this.saveState();
-      return true;
     }
 
     updateCategoryCounts() {

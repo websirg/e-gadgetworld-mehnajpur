@@ -47,7 +47,11 @@ class AuthController extends Controller
         $sessionData = [
             'id' => $user->id,
             'name' => $user->name,
+            'display_name' => $user->display_name ?: $user->name,
             'email' => $user->email,
+            'phone' => $user->phone ?: '',
+            'avatar' => $user->avatar ?: '',
+            'designation' => $user->designation ?: 'Shop Owner / Administrator',
             'role' => $user->role,
             'branch' => $user->branch,
             'logged_at' => now()->toIso8601String(),

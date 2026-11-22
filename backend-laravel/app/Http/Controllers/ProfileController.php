@@ -130,6 +130,7 @@ class ProfileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Profile and showroom details updated successfully!',
+            'data' => $updatedSession,
             'user' => $updatedSession,
             'settings' => $allSettings,
         ]);

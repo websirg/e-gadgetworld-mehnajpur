@@ -5,26 +5,38 @@
    ========================================================================== */
 
 :root {
-  --admin-sidebar-width: 248px;
+  /* Centralized Theme Variables — Enterprise SaaS Design System */
+  --bg-body: #F8FAFC;
+  --primary-navy: #0F172A;
+  --royal-blue: #2563EB;
+  --white: #FFFFFF;
+  --border-color: #E2E8F0;
+  --secondary-text: #64748B;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+
+  /* Admin System Mappings */
+  --admin-sidebar-width: 240px;
   --admin-sidebar-collapsed: 68px;
   --admin-header-height: 64px;
-  --admin-bg: #F8FAFC;
-  --admin-card-bg: #FFFFFF;
-  --admin-border: #E2E8F0;
-  --admin-border-focus: #2563EB;
-  --admin-text-main: #0F172A;
-  --admin-text-muted: #64748B;
+  --admin-bg: var(--bg-body);
+  --admin-card-bg: var(--white);
+  --admin-border: var(--border-color);
+  --admin-border-focus: var(--royal-blue);
+  --admin-text-main: var(--primary-navy);
+  --admin-text-muted: var(--secondary-text);
   --admin-text-light: #94A3B8;
-  --admin-primary: #2563EB;
+  --admin-primary: var(--royal-blue);
   --admin-primary-dark: #1D4ED8;
   --admin-primary-light: #EFF6FF;
-  --admin-success: #10B981;
+  --admin-success: var(--color-success);
   --admin-success-light: #ECFDF5;
+  --admin-danger: var(--color-danger);
   --admin-purple: #8B5CF6;
   --admin-purple-light: #F5F3FF;
   --admin-amber: #F59E0B;
   --admin-amber-light: #FFFBEB;
-  --admin-rose: #EF4444;
+  --admin-rose: #DC2626;
   --admin-rose-light: #FEF2F2;
   --admin-radius: 12px;
   --admin-radius-sm: 8px;
@@ -555,7 +567,7 @@ body.sidebar-collapsed .admin-main-wrap {
    ========================================================================== */
 .admin-content {
   flex: 1;
-  padding: 24px;
+  padding: 20px;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -741,8 +753,8 @@ body.sidebar-collapsed .admin-main-wrap {
    ========================================================================== */
 .inventory-stats-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
   margin-bottom: 16px;
 }
 
@@ -1798,6 +1810,18 @@ body.sidebar-collapsed .admin-main-wrap {
 
   .topbar-right .topbar-link-public span {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .inventory-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-content {
+    padding: 12px;
   }
 }
 

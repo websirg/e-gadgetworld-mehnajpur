@@ -289,7 +289,7 @@
             <div class="exec-header-left">
               <div class="exec-branch-badge">
                 <span class="pulse-dot"></span>
-                <span class="exec-branch-text">Mehnajpur HQ • Live MySQL Connected</span>
+                <span class="exec-branch-text">Mehnajpur Showroom HQ</span>
               </div>
               <h1 class="exec-header-title">Showroom Operations Dashboard</h1>
               <p class="exec-header-subtitle">
@@ -360,60 +360,12 @@
             </div>
           </div>
 
-          <!-- Section 9: Live Inventory Analytics (Compact Executive 6-Grid matching Reference UI) -->
+          <!-- Section 9: Live Inventory Analytics (5 Executive KPI Cards per Phase 5) -->
           <div class="inventory-stats-grid">
-            <!-- Card 1: Total Units -->
+            <!-- Card 1: Total Products -->
             <div class="inv-stat-card stat-accent-blue">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">TOTAL UNITS</span>
-                <div class="inv-stat-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                  </svg>
-                </div>
-              </div>
-              <div class="inv-stat-num" id="statTotalUnits">0</div>
-              <div class="inv-stat-desc">Showroom physical pieces</div>
-            </div>
-
-            <!-- Card 2: Total Sold Units -->
-            <div class="inv-stat-card stat-accent-green">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">TOTAL SOLD UNITS</span>
-                <div class="inv-stat-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                  </svg>
-                </div>
-              </div>
-              <div class="inv-stat-num" id="statSoldUnits">0</div>
-              <div class="inv-stat-desc">Delivered to customers</div>
-            </div>
-
-            <!-- Card 3: Remaining Stock -->
-            <div class="inv-stat-card stat-accent-indigo">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">REMAINING STOCK</span>
-                <div class="inv-stat-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                  </svg>
-                </div>
-              </div>
-              <div class="inv-stat-num" id="statRemainingStock">0</div>
-              <div class="inv-stat-desc">Available for immediate sale</div>
-            </div>
-
-            <!-- Card 4: Total Models -->
-            <div class="inv-stat-card stat-accent-teal">
-              <div class="inv-stat-header">
-                <span class="inv-stat-label">TOTAL MODELS</span>
+                <span class="inv-stat-label">TOTAL PRODUCTS</span>
                 <div class="inv-stat-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect width="18" height="12" x="3" y="4" rx="2"></rect>
@@ -422,13 +374,45 @@
                 </div>
               </div>
               <div class="inv-stat-num" id="statTotalProducts">0</div>
-              <div class="inv-stat-desc">Distinct catalog variants</div>
+              <div class="inv-stat-desc">Catalog product models</div>
             </div>
 
-            <!-- Card 5: Low Stock Items -->
+            <!-- Card 2: Laptop Stock -->
+            <div class="inv-stat-card stat-accent-indigo">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">LAPTOP STOCK</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="statLaptopStock">0 pcs</div>
+              <div class="inv-stat-desc">Commercial laptops in stock</div>
+            </div>
+
+            <!-- Card 3: Accessories Stock -->
+            <div class="inv-stat-card stat-accent-teal">
+              <div class="inv-stat-header">
+                <span class="inv-stat-label">ACCESSORIES STOCK</span>
+                <div class="inv-stat-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="inv-stat-num" id="statAccessoriesStock">0 pcs</div>
+              <div class="inv-stat-desc">Hardware accessories &amp; parts</div>
+            </div>
+
+            <!-- Card 4: Low Stock Items -->
             <div class="inv-stat-card stat-accent-amber">
               <div class="inv-stat-header">
-                <span class="inv-stat-label">LOW STOCK ITEMS</span>
+                <span class="inv-stat-label">LOW STOCK</span>
                 <div class="inv-stat-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
@@ -441,7 +425,7 @@
               <div class="inv-stat-desc">&le; 2 pieces remaining</div>
             </div>
 
-            <!-- Card 6: Out of Stock -->
+            <!-- Card 5: Out of Stock -->
             <div class="inv-stat-card stat-accent-rose">
               <div class="inv-stat-header">
                 <span class="inv-stat-label">OUT OF STOCK</span>
@@ -898,12 +882,12 @@
             </div>
             <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">No Products Added Yet</h3>
             <p style="font-size: 14px; color: #64748B; max-width: 480px; margin: 0 auto 24px; line-height: 1.5;">
-              Your showroom inventory is currently empty. Add your first product or import a spreadsheet to get started.
+              Your showroom inventory is empty. Add your first product or import an Excel file.
             </p>
             <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
               <a href="#inventory-add" class="btn-admin-primary">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                + Add First Product
+                + Add Product
               </a>
               <a href="#excel" class="btn-admin-secondary">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
@@ -917,14 +901,15 @@
             <table class="admin-data-table">
               <thead>
                 <tr>
+                  <th>Image</th>
+                  <th>LP/SKU</th>
+                  <th>Product</th>
                   <th>Category</th>
-                  <th>ID / Code</th>
-                  <th>Product Title</th>
-                  <th>Hardware / Compatibility</th>
-                  <th>Piece</th>
+                  <th>Specifications</th>
+                  <th>Quantity</th>
                   <th>Price</th>
-                  <th>Stock Status</th>
-                  <th>Action</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="allInventoryTableBody">
@@ -1743,6 +1728,183 @@
       <div class="modal-footer-bar">
         <button type="button" class="btn-admin-primary" onclick="window.adminController.closeModal('viewDetailModalOverlay')">Close</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: EDIT PRODUCT (LAPTOP / ACCESSORY) — PERSISTS TO MYSQL
+       ========================================================================== -->
+  <div class="admin-modal-overlay" id="editProductModalOverlay">
+    <div class="admin-modal-box" style="max-width: 680px;">
+      <div class="modal-header-bar">
+        <h3 class="modal-title-text" id="editProductModalTitle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Product
+        </h3>
+        <button type="button" class="btn-modal-close" onclick="window.adminController.closeModal('editProductModalOverlay')">&times;</button>
+      </div>
+
+      <form id="editProductForm" onsubmit="window.adminController.handleUpdateProductSubmit(event)">
+        <input type="hidden" id="editItemCategory" value="laptop">
+        <input type="hidden" id="editItemId" value="">
+
+        <div class="modal-body-content" style="max-height: 70vh; overflow-y: auto;">
+          <!-- Laptop Fields Section -->
+          <div id="editLaptopFieldsGroup">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="editLpNumber">LP Number <span class="required-star">*</span></label>
+                <input type="text" id="editLpNumber" class="form-input" required placeholder="e.g. 3963">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editBrand">Brand <span class="required-star">*</span></label>
+                <input type="text" id="editBrand" class="form-input" required placeholder="e.g. HP, Dell, Lenovo">
+              </div>
+              <div class="form-group col-full">
+                <label class="form-label" for="editModel">Model Name / Series <span class="required-star">*</span></label>
+                <input type="text" id="editModel" class="form-input" required placeholder="e.g. EliteBook 840 G5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editProcessor">Processor <span class="required-star">*</span></label>
+                <input type="text" id="editProcessor" class="form-input" required placeholder="e.g. Intel Core i5 8th Gen">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editGeneration">Generation / Year</label>
+                <input type="text" id="editGeneration" class="form-input" placeholder="e.g. 8th Gen">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editRam">RAM Memory <span class="required-star">*</span></label>
+                <input type="text" id="editRam" class="form-input" required placeholder="e.g. 16GB DDR4">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editStorage">Storage Capacity <span class="required-star">*</span></label>
+                <input type="text" id="editStorage" class="form-input" required placeholder="e.g. 512GB NVMe SSD">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editQuantity">Physical Showroom Stock <span class="required-star">*</span></label>
+                <input type="number" id="editQuantity" class="form-input" min="0" required placeholder="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editPrice">Selling Price (₹) <span class="required-star">*</span></label>
+                <input type="number" id="editPrice" class="form-input" min="0" required placeholder="e.g. 25000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editStatus">Catalog Visibility</label>
+                <select id="editStatus" class="form-select">
+                  <option value="published">Published (Visible on Showroom Website)</option>
+                  <option value="draft">Draft (Hidden from Public)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editImage">Product Image Path / URL</label>
+                <input type="text" id="editImage" class="form-input" placeholder="assets/images/products/...">
+              </div>
+              <div class="form-group col-full">
+                <label class="form-label" for="editDescription">Product Description / Notes</label>
+                <textarea id="editDescription" class="form-textarea" rows="2" placeholder="Refurbished commercial tested..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accessory Fields Section -->
+          <div id="editAccessoryFieldsGroup" style="display: none;">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="editAccSku">SKU / Code <span class="required-star">*</span></label>
+                <input type="text" id="editAccSku" class="form-input" placeholder="e.g. ACC-HP-65W">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccBrand">Brand</label>
+                <input type="text" id="editAccBrand" class="form-input" placeholder="e.g. HP, Dell, Logitech">
+              </div>
+              <div class="form-group col-full">
+                <label class="form-label" for="editAccName">Product Name <span class="required-star">*</span></label>
+                <input type="text" id="editAccName" class="form-input" placeholder="e.g. Original 65W Blue Pin Laptop Adapter">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccType">Accessory Type</label>
+                <input type="text" id="editAccType" class="form-input" placeholder="e.g. Charger, Mouse, Bag, RAM">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccCompatibility">Compatibility</label>
+                <input type="text" id="editAccCompatibility" class="form-input" placeholder="e.g. HP EliteBook / ProBook">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccQuantity">Showroom Stock <span class="required-star">*</span></label>
+                <input type="number" id="editAccQuantity" class="form-input" min="0" placeholder="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccPrice">Selling Price (₹) <span class="required-star">*</span></label>
+                <input type="number" id="editAccPrice" class="form-input" min="0" placeholder="e.g. 850">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccStatus">Catalog Visibility</label>
+                <select id="editAccStatus" class="form-select">
+                  <option value="published">Published (Visible on Showroom Website)</option>
+                  <option value="draft">Draft (Hidden from Public)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="editAccImage">Image Path / URL</label>
+                <input type="text" id="editAccImage" class="form-input" placeholder="assets/images/products/...">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-admin-secondary" onclick="window.adminController.closeModal('editProductModalOverlay')">Cancel</button>
+          <button type="submit" class="btn-admin-primary" id="btnSaveEditProduct">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Changes to Database
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: ADJUST STOCK QUANTITY — PERSISTS TO MYSQL
+       ========================================================================== -->
+  <div class="admin-modal-overlay" id="adjustStockModalOverlay">
+    <div class="admin-modal-box" style="max-width: 480px;">
+      <div class="modal-header-bar">
+        <h3 class="modal-title-text">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+          Adjust Physical Showroom Stock
+        </h3>
+        <button type="button" class="btn-modal-close" onclick="window.adminController.closeModal('adjustStockModalOverlay')">&times;</button>
+      </div>
+
+      <form id="adjustStockForm" onsubmit="window.adminController.handleSaveStockAdjustmentSubmit(event)">
+        <input type="hidden" id="adjustStockCategory" value="laptop">
+        <input type="hidden" id="adjustStockItemId" value="">
+
+        <div class="modal-body-content">
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+            <div style="font-size: 11.5px; color: #64748B; font-weight: 700; text-transform: uppercase;">Selected Item</div>
+            <div style="font-size: 15px; font-weight: 800; color: #0F172A;" id="adjustStockItemName">-</div>
+            <div style="display: flex; gap: 10px; margin-top: 4px; font-size: 12px;">
+              <span id="adjustStockItemCode" class="cell-lp-badge">-</span>
+              <span>Current Stock: <strong id="adjustStockCurrentQty" style="color: #2563EB;">0 pcs</strong></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adjustStockNewQty">New Showroom Physical Count <span class="required-star">*</span></label>
+            <input type="number" id="adjustStockNewQty" class="form-input" min="0" required placeholder="Enter new verified physical pieces">
+            <div style="font-size: 12px; color: #64748B; margin-top: 4px;">Directly updates MySQL database inventory and public catalog availability.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer-bar">
+          <button type="button" class="btn-admin-secondary" onclick="window.adminController.closeModal('adjustStockModalOverlay')">Cancel</button>
+          <button type="submit" class="btn-admin-primary" id="btnSaveStockAdjustment">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Update Stock Quantity
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

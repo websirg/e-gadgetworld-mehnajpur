@@ -73,7 +73,7 @@ class SaleController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'item_type' => 'required|in:laptop,accessory',
+            'item_type' => 'required|in:laptop,accessory,accessories',
             'item_id' => 'required',
             'qty' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0',
@@ -90,7 +90,8 @@ class SaleController extends Controller
             ], 422);
         }
 
-        $itemType = $request->input('item_type');
+        $rawType = $request->input('item_type');
+        $itemType = in_array($rawType, ['accessory', 'accessories']) ? 'accessory' : 'laptop';
         $itemId = $request->input('item_id');
         $qty = (int) $request->input('qty');
         $unitPrice = (float) $request->input('price');
