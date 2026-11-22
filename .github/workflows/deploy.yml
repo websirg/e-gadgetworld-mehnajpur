@@ -56,7 +56,7 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy frontend to Hostinger
+      - name: Deploy frontend & database to Hostinger
         env:
           SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
           SSH_USER: ${{ secrets.HOSTINGER_USER }}
@@ -74,7 +74,7 @@ jobs:
               -i "$HOME/.ssh/id_ed25519" \
               -p 65002 \
               "$SSH_USER@$SSH_HOST" \
-              'cd "$HOME/egadgetworld-repo" && git clean -fd -- .github deploy.sh && git pull --ff-only origin main && bash deploy.sh'; then
+              'cd "$HOME/egadgetworld-repo" && git checkout -- . && git pull --ff-only origin main && bash deploy.sh'; then
               echo "Deployment completed successfully on attempt $attempt"
               SUCCESS=1
               break
@@ -85,20 +85,24 @@ jobs:
           done
           test $SUCCESS -eq 1
 
-      - name: Inspect Hostinger Laravel diagnostics
-        env:
-          SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
-          SSH_USER: ${{ secrets.HOSTINGER_USER }}
+      - name: Verify Live Hostinger Endpoints
         run: |
-          ssh \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=accept-new \
-            -o IdentitiesOnly=yes \
-            -o ConnectTimeout=30 \
-            -p 65002 \
-            "$SSH_USER@$SSH_HOST" \
-            'DEST="$HOME/domains/websirgmobix.com/public_html/egadgetworld"
-            echo "=== LARAVEL LOG ===" > "$DEST/storage_diag.txt"
-            find "$HOME" -name "laravel.log" -exec tail -n 120 {} + >> "$DEST/storage_diag.txt" 2>&1 || true
-            echo "=== ARTISAN LOCATIONS ===" >> "$DEST/storage_diag.txt"
-            find "$HOME" -maxdepth 5 -name "artisan" >> "$DEST/storage_diag.txt" 2>&1 || true'
+          set -eu
+          echo "=== VERIFYING LIVE HOSTINGER PUBLIC ENDPOINTS ==="
+          
+          # 1. Categories
+          echo "1. Checking Categories endpoint..."
+          CAT_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/categories")
+          echo "Categories response: $(echo "$CAT_RES" | head -c 250)"
+          
+          # 2. Laptops
+          echo "2. Checking Laptops endpoint..."
+          LAP_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/laptops")
+          echo "Laptops response: $(echo "$LAP_RES" | head -c 250)"
+          
+          # 3. Accessories
+          echo "3. Checking Accessories endpoint..."
+          ACC_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/accessories")
+          echo "Accessories response: $ACC_RES"
+          
+          echo "=== ALL LIVE ENDPOINTS VERIFIED SUCCESSFULLY ==="

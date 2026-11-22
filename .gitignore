@@ -9,3 +9,7 @@ desktop.ini
 
 # Temporary / Log files
 *.log
+
+# SQL dumps
+*.sql
+!backend-laravel/database/production_schema_and_seed.sql
