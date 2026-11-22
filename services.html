@@ -432,45 +432,10 @@
           </p>
         </div>
 
-        <div class="categories-grid">
-          <div class="category-card">
-            <div class="accessory-card-image-wrap">
-              <img src="assets/images/placeholders/accessory-charger.svg" alt="Original Laptop Chargers" class="accessory-img" width="200" height="135" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'charger');">
-            </div>
-            <h3 class="category-card-title">Original Laptop Chargers</h3>
-            <p class="category-card-desc">Genuine Dell 65W/90W barrel &amp; USB-C chargers, HP blue-pin adapters, and Lenovo square/Type-C power adapters with surge protection.</p>
-            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 12px;">Available in store</div>
-            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20am%20looking%20for%20an%20original%20laptop%20charger." target="_blank" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
-          </div>
-
-          <div class="category-card">
-            <div class="accessory-card-image-wrap">
-              <img src="assets/images/placeholders/accessory-ssd.svg" alt="SSD Storage Upgrades" class="accessory-img" width="200" height="135" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'ssd');">
-            </div>
-            <h3 class="category-card-title">SSD Storage Upgrades</h3>
-            <p class="category-card-desc">128GB, 256GB, 512GB, and 1TB SATA 2.5-inch and M.2 NVMe SSDs from Crucial, Western Digital, and Kingston to speed up booting and software loading.</p>
-            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 12px;">Same-day Installation Available</div>
-            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20want%20to%20upgrade%20my%20laptop%20with%20an%20SSD." target="_blank" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
-          </div>
-
-          <div class="category-card">
-            <div class="accessory-card-image-wrap">
-              <img src="assets/images/placeholders/accessory-ram.svg" alt="RAM Memory Modules" class="accessory-img" width="200" height="135" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'ram');">
-            </div>
-            <h3 class="category-card-title">RAM Memory Modules</h3>
-            <p class="category-card-desc">4GB, 8GB, and 16GB DDR3L and DDR4 laptop RAM modules for smooth multitasking, office work, and heavy applications.</p>
-            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 12px;">Free Compatibility Check</div>
-            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20need%20a%20RAM%20upgrade%20for%20my%20laptop." target="_blank" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
-          </div>
-
-          <div class="category-card">
-            <div class="accessory-card-image-wrap">
-              <img src="assets/images/placeholders/accessory-peripherals.svg" alt="Bags, Keyboards & Mice" class="accessory-img" width="200" height="135" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, 'peripherals');">
-            </div>
-            <h3 class="category-card-title">Bags, Keyboards &amp; Mice</h3>
-            <p class="category-card-desc">Padded waterproof laptop backpacks, wireless mice, replacement keyboards for Dell/HP/Lenovo laptops, and webcams.</p>
-            <div style="font-size: 0.8125rem; font-weight: 700; color: var(--color-primary); margin-bottom: 12px;">Quality Brands</div>
-            <a href="https://wa.me/919984359860?text=Hello%20E-Gadget%20World%2C%20I%20am%20looking%20for%20laptop%20accessories." target="_blank" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
+        <div class="categories-grid" id="servicesAccessoriesGrid">
+          <div style="grid-column: 1 / -1; padding: 48px 20px; text-align: center;">
+            <div style="width: 32px; height: 32px; border: 3px solid #E2E8F0; border-top-color: #2563EB; border-radius: 50%; margin: 0 auto 12px; animation: spin 0.8s linear infinite;"></div>
+            <p style="font-size: 14px; color: #64748B; font-weight: 600;">Checking live showroom accessories...</p>
           </div>
         </div>
       </div>
@@ -708,6 +673,80 @@
   <script src="js/compare.js"></script>
 
   <script>
+    async function renderServicesAccessories() {
+      const grid = document.getElementById('servicesAccessoriesGrid');
+      if (!grid) return;
+
+      const apiBase = (typeof LaptopService !== 'undefined' && LaptopService.getApiBase) ? LaptopService.getApiBase() : '';
+      try {
+        const res = await fetch(`${apiBase}/api/public/accessories`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            const waNumber = (typeof BUSINESS_CONFIG !== 'undefined' && BUSINESS_CONFIG.whatsappNumber) ? BUSINESS_CONFIG.whatsappNumber : '919984359860';
+            grid.innerHTML = json.data.map(acc => {
+              const fallbackCat = acc.type || acc.name || 'default';
+              const imgSrc = acc.pic || (typeof ImageFallbackHelper !== 'undefined' ? ImageFallbackHelper.getAccessoryFallback(fallbackCat) : 'assets/images/placeholders/accessory-default.svg');
+              const priceFormatted = (typeof LaptopService !== 'undefined') ? LaptopService.formatINR(acc.price) : `₹${acc.price}`;
+              const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent('Hello E-Gadget World, I would like to enquire about ' + acc.name + ' (' + (acc.sku || '') + ')')}`;
+              return `
+                <div class="category-card">
+                  <div class="accessory-card-image-wrap">
+                    <img src="${imgSrc}" alt="${acc.name}" class="accessory-img" width="200" height="135" onerror="if (typeof ImageFallbackHelper !== 'undefined') ImageFallbackHelper.handleAccessoryImgError(this, '${fallbackCat}');">
+                  </div>
+                  <h3 class="category-card-title">${acc.name}</h3>
+                  <p class="category-card-desc">${acc.desc || (acc.brand + ' ' + (acc.model || '') + ' ' + (acc.compatibility ? 'for ' + acc.compatibility : ''))}</p>
+                  <div style="font-size: 0.95rem; font-weight: 800; color: #0F172A; margin-bottom: 4px;">${priceFormatted}</div>
+                  <div style="font-size: 0.8125rem; font-weight: 700; color: #2563EB; margin-bottom: 14px;">${acc.piece > 0 ? (acc.piece <= 2 ? 'Only ' + acc.piece + ' Left' : 'In Showroom Stock') : 'Currently Unavailable'}</div>
+                  <a href="${waUrl}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Enquire on WhatsApp</a>
+                </div>
+              `;
+            }).join('');
+            return;
+          } else if (json.success && Array.isArray(json.data) && json.data.length === 0) {
+            const waNumber = (typeof BUSINESS_CONFIG !== 'undefined' && BUSINESS_CONFIG.whatsappNumber) ? BUSINESS_CONFIG.whatsappNumber : '919984359860';
+            grid.innerHTML = `
+              <div class="catalog-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #FFFFFF; border-radius: 12px; border: 1px solid #E2E8F0;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.8" style="margin: 0 auto 16px; display: block;">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">No Accessories Available Right Now</h3>
+                <p style="font-size: 14px; color: #64748B; max-width: 500px; margin: 0 auto 20px;">Accessories inventory is currently being updated. Please contact our showroom for availability.</p>
+                <a href="https://wa.me/${waNumber}?text=Hello%20E-Gadget%20World%2C%20please%20share%20the%20currently%20available%20laptop%20accessories%20at%20Mehnajpur." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700; border-radius: 8px;">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+                  Enquire on WhatsApp
+                </a>
+              </div>
+            `;
+            return;
+          }
+        }
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      } catch (e) {
+        console.error('Failed fetching live accessories:', e);
+        const waNumber = (typeof BUSINESS_CONFIG !== 'undefined' && BUSINESS_CONFIG.whatsappNumber) ? BUSINESS_CONFIG.whatsappNumber : '919984359860';
+        grid.innerHTML = `
+          <div class="catalog-error-state" style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #FECACA;">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.8" style="margin: 0 auto 14px; display: block;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">Unable to Load Accessories</h3>
+            <p style="font-size: 14px; color: #64748B; max-width: 480px; margin: 0 auto 16px;">We could not connect to the showroom accessories database. Please contact our showroom directly on WhatsApp.</p>
+            <a href="https://wa.me/${waNumber}?text=Hello%20E-Gadget%20World%2C%20please%20share%20currently%20available%20laptop%20accessories%20at%20Mehnajpur." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700; border-radius: 8px;">
+              Enquire on WhatsApp
+            </a>
+          </div>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderServicesAccessories();
+    });
+
     function handleServicesRepairSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('svcName').value;

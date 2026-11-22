@@ -6,9 +6,10 @@
 
 class LaptopCatalog {
   constructor() {
-    this.laptops = typeof PRODUCT_INVENTORY !== 'undefined' ? PRODUCT_INVENTORY : [];
+    this.laptops = typeof PRODUCT_INVENTORY !== 'undefined' ? [...PRODUCT_INVENTORY] : [];
     this.filteredLaptops = [...this.laptops];
     this.isLoading = false;
+    this.syncError = null;
     
     // Elements
     this.gridEl = document.getElementById('catalogLaptopsGrid');
@@ -44,23 +45,100 @@ class LaptopCatalog {
     this.readUrlParams();
     this.bindEvents();
 
-    if (this.laptops.length === 0 && typeof LaptopService !== 'undefined') {
-      this.renderLoading();
-      await LaptopService.syncWithApi();
-      this.laptops = typeof PRODUCT_INVENTORY !== 'undefined' ? PRODUCT_INVENTORY : [];
+    this.renderLoading();
+    this.isLoading = true;
+    this.syncError = null;
+
+    if (typeof LaptopService !== 'undefined') {
+      const syncRes = await LaptopService.syncWithApi();
+      this.isLoading = false;
+      if (syncRes && syncRes.success === true) {
+        this.laptops = [...PRODUCT_INVENTORY];
+        this.syncError = null;
+        this.updateFilterControls();
+      } else {
+        this.laptops = [];
+        this.syncError = syncRes || { error: 'Failed connecting to showroom database.' };
+      }
+    } else {
+      this.isLoading = false;
+      this.laptops = typeof PRODUCT_INVENTORY !== 'undefined' ? [...PRODUCT_INVENTORY] : [];
     }
 
     this.applyFiltersAndRender();
+  }
+
+  async retrySync() {
+    this.renderLoading();
+    this.isLoading = true;
+    this.syncError = null;
+    if (typeof LaptopService !== 'undefined') {
+      const syncRes = await LaptopService.syncWithApi();
+      this.isLoading = false;
+      if (syncRes && syncRes.success === true) {
+        this.laptops = [...PRODUCT_INVENTORY];
+        this.syncError = null;
+        this.updateFilterControls();
+      } else {
+        this.syncError = syncRes || { error: 'Failed connecting to showroom database.' };
+      }
+    }
+    this.applyFiltersAndRender();
+  }
+
+  updateFilterControls() {
+    // Dynamic brand counts
+    const brandCounts = {};
+    this.laptops.forEach(l => {
+      const b = (l.brand || '').trim();
+      brandCounts[b] = (brandCounts[b] || 0) + 1;
+    });
+
+    document.querySelectorAll('input[name="filterBrand"]').forEach(input => {
+      const brandVal = input.value;
+      const count = brandCounts[brandVal] || 0;
+      const labelSpan = input.closest('label')?.querySelector('span');
+      if (labelSpan) {
+        labelSpan.textContent = `${brandVal} (${count})`;
+      }
+    });
+
+    // Auto-detect min/max price range from live data
+    if (this.laptops.length > 0) {
+      const prices = this.laptops.map(l => l.price).filter(p => typeof p === 'number' && !isNaN(p));
+      if (prices.length > 0) {
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        const minInput = document.getElementById('filterMinPrice');
+        const maxInput = document.getElementById('filterMaxPrice');
+        if (minInput && !minInput.value) {
+          minInput.placeholder = `Min ₹${minP.toLocaleString('en-IN')}`;
+          minInput.min = minP;
+        }
+        if (maxInput && !maxInput.value) {
+          maxInput.placeholder = `Max ₹${maxP.toLocaleString('en-IN')}`;
+          maxInput.max = maxP;
+        }
+      }
+    }
   }
 
   bindEvents() {
     // Listen for live MySQL inventory sync
     window.addEventListener('egadget:inventory-synced', (e) => {
       if (e.detail && Array.isArray(e.detail)) {
-        this.laptops = e.detail;
+        this.laptops = [...e.detail];
         this.isLoading = false;
+        this.syncError = null;
+        this.updateFilterControls();
         this.applyFiltersAndRender();
       }
+    });
+
+    window.addEventListener('egadget:inventory-sync-error', (e) => {
+      this.isLoading = false;
+      this.syncError = e.detail || { error: 'Catalog sync failed.' };
+      this.applyFiltersAndRender();
     });
 
     // Live Search
@@ -245,11 +323,13 @@ class LaptopCatalog {
         }
       }
 
-      // 4. Generation Filter
+      // 4. Generation Filter (handles 1st & 2nd Gen grouped)
       if (this.filters.generations.length > 0) {
-        if (!this.filters.generations.includes(laptop.generationNum)) {
-          return false;
-        }
+        const matchesGen = this.filters.generations.some(g => {
+          if (g === 2) return laptop.generationNum === 1 || laptop.generationNum === 2;
+          return laptop.generationNum === g;
+        });
+        if (!matchesGen) return false;
       }
 
       // 5. RAM Filter
@@ -259,11 +339,13 @@ class LaptopCatalog {
         }
       }
 
-      // 6. Storage Type
+      // 6. Storage Type (handles NVMe SSD when SSD selected)
       if (this.filters.storageTypes.length > 0) {
-        if (!this.filters.storageTypes.includes(laptop.storageType)) {
-          return false;
-        }
+        const matchesStorage = this.filters.storageTypes.some(st => {
+          if (st === 'SSD') return laptop.storageType === 'SSD' || laptop.storageType === 'NVMe SSD';
+          return laptop.storageType === st;
+        });
+        if (!matchesStorage) return false;
       }
 
       // 7. Price Min / Max
@@ -322,6 +404,45 @@ class LaptopCatalog {
 
   render() {
     if (!this.gridEl) return;
+
+    // Distinguish API failure from empty inventory
+    if (this.syncError) {
+      const waNumber = (typeof BUSINESS_CONFIG !== 'undefined' && BUSINESS_CONFIG.whatsappNumber) 
+        ? BUSINESS_CONFIG.whatsappNumber 
+        : '919984359860';
+      const errMsg = (this.syncError && this.syncError.error) ? this.syncError.error : 'Connection to showroom catalog server failed';
+
+      if (this.countEl) {
+        this.countEl.innerHTML = `<span style="color: #DC2626; font-weight: 700;">Catalog Server Offline / Error</span>`;
+      }
+
+      this.gridEl.innerHTML = `
+        <div class="catalog-error-state" style="grid-column: 1 / -1; padding: 56px 24px; text-align: center; background: #FFFFFF; border-radius: 12px; border: 1px solid #FECACA;">
+          <div class="catalog-error-icon" style="margin-bottom: 16px;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="1.8" style="margin: 0 auto; display: block;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="catalog-error-title" style="font-size: 18px; font-weight: 800; color: #0F172A; margin-bottom: 8px;">Unable to Load Laptop Catalog</h3>
+          <p class="catalog-error-desc" style="font-size: 14px; color: #64748B; max-width: 520px; margin: 0 auto 20px;">
+            We encountered a connection issue connecting to our showroom catalog server (${errMsg}). Please check your internet connection or retry below.
+          </p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="window.catalogInstance?.retrySync()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700; border-radius: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Retry Connection
+            </button>
+            <a href="https://wa.me/${waNumber}?text=${encodeURIComponent('Hello E-Gadget World Mehnajpur, I am trying to view your online laptop catalog. Please share the currently available commercial laptops.')}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-weight: 700; border-radius: 8px;">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67Z"/></svg>
+              Contact on WhatsApp
+            </a>
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     // Update count display
     if (this.countEl) {

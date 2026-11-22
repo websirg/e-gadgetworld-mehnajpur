@@ -76,6 +76,8 @@ const ImageFallbackHelper = {
 
 // Helper Utilities & API Sync
 const LaptopService = {
+  lastSyncStatus: null,
+
   getApiBase() {
     if (typeof window === 'undefined') return '';
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -89,54 +91,119 @@ const LaptopService = {
   },
 
   async syncWithApi() {
+    const apiBase = this.getApiBase();
+    const endpoint = `${apiBase}/api/public/laptops`;
     try {
-      const apiBase = this.getApiBase();
-      const res = await fetch(`${apiBase}/api/public/laptops`, { credentials: 'omit' });
-      if (!res.ok) return false;
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data)) {
-        PRODUCT_INVENTORY.length = 0;
-        json.data.forEach(dbItem => {
-          const genNum = parseInt(dbItem.generation, 10) || 0;
-          const ramNum = parseInt(dbItem.ram, 10) || 0;
-          const storageStr = dbItem.storage || '256GB SSD';
-          const isNvme = storageStr.toUpperCase().includes('NVME');
-          const isSsd = storageStr.toUpperCase().includes('SSD') || isNvme;
-
-          PRODUCT_INVENTORY.push({
-            id: String(dbItem.id),
-            lpNumber: String(dbItem.lp_no),
-            brand: dbItem.brand,
-            model: dbItem.model,
-            processor: dbItem.processor,
-            generation: dbItem.generation,
-            generationNum: genNum,
-            ram: dbItem.ram,
-            ramNum: ramNum,
-            storage: storageStr,
-            storageType: isNvme ? 'NVMe SSD' : (isSsd ? 'SSD' : 'HDD'),
-            storageCapacity: storageStr,
-            price: Number(dbItem.price),
-            quantity: typeof dbItem.piece === 'number' ? dbItem.piece : parseInt(dbItem.piece, 10) || 0,
-            condition: 'Refurbished / Tested',
-            warrantyMonths: 12,
-            warrantyDisplay: '6-12 Months Store Warranty',
-            images: dbItem.pic ? [dbItem.pic] : ['assets/images/placeholders/laptop-placeholder.svg'],
-            featured: Boolean(dbItem.featured !== undefined ? dbItem.featured : true),
-            badge: dbItem.badge || '',
-            description: dbItem.desc || `${dbItem.brand} ${dbItem.model} commercial laptop with ${dbItem.processor}, ${dbItem.ram} RAM and ${dbItem.storage}. Tested in Mehnajpur showroom.`
-          });
-        });
-
+      const res = await fetch(endpoint, { credentials: 'omit' });
+      if (!res.ok) {
+        const errorInfo = {
+          success: false,
+          status: res.status,
+          statusText: res.statusText,
+          endpoint,
+          error: `HTTP ${res.status}: ${res.statusText || 'Server Error'}`
+        };
+        this.lastSyncStatus = errorInfo;
+        console.error('[E-Gadget API Failure] Failed fetching laptop catalog:', errorInfo);
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('egadget:inventory-synced', { detail: PRODUCT_INVENTORY }));
+          window.dispatchEvent(new CustomEvent('egadget:inventory-sync-error', { detail: errorInfo }));
         }
-        return PRODUCT_INVENTORY;
+        return errorInfo;
       }
-    } catch (err) {
-      console.info('Live MySQL inventory sync: Backend offline or unreachable.', err);
+
+      let json;
+      try {
+        json = await res.json();
+      } catch (jsonErr) {
+        const errorInfo = {
+          success: false,
+          status: 'invalid_json',
+          endpoint,
+          error: 'Response from server is not valid JSON.'
+        };
+        this.lastSyncStatus = errorInfo;
+        console.error('[E-Gadget API Failure] Invalid JSON returned:', jsonErr);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('egadget:inventory-sync-error', { detail: errorInfo }));
+        }
+        return errorInfo;
+      }
+
+      if (!json || typeof json !== 'object' || json.success !== true || !Array.isArray(json.data)) {
+        const errorInfo = {
+          success: false,
+          status: 'unexpected_format',
+          endpoint,
+          error: 'API returned unexpected response structure.'
+        };
+        this.lastSyncStatus = errorInfo;
+        console.error('[E-Gadget API Failure] Unexpected API response structure:', json);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('egadget:inventory-sync-error', { detail: errorInfo }));
+        }
+        return errorInfo;
+      }
+
+      PRODUCT_INVENTORY.length = 0;
+      json.data.forEach(dbItem => {
+        const genNum = parseInt(dbItem.generation, 10) || 0;
+        const ramNum = parseInt(dbItem.ram, 10) || 0;
+        const storageStr = dbItem.storage || '256GB SSD';
+        const isNvme = storageStr.toUpperCase().includes('NVME');
+        const isSsd = storageStr.toUpperCase().includes('SSD') || isNvme;
+
+        PRODUCT_INVENTORY.push({
+          id: String(dbItem.id),
+          lpNumber: String(dbItem.lp_no),
+          brand: dbItem.brand,
+          model: dbItem.model,
+          processor: dbItem.processor,
+          generation: dbItem.generation,
+          generationNum: genNum,
+          ram: dbItem.ram,
+          ramNum: ramNum,
+          storage: storageStr,
+          storageType: isNvme ? 'NVMe SSD' : (isSsd ? 'SSD' : 'HDD'),
+          storageCapacity: storageStr,
+          price: Number(dbItem.price),
+          quantity: typeof dbItem.piece === 'number' ? dbItem.piece : parseInt(dbItem.piece, 10) || 0,
+          condition: 'Refurbished / Tested',
+          warrantyMonths: 12,
+          warrantyDisplay: '6-12 Months Store Warranty',
+          images: dbItem.pic ? [dbItem.pic] : ['assets/images/placeholders/laptop-placeholder.svg'],
+          featured: Boolean(dbItem.featured !== undefined ? dbItem.featured : true),
+          badge: dbItem.badge || '',
+          description: dbItem.desc || `${dbItem.brand} ${dbItem.model} commercial laptop with ${dbItem.processor}, ${dbItem.ram} RAM and ${dbItem.storage}. Tested in Mehnajpur showroom.`
+        });
+      });
+
+      const syncResult = {
+        success: true,
+        status: 200,
+        count: PRODUCT_INVENTORY.length,
+        error: null,
+        data: PRODUCT_INVENTORY
+      };
+      this.lastSyncStatus = syncResult;
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('egadget:inventory-synced', { detail: PRODUCT_INVENTORY }));
+      }
+      return syncResult;
+    } catch (netErr) {
+      const errorInfo = {
+        success: false,
+        status: 'network_error',
+        endpoint,
+        error: netErr.message || 'Network connection failed'
+      };
+      this.lastSyncStatus = errorInfo;
+      console.error('[E-Gadget API Failure] Network error during catalog sync:', netErr);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('egadget:inventory-sync-error', { detail: errorInfo }));
+      }
+      return errorInfo;
     }
-    return false;
   },
 
   getAll() {

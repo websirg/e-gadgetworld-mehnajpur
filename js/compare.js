@@ -76,6 +76,7 @@ const CompareService = {
     const dock = document.createElement('div');
     dock.id = 'compareDock';
     dock.className = 'compare-dock';
+    dock.style.display = 'none';
     dock.innerHTML = `
       <div class="compare-dock-inner">
         <div style="display: flex; align-items: center; gap: 14px;">
@@ -124,6 +125,7 @@ const CompareService = {
     }
 
     if (this.selectedLps.length > 0) {
+      dock.style.display = 'block';
       dock.classList.add('is-visible');
       preview.innerHTML = this.selectedLps.map(lp => {
         const laptop = LaptopService.getById(lp);
@@ -137,6 +139,7 @@ const CompareService = {
       }).join('');
     } else {
       dock.classList.remove('is-visible');
+      dock.style.display = 'none';
       preview.innerHTML = '';
     }
   },
