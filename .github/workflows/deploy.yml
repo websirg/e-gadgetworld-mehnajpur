@@ -56,7 +56,7 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy frontend & database to Hostinger
+      - name: Deploy to Hostinger
         env:
           SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
           SSH_USER: ${{ secrets.HOSTINGER_USER }}
@@ -75,84 +75,12 @@ jobs:
               -p 65002 \
               "$SSH_USER@$SSH_HOST" '
                 set -e
-                REPO="$HOME/egadgetworld-repo"
-                DEST="$HOME/domains/websirgmobix.com/public_html/egadgetworld"
-                PROD_BACKEND="$HOME/domains/websirgmobix.com/public_html/backend-laravel"
-                REPO_BACKEND="$REPO/backend-laravel"
-                OUT="$DEST/diag_output.txt"
-
-                echo "=== DEPLOYMENT AND DIAGNOSTICS ===" > "$OUT"
-                date >> "$OUT"
-
-                cd "$REPO"
+                cd "$HOME/egadgetworld-repo"
                 git fetch origin main
                 git reset --hard origin/main
-
-                # Sync Frontend
-                echo "--- SYNCING FRONTEND ---" >> "$OUT"
-                rsync -av \
-                  --exclude=".env" \
-                  --exclude=".htaccess" \
-                  --exclude="api/" \
-                  --exclude="backend-laravel/" \
-                  --exclude=".git/" \
-                  --exclude=".github/" \
-                  --exclude=".gitignore" \
-                  --exclude="README.md" \
-                  --exclude="netlify.toml" \
-                  --exclude="deploy.sh" \
-                  "$REPO/" "$DEST/" >> "$OUT" 2>&1 || true
-
-                # Bypass composer platform check on both backends
-                echo "--- BYPASSING COMPOSER PLATFORM CHECK ---" >> "$OUT"
-                for B in "$PROD_BACKEND" "$REPO_BACKEND"; do
-                  if [ -f "$B/vendor/composer/platform_check.php" ]; then
-                    echo "<?php // platform check bypassed" > "$B/vendor/composer/platform_check.php"
-                    echo "Bypassed platform_check in $B" >> "$OUT"
-                  fi
-                done
-
-                # Detect best PHP binary
-                PHP_BIN="php"
-                for candidate in /usr/bin/php8.4 /usr/local/bin/php8.4 /opt/alt/php84/usr/bin/php /usr/bin/php8.3 php; do
-                  if command -v "$candidate" >/dev/null 2>&1; then
-                    PHP_BIN="$candidate"
-                    echo "Selected PHP CLI: $PHP_BIN" >> "$OUT"
-                    break
-                  fi
-                done
-
-                # Sync backend code to PROD_BACKEND
-                echo "--- SYNCING BACKEND CODE TO PROD_BACKEND ---" >> "$OUT"
-                if [ -d "$PROD_BACKEND" ]; then
-                  rsync -av "$REPO_BACKEND/database/" "$PROD_BACKEND/database/" >> "$OUT" 2>&1 || true
-                  rsync -av "$REPO_BACKEND/routes/" "$PROD_BACKEND/routes/" >> "$OUT" 2>&1 || true
-                  rsync -av "$REPO_BACKEND/app/" "$PROD_BACKEND/app/" >> "$OUT" 2>&1 || true
-                  cp "$REPO_BACKEND/sync_db.php" "$PROD_BACKEND/" >> "$OUT" 2>&1 || true
-                fi
-
-                # Run database sync in REPO_BACKEND (which api/index.php uses)
-                echo "--- RUNNING DB SYNC IN REPO_BACKEND ---" >> "$OUT"
-                if [ -d "$REPO_BACKEND" ]; then
-                  cd "$REPO_BACKEND"
-                  "$PHP_BIN" artisan db:sync-egadget >> "$OUT" 2>&1 || "$PHP_BIN" sync_db.php >> "$OUT" 2>&1 || true
-                  "$PHP_BIN" artisan config:clear >> "$OUT" 2>&1 || true
-                  "$PHP_BIN" artisan route:clear >> "$OUT" 2>&1 || true
-                  "$PHP_BIN" artisan cache:clear >> "$OUT" 2>&1 || true
-                fi
-
-                # Run database sync in PROD_BACKEND as well
-                echo "--- RUNNING DB SYNC IN PROD_BACKEND ---" >> "$OUT"
-                if [ -d "$PROD_BACKEND" ]; then
-                  cd "$PROD_BACKEND"
-                  "$PHP_BIN" artisan db:sync-egadget >> "$OUT" 2>&1 || "$PHP_BIN" sync_db.php >> "$OUT" 2>&1 || true
-                  "$PHP_BIN" artisan config:clear >> "$OUT" 2>&1 || true
-                  "$PHP_BIN" artisan route:clear >> "$OUT" 2>&1 || true
-                  "$PHP_BIN" artisan cache:clear >> "$OUT" 2>&1 || true
-                fi
-
-                echo "--- FINAL LARAVEL LOG ---" >> "$OUT"
-                find "$HOME" -name "laravel.log" -exec tail -n 20 {} + >> "$OUT" 2>&1 || true
+                bash deploy.sh
+                rm -f "$HOME/domains/websirgmobix.com/public_html/egadgetworld/diag_output.txt"
+                rm -f "$HOME/domains/websirgmobix.com/public_html/egadgetworld/deploy_debug.log"
               '; then
               echo "Deployment step finished on attempt $attempt"
               SUCCESS=1
@@ -169,14 +97,19 @@ jobs:
           set -eu
           echo "=== LIVE HOSTINGER VERIFICATION ==="
           
-          echo "1. Checking Diagnostics log from server:"
-          curl -s "https://egadgetworld.websirgmobix.com/diag_output.txt" || true
+          # 1. Categories
+          echo "1. Checking Categories endpoint:"
+          curl -s -f "https://egadgetworld.websirgmobix.com/api/public/categories" > /dev/null
+          echo "Categories OK"
           
-          echo "2. Checking Categories endpoint:"
-          curl -s -i "https://egadgetworld.websirgmobix.com/api/public/categories" || true
+          # 2. Laptops
+          echo "2. Checking Laptops endpoint:"
+          LAP_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/laptops")
+          echo "Laptops response preview: $(echo "$LAP_RES" | head -c 200)"
           
-          echo "3. Checking Laptops endpoint:"
-          curl -s -i "https://egadgetworld.websirgmobix.com/api/public/laptops" || true
+          # 3. Accessories
+          echo "3. Checking Accessories endpoint:"
+          ACC_RES=$(curl -s -f "https://egadgetworld.websirgmobix.com/api/public/accessories")
+          echo "Accessories response: $ACC_RES"
           
-          echo "4. Checking Accessories endpoint:"
-          curl -s -i "https://egadgetworld.websirgmobix.com/api/public/accessories" || true
+          echo "=== ALL LIVE ENDPOINTS VERIFIED SUCCESSFULLY ==="
