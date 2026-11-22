@@ -73,9 +73,72 @@ jobs:
               -o ServerAliveInterval=15 \
               -i "$HOME/.ssh/id_ed25519" \
               -p 65002 \
-              "$SSH_USER@$SSH_HOST" \
-              'cd "$HOME/egadgetworld-repo" && git fetch origin main && git reset --hard origin/main && bash deploy.sh'; then
-              echo "Deployment completed successfully on attempt $attempt"
+              "$SSH_USER@$SSH_HOST" '
+                set -e
+                REPO="$HOME/egadgetworld-repo"
+                DEST="$HOME/domains/websirgmobix.com/public_html/egadgetworld"
+                PROD_BACKEND="$HOME/domains/websirgmobix.com/public_html/backend-laravel"
+                REPO_BACKEND="$REPO/backend-laravel"
+                OUT="$DEST/diag_output.txt"
+
+                echo "=== DEPLOYMENT AND DIAGNOSTICS ===" > "$OUT"
+                date >> "$OUT"
+
+                cd "$REPO"
+                git fetch origin main
+                git reset --hard origin/main
+
+                # Sync Frontend
+                echo "--- SYNCING FRONTEND ---" >> "$OUT"
+                rsync -av \
+                  --exclude=".env" \
+                  --exclude=".htaccess" \
+                  --exclude="api/" \
+                  --exclude="backend-laravel/" \
+                  --exclude=".git/" \
+                  --exclude=".github/" \
+                  --exclude=".gitignore" \
+                  --exclude="README.md" \
+                  --exclude="netlify.toml" \
+                  --exclude="deploy.sh" \
+                  "$REPO/" "$DEST/" >> "$OUT" 2>&1 || true
+
+                echo "--- INSPECTING API / INDEX.PHP ---" >> "$OUT"
+                cat "$DEST/api/index.php" >> "$OUT" 2>&1 || true
+
+                echo "--- INSPECTING .ENV FILES ---" >> "$OUT"
+                find "$HOME" -maxdepth 4 -name ".env" -exec echo "=== {} ===" \; -exec head -n 35 {} \; | sed -E "s/PASSWORD=.*/PASSWORD=***/g" >> "$OUT" 2>&1 || true
+
+                echo "--- SYNCING BACKEND CODE TO PROD_BACKEND ---" >> "$OUT"
+                if [ -d "$PROD_BACKEND" ]; then
+                  rsync -av "$REPO_BACKEND/database/" "$PROD_BACKEND/database/" >> "$OUT" 2>&1 || true
+                  rsync -av "$REPO_BACKEND/routes/" "$PROD_BACKEND/routes/" >> "$OUT" 2>&1 || true
+                  rsync -av "$REPO_BACKEND/app/" "$PROD_BACKEND/app/" >> "$OUT" 2>&1 || true
+                  cp "$REPO_BACKEND/sync_db.php" "$PROD_BACKEND/" >> "$OUT" 2>&1 || true
+                fi
+
+                echo "--- RUNNING DB SYNC IN PROD_BACKEND ---" >> "$OUT"
+                if [ -d "$PROD_BACKEND" ]; then
+                  cd "$PROD_BACKEND"
+                  php artisan db:sync-egadget >> "$OUT" 2>&1 || true
+                  php artisan config:clear >> "$OUT" 2>&1 || true
+                  php artisan route:clear >> "$OUT" 2>&1 || true
+                  php artisan cache:clear >> "$OUT" 2>&1 || true
+                fi
+
+                echo "--- RUNNING DB SYNC IN REPO_BACKEND ---" >> "$OUT"
+                if [ -d "$REPO_BACKEND" ]; then
+                  cd "$REPO_BACKEND"
+                  php artisan db:sync-egadget >> "$OUT" 2>&1 || true
+                  php artisan config:clear >> "$OUT" 2>&1 || true
+                  php artisan route:clear >> "$OUT" 2>&1 || true
+                  php artisan cache:clear >> "$OUT" 2>&1 || true
+                fi
+
+                echo "--- RECENT LARAVEL LOG ---" >> "$OUT"
+                find "$HOME" -name "laravel.log" -exec tail -n 30 {} + >> "$OUT" 2>&1 || true
+              '; then
+              echo "Deployment step finished on attempt $attempt"
               SUCCESS=1
               break
             else
@@ -88,25 +151,16 @@ jobs:
       - name: Verify Live Hostinger Endpoints
         run: |
           set -eu
-          echo "=== VERIFYING LIVE HOSTINGER PUBLIC ENDPOINTS ==="
+          echo "=== LIVE HOSTINGER VERIFICATION ==="
           
-          # Check deploy log
-          echo "Deploy debug log from server:"
-          curl -s "https://egadgetworld.websirgmobix.com/deploy_debug.log" || true
+          echo "1. Checking Diagnostics log from server:"
+          curl -s "https://egadgetworld.websirgmobix.com/diag_output.txt" || true
           
-          # 1. Categories
-          echo "1. Checking Categories endpoint..."
-          CAT_RES=$(curl -s "https://egadgetworld.websirgmobix.com/api/public/categories")
-          echo "Categories response: $(echo "$CAT_RES" | head -c 250)"
+          echo "2. Checking Categories endpoint:"
+          curl -s -i "https://egadgetworld.websirgmobix.com/api/public/categories" || true
           
-          # 2. Laptops
-          echo "2. Checking Laptops endpoint..."
-          LAP_RES=$(curl -s "https://egadgetworld.websirgmobix.com/api/public/laptops")
-          echo "Laptops response: $(echo "$LAP_RES" | head -c 250)"
+          echo "3. Checking Laptops endpoint:"
+          curl -s -i "https://egadgetworld.websirgmobix.com/api/public/laptops" || true
           
-          # 3. Accessories
-          echo "3. Checking Accessories endpoint..."
-          ACC_RES=$(curl -s "https://egadgetworld.websirgmobix.com/api/public/accessories")
-          echo "Accessories response: $ACC_RES"
-          
-          echo "=== ALL LIVE ENDPOINTS VERIFIED SUCCESSFULLY ==="
+          echo "4. Checking Accessories endpoint:"
+          curl -s -i "https://egadgetworld.websirgmobix.com/api/public/accessories" || true
