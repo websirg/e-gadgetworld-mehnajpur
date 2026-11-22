@@ -33,7 +33,7 @@ echo "EGadget World frontend deployment completed."
 if [ -d "$REPO/backend-laravel" ]; then
   echo "Executing database synchronization on Hostinger..."
   cd "$REPO/backend-laravel"
-  php sync_db.php
+  php artisan db:sync-egadget || php sync_db.php
   php artisan config:clear || true
   php artisan route:clear || true
   php artisan cache:clear || true
